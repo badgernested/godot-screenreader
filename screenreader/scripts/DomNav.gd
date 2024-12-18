@@ -1250,7 +1250,8 @@ func process_menu_button_controls():
 func process_option_button_controls():
 	var popup = focused.get_popup()
 
-	var text = focused.text
+	var text = ""
+	var focused_text = focused.text
 	
 	# this is just for processing basebutton signals
 	var toggle_old = focused.button_pressed
@@ -1328,12 +1329,12 @@ func process_option_button_controls():
 		
 		if popup_visible:
 			popup.visible = false
-			popup_index = popup.get_focused_item()
+			add_token(STRING_FORMATS[STRING_FORMAT.SELECTED] % [popup.get_item_text(popup_index)])
 			add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
 			focused.emit_signal("item_selected",popup_index)
 		else:
 			focused.show_popup()
-			
+			popup_index = max(focused.selected,0)
 			add_token(popup.get_item_text(popup_index))
 			add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.OPENED] % [text] )
 			
@@ -2267,23 +2268,7 @@ func _input(event: InputEvent) -> void:
 				add_token(get_accessible_name(focused))
 			tts_speak()
 			get_viewport().set_input_as_handled()
-			
-		# clear inputs if any DOM commands are pressed
-		elif (Input.is_action_just_pressed("DOM_select") ||
-				Input.is_action_just_pressed("DOM_cancel") ||
-				Input.is_action_just_pressed("DOM_up") ||
-				Input.is_action_just_pressed("DOM_down") ||
-				Input.is_action_just_pressed("DOM_left") ||
-				Input.is_action_just_pressed("DOM_right") ||
-				Input.is_action_just_pressed("DOM_prev") ||
-				Input.is_action_just_pressed("DOM_next") ||
-				Input.is_action_just_pressed("DOM_read_item") ||
-				Input.is_action_just_pressed("DOM_stop_talk") ||
-				Input.is_action_just_pressed("DOM_item_decrement") ||
-				Input.is_action_just_pressed("DOM_item_increment") ||
-				Input.is_action_just_pressed("ax_start_video") ||
-				Input.is_action_just_pressed("ax_stop_video")):
-			get_viewport().set_input_as_handled()
+
 
 # Processes the inputs for the DOM object
 func _process(delta: float) -> void:
