@@ -1,0 +1,370 @@
+[gd_scene load_steps=32 format=3 uid="uid://21bd0kykts0b"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_liw1t"]
+[ext_resource type="Texture2D" uid="uid://ck5fd8hxcl8if" path="res://sample_assets/img/icon/test_icon.png" id="1_p3661"]
+[ext_resource type="Script" path="res://screenreader/scripts/object_scripts/ax_control.gd" id="2_6pnjy"]
+[ext_resource type="Script" path="res://screenreader/scripts/object_scripts/ax_menubar.gd" id="3_7pcv3"]
+[ext_resource type="Script" path="res://screenreader/scripts/object_scripts/ax_progressbar.gd" id="3_sdcnn"]
+[ext_resource type="Script" path="res://screenreader/scripts/object_scripts/ax_spinbox.gd" id="4_6nq4s"]
+[ext_resource type="Texture2D" uid="uid://cdyhup3t88t4q" path="res://sample_assets/img/sprite/character1.png" id="4_s2xk4"]
+[ext_resource type="Script" path="res://screenreader/scripts/object_scripts/ax_texturerect.gd" id="5_jciqn"]
+[ext_resource type="Script" path="res://screenreader/scripts/object_scripts/ax_hslider.gd" id="5_t4av2"]
+[ext_resource type="Texture2D" uid="uid://b3iaabt1uub0e" path="res://sample_assets/img/sprite/character3.png" id="6_ku1jh"]
+[ext_resource type="VideoStream" path="res://sample_assets/video/test.ogv" id="6_qfiib"]
+[ext_resource type="Script" path="res://screenreader/scripts/object_scripts/ax_vslider.gd" id="6_yyflb"]
+[ext_resource type="Script" path="res://screenreader/scripts/object_scripts/ax_videostream.gd" id="7_0uhod"]
+[ext_resource type="Texture2D" uid="uid://05c8tcccssqf" path="res://sample_assets/img/sprite/character2.png" id="7_c05bo"]
+[ext_resource type="Texture2D" uid="uid://bcoot5xtxaiwv" path="res://sample_assets/img/button/211876_play_icon.png" id="7_hng67"]
+[ext_resource type="Script" path="res://screenreader/scripts/object_scripts/ax_button.gd" id="8_qg674"]
+[ext_resource type="Texture2D" uid="uid://b17386yviu2dr" path="res://sample_assets/img/button/216309_media_pause_icon.png" id="9_soqa6"]
+[ext_resource type="Texture2D" uid="uid://d3cf36btoc7jj" path="res://sample_assets/img/button/9035124_stop_icon.png" id="10_7330b"]
+[ext_resource type="Texture2D" uid="uid://cy2t4cl6hep8v" path="res://sample_assets/img/icon/icon1.png" id="17_4mq71"]
+[ext_resource type="Texture2D" uid="uid://dah4ba7ji43yw" path="res://sample_assets/img/icon/icon2.png" id="18_ysgy7"]
+[ext_resource type="Texture2D" uid="uid://5mg1gruw11jn" path="res://sample_assets/img/icon/icon3.png" id="19_koksk"]
+[ext_resource type="Texture2D" uid="uid://dakwrfxka7ugh" path="res://sample_assets/img/icon/icon4.png" id="20_62p3t"]
+[ext_resource type="Texture2D" uid="uid://bgrbbbc6jw5h" path="res://sample_assets/img/icon/icon5.png" id="21_j763e"]
+[ext_resource type="Texture2D" uid="uid://cb6m1v8nlhm4k" path="res://sample_assets/img/icon/icon6.png" id="22_31mis"]
+[ext_resource type="Texture2D" uid="uid://ca5npv0jkv7tc" path="res://sample_assets/img/icon/icon7.png" id="23_2mg1n"]
+[ext_resource type="Texture2D" uid="uid://dcwrnshnffa6r" path="res://sample_assets/img/icon/icon8.png" id="24_w201b"]
+[ext_resource type="Texture2D" uid="uid://dwdgarspsccrr" path="res://sample_assets/img/icon/icon9.png" id="25_qfxl7"]
+[ext_resource type="Texture2D" uid="uid://d3gj3askrrb2u" path="res://sample_assets/img/icon/icon10.png" id="26_wrvj6"]
+[ext_resource type="Texture2D" uid="uid://dy3pcu44rlhb0" path="res://sample_assets/img/icon/icon11.png" id="27_gce24"]
+[ext_resource type="Texture2D" uid="uid://bx1gbfbeqpc80" path="res://sample_assets/img/icon/icon12.png" id="28_gahsn"]
+[ext_resource type="Texture2D" uid="uid://b31xbb25oqqq6" path="res://sample_assets/img/icon/icon13.png" id="29_e4ri8"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_liw1t")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 188.0
+offset_top = 69.0
+offset_right = 703.0
+offset_bottom = 525.0
+
+[node name="NavButtons" type="Control" parent="Panel"]
+anchors_preset = 0
+offset_left = 432.0
+offset_top = 3.0
+offset_right = 472.0
+offset_bottom = 43.0
+script = ExtResource("2_6pnjy")
+focus_marked_container = true
+
+[node name="MenuBar" type="MenuBar" parent="Panel/NavButtons"]
+layout_mode = 2
+offset_left = -419.0
+offset_top = 3.0
+offset_right = -119.0
+offset_bottom = 34.0
+prefer_global_menu = false
+script = ExtResource("3_7pcv3")
+
+[node name="Test Menu" type="PopupMenu" parent="Panel/NavButtons/MenuBar"]
+item_count = 8
+item_0/text = "Item1"
+item_0/icon = ExtResource("17_4mq71")
+item_1/text = "Element 2"
+item_1/icon = ExtResource("18_ysgy7")
+item_1/id = 1
+item_2/text = "Element 3"
+item_2/icon = ExtResource("19_koksk")
+item_2/checkable = 1
+item_2/id = 2
+item_3/text = "Item 4 RadioA"
+item_3/icon = ExtResource("20_62p3t")
+item_3/checkable = 2
+item_3/id = 3
+item_4/text = "Item 4 RadioB"
+item_4/icon = ExtResource("21_j763e")
+item_4/checkable = 2
+item_4/id = 4
+item_5/text = "Element4 RadioC"
+item_5/icon = ExtResource("22_31mis")
+item_5/checkable = 2
+item_5/id = 5
+item_6/id = 6
+item_6/separator = true
+item_7/text = "Element5"
+item_7/icon = ExtResource("23_2mg1n")
+item_7/id = 7
+item_7/disabled = true
+
+[node name="Extra Items" type="PopupMenu" parent="Panel/NavButtons/MenuBar"]
+auto_translate_mode = 1
+item_count = 8
+item_0/text = "Item1"
+item_0/icon = ExtResource("24_w201b")
+item_1/text = "Element 2"
+item_1/icon = ExtResource("25_qfxl7")
+item_1/id = 1
+item_2/text = "Element 3"
+item_2/icon = ExtResource("26_wrvj6")
+item_2/checkable = 1
+item_2/id = 2
+item_3/text = "Item 4 RadioA"
+item_3/icon = ExtResource("27_gce24")
+item_3/checkable = 2
+item_3/id = 3
+item_4/text = "Item 4 RadioB"
+item_4/icon = ExtResource("28_gahsn")
+item_4/checkable = 2
+item_4/id = 4
+item_5/text = "Element4 RadioC"
+item_5/icon = ExtResource("29_e4ri8")
+item_5/checkable = 2
+item_5/id = 5
+item_6/id = 6
+item_6/separator = true
+item_7/text = "Element5"
+item_7/icon = ExtResource("1_p3661")
+item_7/id = 7
+item_7/disabled = true
+
+[node name="Strange" type="PopupMenu" parent="Panel/NavButtons/MenuBar"]
+auto_translate_mode = 1
+item_count = 8
+item_0/text = "Item1"
+item_0/icon = ExtResource("18_ysgy7")
+item_1/text = "Element 2"
+item_1/icon = ExtResource("22_31mis")
+item_1/id = 1
+item_2/text = "Element 3"
+item_2/icon = ExtResource("17_4mq71")
+item_2/checkable = 1
+item_2/id = 2
+item_3/text = "Item 4 RadioA"
+item_3/icon = ExtResource("20_62p3t")
+item_3/checkable = 2
+item_3/id = 3
+item_4/text = "Item 4 RadioB"
+item_4/icon = ExtResource("29_e4ri8")
+item_4/checkable = 2
+item_4/id = 4
+item_5/text = "Element4 RadioC"
+item_5/icon = ExtResource("21_j763e")
+item_5/checkable = 2
+item_5/id = 5
+item_6/id = 6
+item_6/separator = true
+item_7/text = "Element5"
+item_7/icon = ExtResource("19_koksk")
+item_7/id = 7
+item_7/disabled = true
+
+[node name="ExitButton" type="Button" parent="Panel/NavButtons"]
+layout_mode = 0
+offset_right = 78.0
+offset_bottom = 32.0
+text = "Close"
+icon = ExtResource("1_p3661")
+
+[node name="Main" type="Control" parent="Panel"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("2_6pnjy")
+focus_marked_container = true
+
+[node name="Panel" type="PanelContainer" parent="Panel/Main"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 43.0
+offset_right = 508.0
+offset_bottom = 402.0
+
+[node name="TabContainer" type="TabContainer" parent="Panel/Main/Panel"]
+layout_mode = 2
+current_tab = 0
+
+[node name="Buttons and Text" type="PanelContainer" parent="Panel/Main/Panel/TabContainer"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/Main/Panel/TabContainer/Buttons and Text"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Main/Panel/TabContainer/Buttons and Text/VBoxContainer"]
+layout_mode = 2
+text = "Text of LABEL"
+
+[node name="Button" type="Button" parent="Panel/Main/Panel/TabContainer/Buttons and Text/VBoxContainer"]
+layout_mode = 2
+text = "Regular Button"
+
+[node name="LinkButton" type="LinkButton" parent="Panel/Main/Panel/TabContainer/Buttons and Text/VBoxContainer"]
+layout_mode = 2
+text = "Link Button"
+
+[node name="LineEdit" type="LineEdit" parent="Panel/Main/Panel/TabContainer/Buttons and Text/VBoxContainer"]
+layout_mode = 2
+placeholder_text = "Placeholder"
+
+[node name="TextEdit" type="TextEdit" parent="Panel/Main/Panel/TabContainer/Buttons and Text/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel/Main/Panel/TabContainer/Buttons and Text/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+bbcode_enabled = true
+text = "[b]Rich Text[/b] [i]Italic Text[/i]"
+
+[node name="Sliders" type="PanelContainer" parent="Panel/Main/Panel/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/Main/Panel/TabContainer/Sliders"]
+layout_mode = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="Panel/Main/Panel/TabContainer/Sliders/VBoxContainer"]
+layout_mode = 2
+value = 53.0
+
+[node name="ProgressBar2" type="ProgressBar" parent="Panel/Main/Panel/TabContainer/Sliders/VBoxContainer"]
+layout_mode = 2
+value = 27.0
+script = ExtResource("3_sdcnn")
+read_fraction = true
+read_percent = true
+
+[node name="SpinBox" type="SpinBox" parent="Panel/Main/Panel/TabContainer/Sliders/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("4_6nq4s")
+alt_text = "Tester Value"
+
+[node name="HSlider" type="HSlider" parent="Panel/Main/Panel/TabContainer/Sliders/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("5_t4av2")
+read_percent = true
+read_value = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Main/Panel/TabContainer/Sliders/VBoxContainer"]
+layout_mode = 2
+
+[node name="VSlider" type="VSlider" parent="Panel/Main/Panel/TabContainer/Sliders/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+script = ExtResource("6_yyflb")
+read_fraction = true
+read_value = true
+
+[node name="Media" type="PanelContainer" parent="Panel/Main/Panel/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/Main/Panel/TabContainer/Media"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("4_s2xk4")
+stretch_mode = 2
+script = ExtResource("5_jciqn")
+alt_text = "Lizard creature sprite."
+
+[node name="TextureRect2" type="TextureRect" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("6_ku1jh")
+stretch_mode = 2
+script = ExtResource("5_jciqn")
+alt_text = "Mammal Creature Sprite."
+
+[node name="TextureRect3" type="TextureRect" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("7_c05bo")
+stretch_mode = 2
+script = ExtResource("5_jciqn")
+alt_text = "ignored"
+ignore = true
+
+[node name="ColorRect" type="ColorRect" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(66, 0)
+layout_mode = 2
+color = Color(1, 1, 1, 0)
+
+[node name="Play" type="Button" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("7_hng67")
+script = ExtResource("8_qg674")
+alt_text = "Play Button"
+
+[node name="Pause" type="Button" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("9_soqa6")
+script = ExtResource("8_qg674")
+alt_text = "Pause Button"
+
+[node name="Stop" type="Button" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("10_7330b")
+script = ExtResource("8_qg674")
+alt_text = "Stop Button"
+
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer"]
+custom_minimum_size = Vector2(500, 250)
+layout_mode = 2
+stream = ExtResource("6_qfiib")
+autoplay = true
+expand = true
+loop = true
+script = ExtResource("7_0uhod")
+audio_description = "res://sample_assets/video/audio_desc.txt"
+subtitles = "res://sample_assets/video/subtitles.txt"
+
+[node name="More Elements" type="PanelContainer" parent="Panel/Main/Panel/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/Main/Panel/TabContainer/More Elements"]
+layout_mode = 2
+
+[node name="Tree" type="Tree" parent="Panel/Main/Panel/TabContainer/More Elements/VBoxContainer"]
+custom_minimum_size = Vector2(0, 250)
+layout_mode = 2
+
+[node name="Info" type="Control" parent="Panel"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("2_6pnjy")
+focus_marked_container = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Info"]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 408.0
+offset_right = 294.0
+offset_bottom = 448.0
+
+[node name="Label" type="Label" parent="Panel/Info/HBoxContainer"]
+layout_mode = 2
+text = "Test TTS UI Function"
+
+[node name="VSeparator" type="VSeparator" parent="Panel/Info/HBoxContainer"]
+layout_mode = 2
+
+[node name="VersionNO" type="Label" parent="Panel/Info/HBoxContainer"]
+layout_mode = 2
+text = "Version"
+
+[connection signal="index_pressed" from="Panel/NavButtons/MenuBar/Test Menu" to="." method="_on_test_menu_index_pressed"]
+[connection signal="index_pressed" from="Panel/NavButtons/MenuBar/Extra Items" to="." method="_on_extra_items_index_pressed"]
+[connection signal="index_pressed" from="Panel/NavButtons/MenuBar/Strange" to="." method="_on_strange_index_pressed"]
+[connection signal="pressed" from="Panel/NavButtons/ExitButton" to="." method="_on_exit_button_pressed"]
+[connection signal="pressed" from="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Pause" to="." method="_on_pause_pressed"]
+[connection signal="pressed" from="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Stop" to="." method="_on_stop_pressed"]
+[connection signal="ready" from="Panel/Main/Panel/TabContainer/More Elements/VBoxContainer/Tree" to="." method="_on_tree_ready"]

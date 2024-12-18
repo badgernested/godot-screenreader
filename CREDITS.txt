@@ -1,0 +1,15 @@
+Menu manager built by PunishedFelix ("badgernested"). Also added some additional functionality.
+
+Note: I decided to rewrite the main UI node interface because I was deeply unsatisfied with 
+Godot's implementation of the focus properties. These changes include:
+	- Adding a navigation tree allowing users to navigate the UI predictably
+	- Sound effects, such as the typewriter sound effects.
+	- Verbose mode, which allows users to hear more information.
+
+Initial TTS Godot plugin built by LightsOutGames, Godot 4.x version built by rodolpheh.
+
+All sound effects are CC0 and found on freesound.org.
+
+Original Repositories:
+[LightsOutGames](https://github.com/lightsoutgames/godot-accessibility)
+[rodolpheh](https://github.com/rodolpheh/godot-accessibility)
