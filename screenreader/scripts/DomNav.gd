@@ -51,6 +51,12 @@ var last_caret_pos = 0
 # This prevents bugs with holding down navigation keys with text
 var text_wait_to_press = false
 
+# This stores the old value of a slider while sliding
+var slider_value = 0
+
+# This stores whether or not the slider is actually sliding
+var slider_is_sliding = false
+
 # This is used for inserting accessibility tokens
 # to be read by the screenreader
 var tokens = []
@@ -132,7 +138,8 @@ enum MENUBAR_NAVIGATION {
 
 const SPECIAL_CONTROL_NAMES = ["Image", "Progress Bar", "Horizontal Slider",
 								"Vertical Slider", "Spinbox", "Label", "Button",
-								"Menu Bar", "Tabs"]
+								"Menu Bar", "Tabs", "Check Box", "Switch",
+								"Menu Button", "Dropdown"]
 enum SPECIAL_CONTROLS {
 	IMAGE,
 	PROGRESS_BAR,
@@ -142,7 +149,11 @@ enum SPECIAL_CONTROLS {
 	LABEL,
 	BUTTON,
 	MENUBAR,
-	TABS
+	TABS,
+	CHECKBOX,
+	SWITCH,
+	MENUBUTTON,
+	DROPDOWN
 }
 
 const STRING_FORMATS = ["%s out of %s", "%s percent", "%s selected"]
@@ -153,12 +164,14 @@ enum STRING_FORMAT {
 }
 
 const POPUPMENU_CONTROL_NAMES = ["Radio Button", "Checkbox", "Checked",
-								"Unchecked"]
+								"Unchecked", "On", "Off"]
 enum POPUPMENU_CONTROL {
 	RADIOBUTTON,
 	CHECKBOX,
 	CHECKED,
-	UNCHECKED
+	UNCHECKED,
+	ON,
+	OFF
 }
 
 # This is used for highlighting UI elements
@@ -171,7 +184,7 @@ enum CONTROL_STATE {
 
 # Strings used in the textedit interfaces
 const TEXTEDIT_STRINGS = ["Space", "Deleted", "Tab", "Enter", "Released", "Pasted",
-							"Copied", "New Line"]
+							"Copied", "New Line", "Line Number"]
 enum TEXTEDIT_STRING {
 	SPACE,
 	DELETED,
@@ -180,10 +193,12 @@ enum TEXTEDIT_STRING {
 	RELEASED,
 	PASTED,
 	COPIED,
-	NEWLINE
+	NEWLINE,
+	LINE
 }
 
 const TEXTEDIT_CHARACTER_NAMES = {
+	" " : "Space",
 	"." : "Period",
 	"," : "Comma",
 	";" : "Semicolon",
@@ -215,7 +230,6 @@ const TEXTEDIT_CHARACTER_NAMES = {
 	"<" : "Less Than Symbol",
 	"_" : "Underscore",
 	"~" : "Tilde",
-	" " : "Space",
 	"\t" : "Tab"
 }
 
@@ -411,6 +425,9 @@ func find_parent_tabbar(obj):
 # Button controls
 func process_button_controls():
 	var activated = true
+	var toggle_old = focused.button_pressed
+	
+	var pressed = false
 	
 	# Allows you to press buttons normally
 	if Input.is_action_just_pressed("ui_accept"):
@@ -428,10 +445,35 @@ func process_button_controls():
 		if Input.is_action_just_pressed("ui_accept"):
 			focused.emit_signal("pressed")
 			activated = false
+			if focused.toggle_mode:
+				focused.button_pressed = !focused.button_pressed
+			pressed = true
 	else:
 		if Input.is_action_just_released("ui_accept"):
 			focused.emit_signal("pressed")
 			activated = false
+			if focused.toggle_mode:
+				focused.button_pressed = !focused.button_pressed
+			pressed = true
+			
+	if focused.toggle_mode:
+		if focused.button_pressed != toggle_old:
+			focused.emit_signal("toggled",focused.button_pressed)
+		
+	# If the pressed signal was emitted
+	if pressed:
+		if focused is CheckBox:
+			if focused.button_pressed:
+				add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.CHECKED])
+			else:
+				add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.UNCHECKED])
+					
+		if focused is CheckButton:
+			if focused.button_pressed:
+				add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.ON])
+			else:
+				add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.OFF])
+		tts_speak()
 	
 	return activated 
 
@@ -719,6 +761,9 @@ func process_tabbar_controls():
 		get_accessible_tabbar_name(focused)
 		tts_speak()
 		
+		focused.emit_signal("tab_changed", focused.current_tab)
+		focused.emit_signal("tab_selected", focused.current_tab)
+		
 		return false
 		
 	elif Input.is_action_just_pressed("DOM_item_decrement"):
@@ -737,6 +782,9 @@ func process_tabbar_controls():
 		
 		get_accessible_tabbar_name(focused)
 		tts_speak()
+		
+		focused.emit_signal("tab_changed", focused.current_tab)
+		focused.emit_signal("tab_selected", focused.current_tab)
 		
 		return false
 		
@@ -769,24 +817,23 @@ func process_slider_controls():
 		slider_moving = false
 		stop_sound()
 		
-		# only says stuff when released
+		# Adds default name tokens if verbose
+		# Only reads if timer is stopped
+		if verbose:
+			if focused is HSlider:
+				get_accessible_hslider_name(focused)
+			elif focused is VSlider:
+				get_accessible_vslider_name(focused)
+			elif focused is SpinBox:
+				get_accessible_spinbox_name(focused)
+		else:
+			add_token(str(focused.value))
 		
-		if (Input.is_action_just_released("DOM_item_decrement")
-			|| Input.is_action_just_released("DOM_item_increment")):
+		if (focused is HSlider ||
+			focused is VSlider):
+				focused.emit_signal("drag_ended", slider_value != focused.value)
 		
-			# Adds default name tokens if verbose
-			# Only reads if timer is stopped
-			if verbose:
-				if focused is HSlider:
-					get_accessible_hslider_name(focused)
-				elif focused is VSlider:
-					get_accessible_vslider_name(focused)
-				elif focused is SpinBox:
-					get_accessible_spinbox_name(focused)
-			else:
-				add_token(str(focused.value))
-			
-			tts_speak()
+		tts_speak()
 		
 		timer_slider.stop()
 		
@@ -796,13 +843,16 @@ func process_slider_controls():
 	elif (Input.is_action_just_pressed("DOM_item_decrement")
 		|| Input.is_action_just_pressed("DOM_item_increment")):
 		slider_moving = true
+		slider_value = focused.value
 		TTS.stop()
 		
 		# updates slider position
 		if Input.is_action_just_pressed("DOM_item_increment"):
 			focused.value += focused.step
+			focused.emit_signal("value_changed", focused.value)
 		elif Input.is_action_just_pressed("DOM_item_decrement"):
 			focused.value -= focused.step
+			focused.emit_signal("value_changed", focused.value)
 		
 		play_sound("slider_move")
 		
@@ -820,15 +870,29 @@ func process_slider_controls():
 			slider_amount = cooldown
 			
 		if (Input.is_action_pressed("DOM_item_increment")):
+			if !slider_is_sliding:
+				slider_is_sliding = true
+				if (focused is HSlider ||
+					focused is VSlider):
+						focused.emit_signal("drag_started")
+			
 			if timer_slider_increment.is_stopped():
 				focused.value += focused.step
 				timer_slider_increment.start(slider_amount)
+				focused.emit_signal("value_changed", focused.value)
 			return false
 			
 		elif (Input.is_action_pressed("DOM_item_decrement")):
+			if !slider_is_sliding:
+				slider_is_sliding = true
+				if (focused is HSlider ||
+					focused is VSlider):
+						focused.emit_signal("drag_started")
+			
 			if timer_slider_increment.is_stopped():
 				focused.value -= focused.step
 				timer_slider_increment.start(slider_amount)
+				focused.emit_signal("value_changed", focused.value)
 			return false
 		
 	return true
@@ -848,6 +912,11 @@ func special_key_combos():
 	
 # Returns the string of certain characters
 func get_character_name(char):
+	if focused is CodeEdit:
+		for c in TEXTEDIT_CHARACTER_NAMES:
+			if c != " ":
+				char = char.replace(c, " " + TEXTEDIT_CHARACTER_NAMES[c] + " ")
+	
 	if TEXTEDIT_CHARACTER_NAMES.has(char):
 		return TEXTEDIT_CHARACTER_NAMES[char]
 	
@@ -890,10 +959,11 @@ func process_text_controls():
 			
 			var char = ""
 			var char_no = 0
-			if caret_position >= lines[lines_count].length():
-				char = lines[lines_count][lines[lines_count].length()-1]
-			else:
-				char = lines[lines_count][caret_position]
+			if !lines[lines_count][lines[lines_count].length()-1].is_empty():
+				if caret_position >= lines[lines_count].length():
+					char = lines[lines_count][lines[lines_count].length()-1]
+				else:
+					char = lines[lines_count][caret_position]
 				
 			char_no = char.unicode_at(0)
 				
@@ -915,7 +985,9 @@ func process_text_controls():
 			|| Input.is_action_just_pressed("ui_up")):
 			# Read the current line
 			var char = lines[lines_count]
-			var char_no = char.unicode_at(0)
+			var char_no = -1
+			if char.length() == 1:
+				char_no = char.unicode_at(0)
 				
 			char = get_character_name(char)
 				
@@ -924,9 +996,13 @@ func process_text_controls():
 				pitch = 2.0
 				
 			if last_caret_line == 0:
-				last_caret_line = lines_count
 				return true
+				
 			add_token(get_character_name(char))
+				
+			if focused is CodeEdit:
+				add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS[TEXTEDIT_STRING.LINE])
+				
 			tts_speak(pitch)
 			last_caret_line = lines_count
 			return false
@@ -935,7 +1011,7 @@ func process_text_controls():
 			|| Input.is_action_just_pressed("ui_down")):
 			var char = lines[lines_count]
 			var char_no = -1
-			if !char.is_empty():
+			if char.length() == 1:
 				char_no = char.unicode_at(0)
 				
 			char = get_character_name(char)
@@ -943,16 +1019,19 @@ func process_text_controls():
 			# Higher pitched if capital
 			if char.length() > 1 && char_no > -1 && unicode_is_capital(char_no):
 				pitch = 2.0
-
-			if last_caret_line < lines.size()-1:
-				last_caret_line = lines_count
-				return false
+				
+			if last_caret_line > lines_count-1:
+				return true
 				
 			# Read the current line
 			add_token(get_character_name(char))
+			
+			if focused is CodeEdit:
+				add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS[TEXTEDIT_STRING.LINE])
+			
 			tts_speak(pitch)
 			last_caret_line = lines_count
-			return true
+			return false
 	
 	# If a change is made in the text
 	if last_text != focused.text:
@@ -979,6 +1058,10 @@ func process_text_controls():
 				Input.is_key_pressed(KEY_KP_ENTER)):
 			add_token(TEXTEDIT_STRINGS[TEXTEDIT_STRING.ENTER])
 			play_sound("text_newline")
+			
+			if focused is CodeEdit:
+				add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS[TEXTEDIT_STRING.LINE])
+			
 		else:
 			if !special_key_combos():
 				var char = lines[lines_count][max(caret_position-1,0)]
@@ -1153,11 +1236,14 @@ func grab_obj_focus(obj):
 			slider_moving = false
 			sfx.pitch_scale = 1.0
 			timer_slider.stop()
+			slider_value = 0
+			slider_is_sliding = false
 			
 			# Clears text
 			last_text = ""
 			last_caret_line = 0
 			text_wait_to_press = false
+			
 			
 			# resets state
 			update_draw_state(CONTROL_STATE.FOCUSED)
@@ -1302,8 +1388,14 @@ func get_accessible_label_name(obj):
 		name = obj.alt_text
 		add_token(name)
 	else:
-		name = obj.text
-		add_token(name)
+		if focused is CodeEdit:
+			var lines = focused.text.split("\n")
+			
+			add_token(get_character_name(lines[focused.get_caret_line()]))
+			add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS[TEXTEDIT_STRING.LINE])
+		else:
+			name = obj.text
+			add_token(name)
 			
 	if verbose:
 		if obj.get_class() != name:
@@ -1331,6 +1423,19 @@ func get_accessible_richtext_label_name(obj):
 func get_accessible_button_name(obj):
 	var name = ""
 	
+	if obj is CheckBox:
+		if obj.button_pressed:
+			add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.CHECKED])
+		else:
+			if verbose:
+				add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.UNCHECKED])
+				
+	elif obj is CheckButton:
+		if obj.button_pressed:
+			add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.ON])
+		else:
+			add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.OFF])
+				
 	if obj.get("alt_text") != null:
 		name = obj.alt_text
 		add_token(name)
@@ -1340,7 +1445,16 @@ func get_accessible_button_name(obj):
 			
 	if verbose:
 		if obj.get_class() != name:
-			add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.BUTTON])
+			var token = SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.BUTTON]
+			if obj is CheckBox:
+				token = SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.CHECKBOX]
+			elif obj is CheckButton:
+				token = SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.SWITCH]
+			elif obj is MenuButton:
+				token = SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.MENUBUTTON]
+			elif obj is OptionButton:
+				token = SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.DROPDOWN]
+			add_token(token)
 		
 # Gets the name for images
 func get_accessible_image_name(obj):
@@ -1823,7 +1937,15 @@ func _ready():
 func _input(event: InputEvent) -> void:
 	if dom_nav_enabled:
 		if Input.is_action_just_pressed("DOM_read_item"):
-			add_token(focused.text)
+			if focused is CodeEdit:
+				var lines = focused.text.split("\n")
+				
+				add_token(lines[focused.get_caret_line()])
+			elif (focused is TextEdit
+				|| focused is LineEdit):
+				add_token(focused.text)
+			else:
+				add_token(get_accessible_name(focused))
 			tts_speak()
 			get_viewport().set_input_as_handled()
 

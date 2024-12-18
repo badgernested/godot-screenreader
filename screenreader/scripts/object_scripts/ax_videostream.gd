@@ -19,6 +19,7 @@ var base_display_position = Vector2(0,0)
 var display_position = Vector2(0,0)
 var display_rect = Rect2(0,0,0,0)
 @onready var display_size = size.x * 0.75
+@onready var initial_size = size
 
 # Text to be read as audio description
 var read_text = ""
@@ -62,6 +63,8 @@ func _process(delta: float) -> void:
 							HORIZONTAL_ALIGNMENT_LEFT,
 							display_size,
 							subtitle_font_size)
+							
+				display_position.x = initial_size.x * 0.5
 				
 				display_rect = Rect2((size.x * 0.5) - (box_size.x + subtitle_font_size)*0.5,
 									display_position.y - subtitle_font_size - 4,
