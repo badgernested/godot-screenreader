@@ -3,68 +3,68 @@ extends Control
 ## Variables
 
 # Whether or not DOM navigation is enabled
-var dom_nav_enabled = false
+var dom_nav_enabled: bool = false
 
 # The object that is referred to as the root of the Dom.
-var dom_root = null
+var dom_root: Node = null
 
 # Change this and it will preload a new focus style when focused
 # Note, currently as built, if this value is cleared after being used,
 # it will not reset currently loaded UI elements.
-var default_focus_style = "res://screenreader/ui/style/focus_end_node.tres"
+const DEFAULT_FOCUS_STYLE = preload("res://screenreader/ui/style/focus_end_node.tres")
 
 # This stores the list of objects itself. 
-var objects = []
+var objects: Array = []
 
 # Only end node objects list
-var end_node_list = []
+var end_node_list: Array = []
 
 # Keeps track of the array stack
-var array_stack = []
+var array_stack: Array = []
 
 # This contains a copy of the old "focus mode" state
 # this way you can disable DOM mode and go back
 # to the focus mode built by the developer
-var object_focus_mode = []
+var object_focus_mode: Array = []
 
 # This is the current object in focus
-var focused = null
+var focused: Node = null
 
 # The window is currently in focus in the OS
-var OS_focused = true
+var OS_focused: bool = true
 
 # This is the rect2 of the drawing box for highlighting controls
-var highlight_box = Rect2(0,0,0,0)
+var highlight_box: Rect2 = Rect2(0,0,0,0)
 
 # Is true if the current control is moving and sliding.
-var slider_moving = false
+var slider_moving: bool = false
 
 # Is set to the current text object's text after processing.
-var last_text = ""
+var last_text: String = ""
 
 # Is set to current caret line for text after processing
-var last_caret_line = 0
+var last_caret_line: int = 0
 
 # Is set to the last caret position for text after processing
-var last_caret_pos = 0
+var last_caret_pos: int = 0
 
 # This prevents bugs with holding down navigation keys with text
-var text_wait_to_press = false
+var text_wait_to_press: bool = false
 
 # This stores the old value of a slider while sliding
-var slider_value = 0
+var slider_value: float = 0
 
 # This stores whether or not the slider is actually sliding
-var slider_is_sliding = false
+var slider_is_sliding: bool = false
 
 # This is used for inserting accessibility tokens
 # to be read by the screenreader
-var tokens = []
+var tokens: Array = []
 
 ## Movement variables
 
 # Tracks your position navigating end nodes
-var end_node_position = 0
+var end_node_position: int = 0
 
 # Timer object for cooldown
 @onready var timer: Timer = Timer.new()
@@ -87,22 +87,22 @@ const MOVEMENT_TIME = 0.000025
 # Options
 
 # Whether or not sound effects are enabled
-var sfx_enabled = true
+var sfx_enabled: bool = true
 
 # whether or not navigation wraps around
-var navigation_wrap = true
+var navigation_wrap: bool = true
 
 # whether or not subtitles are enabled
-var subtitles_enabled = true
+var subtitles_enabled: bool = true
 
 # whether or not audio description is enabled
-var audio_description_enabled = true
+var audio_description_enabled: bool = true
 
 # if true, reads more detailed strings
-var verbose = true
+var verbose: bool = true
 
 # This shows useful debug messages if enabled
-var debug = false
+var debug: bool = false
 
 # Objects
 
@@ -175,7 +175,7 @@ enum POPUPMENU_CONTROL {
 }
 
 # This is used for highlighting UI elements
-var control_state = CONTROL_STATE.FOCUSED
+var control_state: int = CONTROL_STATE.FOCUSED
 var focused_box: Rect2 = Rect2(0,0,0,0)
 enum CONTROL_STATE {
 	FOCUSED,
@@ -751,18 +751,19 @@ func process_tabbar_controls():
 		if tab_val >= tab_size:
 			tab_val = tab_size-1
 			focused.current_tab = tab_val
-			update_end_node_position(1)
 		else:
 			focused.current_tab = tab_val
-			end_node_grab_focus()
+			
+		end_node_grab_focus()
 		
-		play_sound("tab_nav", 0.75 + (focused.current_tab / tab_size)*0.5)
+		if focused is TabBar:
+			play_sound("tab_nav", 0.75 + (focused.current_tab / tab_size)*0.5)
 		
-		get_accessible_tabbar_name(focused)
-		tts_speak()
+			get_accessible_tabbar_name(focused)
+			tts_speak()
 		
-		focused.emit_signal("tab_changed", focused.current_tab)
-		focused.emit_signal("tab_selected", focused.current_tab)
+			focused.emit_signal("tab_changed", focused.current_tab)
+			focused.emit_signal("tab_selected", focused.current_tab)
 		
 		return false
 		
@@ -772,19 +773,20 @@ func process_tabbar_controls():
 		if tab_val < 0:
 			tab_val = 0
 			focused.current_tab = tab_val
-			update_end_node_position(-1)
 			
 		else:
 			focused.current_tab = tab_val
-			end_node_grab_focus()
+			
+		end_node_grab_focus()
 		
-		play_sound("tab_nav", 0.75 + (focused.current_tab / tab_size)*0.5)
+		if focused is TabBar:
+			play_sound("tab_nav", 0.75 + (focused.current_tab / tab_size)*0.5)
 		
-		get_accessible_tabbar_name(focused)
-		tts_speak()
+			get_accessible_tabbar_name(focused)
+			tts_speak()
 		
-		focused.emit_signal("tab_changed", focused.current_tab)
-		focused.emit_signal("tab_selected", focused.current_tab)
+			focused.emit_signal("tab_changed", focused.current_tab)
+			focused.emit_signal("tab_selected", focused.current_tab)
 		
 		return false
 		
@@ -1037,14 +1039,15 @@ func process_text_controls():
 	if last_text != focused.text:
 		
 		if Input.is_key_pressed(KEY_BACKSPACE):
-			if last_lines[lines_count].length() > 0:
-				var char = "" 
+			var char = "" 
+			if last_lines[last_caret_line].length() > 0:
 				if lines.size() > last_caret_line:
 					print(min(caret_position,last_lines.size()-1))
 					char = last_lines[last_caret_line][min(caret_position,last_lines[last_caret_line].length()-1)]
-				else:
-					char = TEXTEDIT_STRINGS[TEXTEDIT_STRING.NEWLINE]
-				add_token(get_character_name(char))
+			else:
+				char = TEXTEDIT_STRINGS[TEXTEDIT_STRING.NEWLINE]
+			
+			add_token(get_character_name(char))
 				
 			add_token(TEXTEDIT_STRINGS[TEXTEDIT_STRING.DELETED])
 			
@@ -1962,7 +1965,7 @@ func _draw():
 
 # Draws the highlighted selection
 func draw_highlight():
-	draw_style_box(preload("res://screenreader/ui/style/focus_end_node.tres"), highlight_box)
+	draw_style_box(DEFAULT_FOCUS_STYLE, highlight_box)
 	
 # Updates what state to draw the current control in
 func update_draw_state(state):
