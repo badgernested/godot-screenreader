@@ -19,10 +19,11 @@ Inspired by the work of [LightsOutGames](https://github.com/lightsoutgames/godot
     - CodeEdit
     - ProgressBar
     - SpinBox
-    - HSLider
+    - HSlider
     - VSlider
     - TextureRect (Only with script attached for alt text)
     - VideoStreamPlayer
+- Ability to ignore nodes if you so wish
 - Screenreader designed as (mostly) standalone script
 - Additional scripts you can attach/extend to Control nodes to expand optional accessibility functionality, such as alt text
 - Video Streams support subtitles and audio captions in ``VTT`` format (saved as ``.TXT`` files) 
