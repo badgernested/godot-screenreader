@@ -57,6 +57,16 @@ var slider_value: float = 0
 # This stores whether or not the slider is actually sliding
 var slider_is_sliding: bool = false
 
+# Checks whether a child popup is visible. gets around weird timing bugs.
+var popup_visible: bool = false
+
+# Tracks the index of the current popup.
+var popup_index: int = 0
+
+# This stores all MenuBars in the DOM with a dictionary
+# that represents certain values.
+var menubars: Dictionary = {}
+
 # This is used for inserting accessibility tokens
 # to be read by the screenreader
 var tokens: Array = []
@@ -184,7 +194,7 @@ enum CONTROL_STATE {
 
 # Strings used in the textedit interfaces
 const TEXTEDIT_STRINGS = ["Space", "Deleted", "Tab", "Enter", "Released", "Pasted",
-							"Copied", "New Line", "Line Number"]
+							"Copied", "New Line", "Line Number", "None"]
 enum TEXTEDIT_STRING {
 	SPACE,
 	DELETED,
@@ -194,7 +204,8 @@ enum TEXTEDIT_STRING {
 	PASTED,
 	COPIED,
 	NEWLINE,
-	LINE
+	LINE,
+	NONE
 }
 
 const TEXTEDIT_CHARACTER_NAMES = {
@@ -253,6 +264,11 @@ func _notification(what: int):
 			if focused.get("selected_index") != null:
 				focused.selected_index = 0
 				focused.menu_opened = false
+				
+		# Clears popup variables
+		popup_visible = false
+		popup_index = 0
+				
 	if what == NOTIFICATION_APPLICATION_FOCUS_IN:
 		OS_focused = true
 		
@@ -314,6 +330,10 @@ func process_input(delta):
 			default_move = process_menubar_controls()
 		elif focused is TabBar:
 			default_move = process_tabbar_controls()
+		elif focused is MenuButton:
+			default_move = process_menu_button_controls()
+		elif focused is OptionButton:
+			default_move = process_option_button_controls()
 		elif (focused is Button ||
 				focused is LinkButton ||
 				focused is TextureButton):
@@ -544,7 +564,11 @@ func process_video_controls():
 # Does the menubar controls
 func process_menubar_controls():
 	var menu_size = focused.get_menu_count()
-	var menu_pos = focused.get("selected_menu")
+	var properties = get_menubar_data(focused)
+	var menu_pos = 0
+	
+	if !properties.is_empty():
+		menu_pos = properties["selected_menu"]
 	
 	if menu_pos != null:
 		if Input.is_action_just_pressed("DOM_select"):
@@ -553,14 +577,14 @@ func process_menubar_controls():
 				# opens the currently selected menu
 				menubar_menu_close_all(focused)
 				menubar_menu_open(focused, menu_pos)
-				if focused.get("menu_opened") != null:
-					focused.menu_opened = true
+				if properties["menu_opened"] != null:
+					properties["menu_opened"] = true
 					
 				var text = MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.OPENED] % [focused.get_menu_title(menu_pos)]
 				add_token(text)
 				
 				var popup = focused.get_menu_popup(menu_pos)
-				var selected_pos = focused.get("selected_index")
+				var selected_pos = properties["selected_index"]
 				
 				# Which menu item is selected
 				text = STRING_FORMATS[STRING_FORMAT.SELECTED] % popup.get_item_text(selected_pos)
@@ -571,7 +595,7 @@ func process_menubar_controls():
 			else:
 				# If menu is opened, press the button
 				var popup = focused.get_menu_popup(menu_pos)
-				var selected_pos = focused.get("selected_index")
+				var selected_pos = properties["selected_index"]
 				
 				var text = MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [focused.get_menu_title(menu_pos)]
 				add_token(text)
@@ -579,10 +603,10 @@ func process_menubar_controls():
 				tts_speak()
 				
 				# close menu
-				return menubar_close_menu()
+				return menubar_close_menu(properties)
 				
 		elif Input.is_action_just_pressed("DOM_cancel"):
-			var val = menubar_close_menu()
+			var val = menubar_close_menu(properties)
 			
 			var text = MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED]
 			add_token(text)
@@ -594,12 +618,12 @@ func process_menubar_controls():
 		# If the menu is open, don't navigate, but do read names
 		if menubar_menu_opened(focused):
 			if Input.is_action_just_pressed("ui_up"):
-				menubar_read_selected_item()
+				menubar_read_selected_item(properties)
 			if Input.is_action_just_pressed("ui_down"):
-				menubar_read_selected_item()
+				menubar_read_selected_item(properties)
 		
 	# Moves around the top menu
-	var move = menubar_nav_menus()
+	var move = menubar_nav_menus(properties)
 	
 	if !move:
 		return false
@@ -610,18 +634,18 @@ func process_menubar_controls():
 			
 	return true
 
-func menubar_close_menu():
+func menubar_close_menu(properties):
 	# Closes menu if open
 	if menubar_menu_opened(focused):
 		menubar_menu_close_all(focused)
-		if focused.get("menu_opened") != null:
-			focused.menu_opened = false
+		if properties["menu_opened"] != null:
+			properties["menu_opened"] = false
 			
 		return false
 
-func menubar_read_selected_item():
+func menubar_read_selected_item(properties):
 	var menu_size = focused.get_menu_count()
-	var menu_pos = focused.get("selected_menu")
+	var menu_pos = properties["selected_menu"]
 	
 	var popup = focused.get_menu_popup(menu_pos)
 	var selected_pos = popup.get_focused_item()
@@ -652,65 +676,71 @@ func menubar_read_selected_item():
 	
 	tts_speak()
 
-func menubar_nav_menus():
-	if Input.is_action_just_pressed("DOM_item_increment"):
-		var was_opened = menubar_menu_opened(focused)
-		
-		var size = focused.get_menu_count()
-		menubar_menu_close_all(focused)
+func menubar_nav_menus(properties):
+	if !properties.is_empty():
+		if Input.is_action_just_pressed("DOM_item_increment"):
+			var was_opened = menubar_menu_opened(focused)
+			
+			var size = focused.get_menu_count()
+			menubar_menu_close_all(focused)
 
-		focused.selected_menu += 1
+			properties["selected_menu"] += 1
 
-		if focused.selected_menu >= size:
-			focused.selected_menu = size-1
-			if focused.get("menu_opened") != null:
-				focused.menu_opened = false
-			update_end_node_position(1)
-		else:
-			end_node_grab_focus()
+			if properties["selected_menu"] >= size:
+				properties["selected_menu"] = size-1
+				if properties["menu_opened"] != null:
+					properties["menu_opened"] = false
+				update_end_node_position(1)
+			else:
+				end_node_grab_focus()
+				
+			if was_opened:
+				menubar_menu_open(focused, properties["selected_menu"])
 			
-		if was_opened:
-			menubar_menu_open(focused, focused.get("selected_menu"))
-		
-		if focused is MenuBar:
-			get_accessible_menubar_name(focused)
-			tts_speak()
+			if focused is MenuBar:
+				get_accessible_menubar_name(focused)
+				tts_speak()
+				
+			return false
 			
-		return false
-		
-	elif Input.is_action_just_pressed("DOM_item_decrement"):
-		var was_opened = menubar_menu_opened(focused)
-		
-		menubar_menu_close_all(focused)
-		focused.selected_menu -= 1
+		elif Input.is_action_just_pressed("DOM_item_decrement"):
+			var was_opened = menubar_menu_opened(focused)
+			
+			menubar_menu_close_all(focused)
+			properties["selected_menu"] -= 1
 
-		if focused.selected_menu < 0:
-			focused.selected_menu = 0
-			if focused.get("menu_opened") != null:
-				focused.menu_opened = false
-			update_end_node_position(-1)
-		else:
-			end_node_grab_focus()
+			if properties["selected_menu"] < 0:
+				properties["selected_menu"] = 0
+				if properties["menu_opened"] != null:
+					focused.menu_opened = false
+				update_end_node_position(-1)
+			else:
+				end_node_grab_focus()
+				
+			if was_opened:
+				menubar_menu_open(focused, properties["selected_menu"])
+				
+			if focused is MenuBar:
+				get_accessible_menubar_name(focused)
+				tts_speak()
+				
+			return false	
 			
-		if was_opened:
-			menubar_menu_open(focused, focused.get("selected_menu"))
-			
-		if focused is MenuBar:
-			get_accessible_menubar_name(focused)
-			tts_speak()
-			
-		return false	
-		
 	return true
 
 func menubar_menu_opened(obj):
+	var properties = get_menubar_data(obj)
+	
 	if obj is MenuBar:
-		if obj.get("menu_opened") != null:
-			return obj.menu_opened
+		if !properties.is_empty():
+			if properties["menu_opened"] != null:
+				return properties["menu_opened"]
 				
 	return false
 				
 func menubar_menu_close_all(obj):
+	var properties = get_menubar_data(obj)
+	
 	if obj is MenuBar:
 		var menu_size = focused.get_menu_count()
 		
@@ -718,15 +748,17 @@ func menubar_menu_close_all(obj):
 			var popup = obj.get_menu_popup(c)
 			
 			popup.visible = false
-			
-		if obj.get("selected_index") != null:
-			obj.selected_index = 0
+		if !properties.is_empty():	
+			if properties["selected_index"] != null:
+				properties["selected_index"] = 0
 	
 func menubar_menu_update(obj):
+	var properties = get_menubar_data(obj)
 	if obj is MenuBar:
-		if obj.get("selected_index") != null:
-			var popup = obj.get_menu_popup(obj.selected_menu)
-			popup.set_focused_item(obj.selected_index)
+		if !properties.is_empty():
+			if properties["selected_index"] != null:
+				var popup = obj.get_menu_popup(properties["selected_menu"])
+				popup.set_focused_item(properties["selected_index"])
 		
 func menubar_menu_open(obj, index):
 	if obj is MenuBar:
@@ -1118,6 +1150,203 @@ func process_text_controls():
 	
 	return true
 
+func process_menu_button_controls():
+	var popup = focused.get_popup()
+
+	var text = focused.text
+	
+	# this is just for processing basebutton signals
+	var toggle_old = focused.button_pressed
+	
+	# Allows you to press buttons normally
+	if Input.is_action_just_pressed("ui_accept"):
+		focused.emit_signal("button_down")
+	elif Input.is_action_just_released("ui_accept"):
+		focused.emit_signal("button_up")
+		
+	if focused.action_mode == BaseButton.ACTION_MODE_BUTTON_PRESS:
+		if Input.is_action_just_pressed("ui_accept"):
+			focused.emit_signal("pressed")
+			if focused.toggle_mode:
+				focused.button_pressed = !focused.button_pressed
+	else:
+		if Input.is_action_just_released("ui_accept"):
+			focused.emit_signal("pressed")
+			if focused.toggle_mode:
+				focused.button_pressed = !focused.button_pressed
+			
+	if focused.toggle_mode:
+		if focused.button_pressed != toggle_old:
+			focused.emit_signal("toggled",focused.button_pressed)
+	
+	# sets the TTS text to the alt text instead of the menu button text
+	if focused.get("alt_text") != null && !focused.alt_text.is_empty():
+		text = focused.alt_text
+
+	if popup_visible:
+		var changed = false
+		
+		if Input.is_action_just_pressed("DOM_item_decrement"):
+			popup_index-= 1
+			
+			if popup_index < 0:
+				popup_visible = false
+				popup.visible = false
+				popup_index = 0
+				add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
+			else:
+				changed = true
+			
+		elif Input.is_action_just_pressed("DOM_item_increment"):
+			popup_index += 1
+			
+			if popup_index > focused.item_count-1:
+				popup_visible = false
+				popup.visible = false
+				popup_index = 0
+				add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
+			else:
+				changed = true
+			
+		if changed:
+			popup.scroll_to_item(popup_index)
+			popup.set_focused_item(popup_index)
+			
+			add_token(popup.get_item_text(popup_index))
+			tts_speak()
+			
+			return false
+			
+		# If not changed, if you leave the button while open, announce its closing
+		if (Input.is_action_just_pressed("DOM_left") ||
+			Input.is_action_just_pressed("DOM_right") ||
+			Input.is_action_just_pressed("DOM_up") ||
+			Input.is_action_just_pressed("DOM_down")):
+				add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
+	
+	if Input.is_action_just_pressed("DOM_select"):
+		play_sound("button_down")
+		
+		if popup_visible:
+			popup.visible = false
+			popup_index = 0
+			add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
+		else:
+			focused.emit_signal("about_to_popup")
+			focused.show_popup()
+			add_token(popup.get_item_text(popup_index))
+			add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.OPENED] % [text] )
+			
+		popup_visible = !popup_visible
+		
+		tts_speak()
+		return false
+
+	if Input.is_action_just_released("DOM_select"):
+		play_sound("button_up")
+		
+	return true
+
+func process_option_button_controls():
+	var popup = focused.get_popup()
+
+	var text = focused.text
+	
+	# this is just for processing basebutton signals
+	var toggle_old = focused.button_pressed
+	
+	# Allows you to press buttons normally
+	if Input.is_action_just_pressed("ui_accept"):
+		focused.emit_signal("button_down")
+	elif Input.is_action_just_released("ui_accept"):
+		focused.emit_signal("button_up")
+		
+	if focused.action_mode == BaseButton.ACTION_MODE_BUTTON_PRESS:
+		if Input.is_action_just_pressed("ui_accept"):
+			focused.emit_signal("pressed")
+			if focused.toggle_mode:
+				focused.button_pressed = !focused.button_pressed
+	else:
+		if Input.is_action_just_released("ui_accept"):
+			focused.emit_signal("pressed")
+			if focused.toggle_mode:
+				focused.button_pressed = !focused.button_pressed
+			
+	if focused.toggle_mode:
+		if focused.button_pressed != toggle_old:
+			focused.emit_signal("toggled",focused.button_pressed)
+	
+	# sets the TTS text to the alt text instead of the menu button text
+	if focused.get("alt_text") != null && !focused.alt_text.is_empty():
+		text = focused.alt_text
+
+	if popup_visible:
+		var changed = false
+		
+		if Input.is_action_just_pressed("DOM_item_decrement"):
+			popup_index-= 1
+			
+			if popup_index < 0:
+				popup_visible = false
+				popup.visible = false
+				popup_index = 0
+				add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
+			else:
+				focused.emit_signal("item_focused",popup_index)
+				changed = true
+			
+		elif Input.is_action_just_pressed("DOM_item_increment"):
+			popup_index += 1
+			
+			if popup_index > focused.item_count-1:
+				popup_visible = false
+				popup.visible = false
+				popup_index = 0
+				add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
+			else:
+				focused.emit_signal("item_focused",popup_index)
+				changed = true
+			
+		if changed:
+			popup.scroll_to_item(popup_index)
+			popup.set_focused_item(popup_index)
+			
+			add_token(popup.get_item_text(popup_index))
+			tts_speak()
+			
+			return false
+			
+		# If not changed, if you leave the button while open, announce its closing
+		if (Input.is_action_just_pressed("DOM_left") ||
+			Input.is_action_just_pressed("DOM_right") ||
+			Input.is_action_just_pressed("DOM_up") ||
+			Input.is_action_just_pressed("DOM_down")):
+				add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
+	
+	if Input.is_action_just_pressed("DOM_select"):
+		play_sound("button_down")
+		
+		if popup_visible:
+			popup.visible = false
+			popup_index = popup.get_focused_item()
+			add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
+			focused.emit_signal("item_selected",popup_index)
+		else:
+			focused.show_popup()
+			
+			add_token(popup.get_item_text(popup_index))
+			add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.OPENED] % [text] )
+			
+		popup_visible = !popup_visible
+		
+		tts_speak()
+		return false
+
+	if Input.is_action_just_released("DOM_select"):
+		play_sound("button_up")
+		
+	return true
+
 # Returns false if moved in any way.
 # This allows for controls to use basic UI commands to navigate too
 func simple_movement():
@@ -1269,6 +1498,14 @@ func grab_obj_focus(obj):
 			last_caret_line = 0
 			text_wait_to_press = false
 			
+			# Clears a popup if any exists
+			popup_visible = false
+			popup_index = 0
+			if focused != null:
+				if focused.has_method("get_popup"):
+					focused.get_popup().visible = false
+				
+			
 			
 			# resets state
 			update_draw_state(CONTROL_STATE.FOCUSED)
@@ -1381,6 +1618,8 @@ func get_accessible_name(obj):
 		get_accessible_label_name(obj)
 	elif obj is RichTextLabel:
 		get_accessible_richtext_label_name(obj)
+	elif obj is OptionButton:
+		get_accessible_optionbutton_name(obj)
 	elif (obj is Button
 		|| obj is LinkButton):
 		get_accessible_button_name(obj)
@@ -1400,7 +1639,7 @@ func get_accessible_name(obj):
 		get_accessible_tabbar_name(obj)
 	else:
 		# default name
-		if obj.get("alt_text") != null:
+		if obj.get("alt_text") != null && !obj.alt_text.is_empty():
 			name = obj.alt_text
 			add_token(name)
 		else:
@@ -1414,20 +1653,21 @@ func get_accessible_name(obj):
 # Gets the name for labels
 func get_accessible_label_name(obj):
 	var name = ""
+
+	if focused is CodeEdit:
+		var lines = focused.text.split("\n")
+		
+		add_token(get_character_name(lines[focused.get_caret_line()]))
+		add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS[TEXTEDIT_STRING.LINE])
 	
-	if obj.get("alt_text") != null:
+	else:
+		name = obj.text
+		add_token(name)
+		
+	if obj.get("alt_text") != null && !obj.alt_text.is_empty():
 		name = obj.alt_text
 		add_token(name)
-	else:
-		if focused is CodeEdit:
-			var lines = focused.text.split("\n")
-			
-			add_token(get_character_name(lines[focused.get_caret_line()]))
-			add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS[TEXTEDIT_STRING.LINE])
-		else:
-			name = obj.text
-			add_token(name)
-			
+		
 	if verbose:
 		if obj.get_class() != name:
 			if focused is Label:
@@ -1439,7 +1679,7 @@ func get_accessible_label_name(obj):
 func get_accessible_richtext_label_name(obj):
 	var name = ""
 	
-	if obj.get("alt_text") != null:
+	if obj.get("alt_text") != null && !obj.alt_text.is_empty():
 		name = obj
 	else:
 		name = obj.get_parsed_text()
@@ -1467,7 +1707,7 @@ func get_accessible_button_name(obj):
 		else:
 			add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.OFF])
 				
-	if obj.get("alt_text") != null:
+	if obj.get("alt_text") != null && !obj.alt_text.is_empty():
 		name = obj.alt_text
 		add_token(name)
 	else:
@@ -1578,7 +1818,9 @@ func get_accessible_slider_name(obj):
 	add_alt_text(obj)
 		
 func get_accessible_menubar_name(obj):
-	var selected_menu = obj.get("selected_menu")
+	var properties = get_menubar_data(obj)
+	
+	var selected_menu = properties["selected_menu"]
 	var size = obj.get_menu_count()
 	var text = ""
 	
@@ -1586,7 +1828,7 @@ func get_accessible_menubar_name(obj):
 		selected_menu = 0
 
 	if menubar_menu_opened(obj):
-		var selected_index = obj.get("selected_index")
+		var selected_index = properties["selected_index"]
 
 		var popup = obj.get_menu_popup(selected_menu)
 		var menu_size = popup.item_count
@@ -1599,7 +1841,7 @@ func get_accessible_menubar_name(obj):
 		
 		# Announce out of 3
 		if verbose:
-			if obj.get("selected_menu") != null:
+			if properties["selected_menu"] != null:
 				text = STRING_FORMATS[STRING_FORMAT.FRACTION] % [str(selected_index+1), str(menu_size)]
 				add_token(text)
 		
@@ -1615,7 +1857,7 @@ func get_accessible_menubar_name(obj):
 		
 		# Announce out of 3
 		if verbose:
-			if obj.get("selected_menu") != null:
+			if properties["selected_menu"] != null:
 				text = STRING_FORMATS[STRING_FORMAT.FRACTION] % [str(selected_menu+1), str(size)]
 				add_token(text)
 		
@@ -1646,13 +1888,32 @@ func get_accessible_tabbar_name(obj):
 		if obj.get_class() != name:
 			add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.TABS])
 	
+# Gets the name for optionbuttons
+func get_accessible_optionbutton_name(obj):
+	var name = ""
+
+	if focused.get_selected_id() > -1:
+		add_token(STRING_FORMATS[STRING_FORMAT.SELECTED] % [focused.get_item_text(focused.get_selected_id())])
+	else:
+		add_token(STRING_FORMATS[STRING_FORMAT.SELECTED] % [TEXTEDIT_STRINGS[TEXTEDIT_STRING.NONE]])
+		
+	if obj.get("alt_text") != null && !obj.alt_text.is_empty():
+		name = obj.alt_text
+		add_token(name)
+		
+	if verbose:
+		if obj.get_class() != name:
+			if focused is Label:
+				add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.LABEL])
+			else:
+				add_token(obj.get_class()) 
 	
 # adds alt text	
 func add_alt_text(obj):
 	var name = ""
 	
 	# reads alt text, if any
-	if obj.get("alt_text") != null:
+	if obj.get("alt_text") != null && !obj.alt_text.is_empty():
 		name = obj.alt_text
 		add_token(name)
 		
@@ -1692,6 +1953,10 @@ func recursive_tree_search(obj,level=0):
 	
 	if (node_type == NODE_TYPE.INTERACT_NODE) && obj.get("ignore") != true:
 		current_objects.append(obj)
+		
+		if obj is MenuBar:
+			insert_menubar(obj)
+		
 		inserted = true
 		
 		# Tab bars add their children instead
@@ -1853,7 +2118,9 @@ func highlight_normal():
 	
 # redraws based on menubar
 func highlight_menubar():
-	var selected = focused.get("selected_menu")
+	var properties = get_menubar_data(focused)
+	
+	var selected = properties["selected_menu"]
 	
 	var menu_count = focused.get_menu_count()
 	
@@ -1929,6 +2196,26 @@ func stop_sound():
 func timer_slider_timeout():
 	play_sound("slider")
 	
+# Menubar Object Tracker functions
+
+# Gets the menubar from object reference
+func get_menubar_data(menubar):
+	if menubars.has(menubar):
+		return menubars[menubar]
+	return {}
+
+# Inserts menubar data into the dictionary
+func insert_menubar(menubar):
+	menubars[menubar] = create_menubar_object()
+
+# This creates a new initialized menubar info object
+func create_menubar_object():
+	return {
+		"selected_menu" : 0,
+		"selected_index" : 0,
+		"menu_opened" : false
+	}
+	
 # Initializer Functions
 
 # Gets the DOM state populated
@@ -1938,6 +2225,7 @@ func init_DOM():
 	
 	objects = []
 	end_node_list = []
+	menubars = {}
 	array_stack = [objects]
 	
 	recursive_tree_search(dom_root)
@@ -1978,6 +2266,23 @@ func _input(event: InputEvent) -> void:
 			else:
 				add_token(get_accessible_name(focused))
 			tts_speak()
+			get_viewport().set_input_as_handled()
+			
+		# clear inputs if any DOM commands are pressed
+		elif (Input.is_action_just_pressed("DOM_select") ||
+				Input.is_action_just_pressed("DOM_cancel") ||
+				Input.is_action_just_pressed("DOM_up") ||
+				Input.is_action_just_pressed("DOM_down") ||
+				Input.is_action_just_pressed("DOM_left") ||
+				Input.is_action_just_pressed("DOM_right") ||
+				Input.is_action_just_pressed("DOM_prev") ||
+				Input.is_action_just_pressed("DOM_next") ||
+				Input.is_action_just_pressed("DOM_read_item") ||
+				Input.is_action_just_pressed("DOM_stop_talk") ||
+				Input.is_action_just_pressed("DOM_item_decrement") ||
+				Input.is_action_just_pressed("DOM_item_increment") ||
+				Input.is_action_just_pressed("ax_start_video") ||
+				Input.is_action_just_pressed("ax_stop_video")):
 			get_viewport().set_input_as_handled()
 
 # Processes the inputs for the DOM object

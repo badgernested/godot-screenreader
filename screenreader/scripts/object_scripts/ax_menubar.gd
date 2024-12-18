@@ -7,12 +7,6 @@ extends MenuBar
 @export var alt_text: String = ""
 @export var ignore: bool = false
 
-# This is updated when navigated.
-var selected_menu = 0
-# Selected submenu index
-var selected_index = 0
-var menu_opened = false
-
 # If this value returns a non-empty value, it will read that
 # string instead of the default string for the screenreader
 # when it reads its name.
