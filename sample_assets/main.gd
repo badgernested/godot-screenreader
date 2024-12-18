@@ -67,3 +67,16 @@ func _on_extra_items_index_pressed(index: int) -> void:
 
 func _on_strange_index_pressed(index: int) -> void:
 	print("Button pressed: " + str(index))
+
+
+func _on_minimize_button_pressed() -> void:
+	get_tree().root.mode = Window.MODE_MINIMIZED
+
+
+func _on_maximize_button_pressed() -> void:
+	if get_tree().root.mode == Window.MODE_WINDOWED:
+		get_tree().root.mode = Window.MODE_MAXIMIZED
+		$Panel/NavButtons/HBoxContainer/MaximizeButton.text = "Windowed"
+	elif get_tree().root.mode == Window.MODE_MAXIMIZED:
+		get_tree().root.mode = Window.MODE_WINDOWED
+		$Panel/NavButtons/HBoxContainer/MaximizeButton.text = "Maximize"

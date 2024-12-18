@@ -296,33 +296,47 @@ func find_object_type(type, max=1):
 func process_input(delta):
 
 	var default_move = true
+	var do_default_processing = true
+	var do_screenreader_navigation = true
 	
-	if focused is VideoStreamPlayer:
-		default_move = process_video_controls()
-	elif focused is MenuBar:
-		default_move = process_menubar_controls()
-	elif focused is TabBar:
-		default_move = process_tabbar_controls()
-	elif (focused is Button ||
-			focused is LinkButton ||
-			focused is TextureButton):
-			default_move = process_button_controls()
-	elif (focused is HSlider ||
-			focused is VSlider ||
-			focused is SpinBox):
-		default_move = process_slider_controls()
-	elif (focused is LineEdit ||
-			focused is TextEdit):
-		default_move = process_text_controls()
+	if focused.has_method("ax_function_override"):
+		if focused.ax_function_override():
+			do_default_processing = false
+			
+	if focused.has_method("ax_screenreader_navigation"):
+		if !focused.ax_screenreader_navigation():
+			do_screenreader_navigation = false
+	
+	if do_default_processing:
+		if focused is VideoStreamPlayer:
+			default_move = process_video_controls()
+		elif focused is MenuBar:
+			default_move = process_menubar_controls()
+		elif focused is TabBar:
+			default_move = process_tabbar_controls()
+		elif (focused is Button ||
+				focused is LinkButton ||
+				focused is TextureButton):
+				default_move = process_button_controls()
+		elif (focused is HSlider ||
+				focused is VSlider ||
+				focused is SpinBox):
+			default_move = process_slider_controls()
+		elif (focused is LineEdit ||
+				focused is TextEdit):
+			default_move = process_text_controls()
 		
 	# Processes parent tabbar
-	if default_move:
-		default_move = process_parent_tabbar()
-		
-	# If able, do the normal tabbing dom movement
-	if default_move:
-		default_move = simple_movement()
-		
+	
+	if do_screenreader_navigation:
+
+		if default_move:
+			default_move = process_parent_tabbar()
+			
+		# If able, do the normal tabbing dom movement
+		if default_move:
+			default_move = simple_movement()
+			
 	# If no movement, process information keys
 	if default_move:
 		default_move = process_info_keys()
@@ -426,6 +440,7 @@ func find_parent_tabbar(obj):
 func process_button_controls():
 	var activated = true
 	var toggle_old = focused.button_pressed
+	var old_text = focused.text
 	
 	var pressed = false
 	
@@ -468,11 +483,18 @@ func process_button_controls():
 			else:
 				add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.UNCHECKED])
 					
-		if focused is CheckButton:
+		elif focused is CheckButton:
 			if focused.button_pressed:
 				add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.ON])
 			else:
 				add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.OFF])
+		else:
+			var alt_text = focused.get("alt_text")
+			if alt_text == null:
+				add_token(old_text)
+			else:
+				add_token(alt_text)
+			
 		tts_speak()
 	
 	return activated 
@@ -961,13 +983,13 @@ func process_text_controls():
 			
 			var char = ""
 			var char_no = 0
-			if !lines[lines_count][lines[lines_count].length()-1].is_empty():
+			if !lines[lines_count].is_empty():
 				if caret_position >= lines[lines_count].length():
 					char = lines[lines_count][lines[lines_count].length()-1]
 				else:
 					char = lines[lines_count][caret_position]
 				
-			char_no = char.unicode_at(0)
+				char_no = char.unicode_at(0)
 				
 			if char == " ":
 				char = TEXTEDIT_STRINGS[TEXTEDIT_STRING.SPACE]
@@ -1345,7 +1367,13 @@ func is_cooled_down():
 # Gets the name of a control
 func get_accessible_name(obj):
 	
-	var name = ""
+	var name = null
+	
+	if obj.has_method("ax_custom_text"):
+		var text = obj.ax_custom_text()
+		if !text.is_empty():
+			add_token(text)
+			return
 	
 	if (obj is Label ||
 		obj is LineEdit ||

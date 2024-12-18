@@ -1,6 +1,6 @@
 [gd_scene load_steps=32 format=3 uid="uid://21bd0kykts0b"]
 
-[ext_resource type="Script" path="res://main.gd" id="1_liw1t"]
+[ext_resource type="Script" path="res://sample_assets/main.gd" id="1_liw1t"]
 [ext_resource type="Texture2D" uid="uid://ck5fd8hxcl8if" path="res://sample_assets/img/icon/test_icon.png" id="1_p3661"]
 [ext_resource type="Script" path="res://screenreader/scripts/object_scripts/ax_control.gd" id="2_6pnjy"]
 [ext_resource type="Script" path="res://screenreader/scripts/object_scripts/ax_menubar.gd" id="3_7pcv3"]
@@ -43,10 +43,10 @@ script = ExtResource("1_liw1t")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 0
-offset_left = 33.0
-offset_top = 23.0
-offset_right = 933.0
-offset_bottom = 479.0
+offset_left = 35.0
+offset_top = 21.0
+offset_right = 935.0
+offset_bottom = 477.0
 
 [node name="NavButtons" type="Control" parent="Panel"]
 anchors_preset = 0
@@ -158,12 +158,29 @@ item_7/icon = ExtResource("19_koksk")
 item_7/id = 7
 item_7/disabled = true
 
-[node name="ExitButton" type="Button" parent="Panel/NavButtons"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/NavButtons"]
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 0
-offset_left = 375.0
-offset_top = 4.0
-offset_right = 453.0
-offset_bottom = 36.0
+offset_left = 54.0
+offset_top = 3.0
+offset_right = 454.0
+offset_bottom = 35.0
+
+[node name="MinimizeButton" type="Button" parent="Panel/NavButtons/HBoxContainer"]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+text = "Minimize"
+icon = ExtResource("22_31mis")
+
+[node name="MaximizeButton" type="Button" parent="Panel/NavButtons/HBoxContainer"]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+text = "Maximize"
+icon = ExtResource("25_qfxl7")
+
+[node name="ExitButton" type="Button" parent="Panel/NavButtons/HBoxContainer"]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
 text = "Close"
 icon = ExtResource("1_p3661")
 
@@ -434,7 +451,9 @@ text = "Version"
 [connection signal="index_pressed" from="Panel/NavButtons/MenuBar/Test Menu" to="." method="_on_test_menu_index_pressed"]
 [connection signal="index_pressed" from="Panel/NavButtons/MenuBar/Extra Items" to="." method="_on_extra_items_index_pressed"]
 [connection signal="index_pressed" from="Panel/NavButtons/MenuBar/Strange" to="." method="_on_strange_index_pressed"]
-[connection signal="pressed" from="Panel/NavButtons/ExitButton" to="." method="_on_exit_button_pressed"]
+[connection signal="pressed" from="Panel/NavButtons/HBoxContainer/MinimizeButton" to="." method="_on_minimize_button_pressed"]
+[connection signal="pressed" from="Panel/NavButtons/HBoxContainer/MaximizeButton" to="." method="_on_maximize_button_pressed"]
+[connection signal="pressed" from="Panel/NavButtons/HBoxContainer/ExitButton" to="." method="_on_exit_button_pressed"]
 [connection signal="pressed" from="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Play" to="." method="_on_play_pressed"]
 [connection signal="pressed" from="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Pause" to="." method="_on_pause_pressed"]
 [connection signal="pressed" from="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Stop" to="." method="_on_stop_pressed"]
