@@ -732,7 +732,7 @@ func menubar_nav_menus(properties):
 			if properties["selected_menu"] < 0:
 				properties["selected_menu"] = 0
 				if properties["menu_opened"] != null:
-					focused.menu_opened = false
+					properties["menu_opened"] = false
 				update_end_node_position(-1)
 			else:
 				end_node_grab_focus()
