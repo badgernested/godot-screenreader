@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://21bd0kykts0b"]
+[gd_scene load_steps=33 format=3 uid="uid://21bd0kykts0b"]
 
 [ext_resource type="Script" path="res://sample_assets/main.gd" id="1_liw1t"]
 [ext_resource type="Texture2D" uid="uid://ck5fd8hxcl8if" path="res://sample_assets/img/icon/test_icon.png" id="1_p3661"]
@@ -31,6 +31,8 @@
 [ext_resource type="Texture2D" uid="uid://dy3pcu44rlhb0" path="res://sample_assets/img/icon/icon11.png" id="27_gce24"]
 [ext_resource type="Texture2D" uid="uid://bx1gbfbeqpc80" path="res://sample_assets/img/icon/icon12.png" id="28_gahsn"]
 [ext_resource type="Texture2D" uid="uid://b31xbb25oqqq6" path="res://sample_assets/img/icon/icon13.png" id="29_e4ri8"]
+
+[sub_resource type="Theme" id="Theme_1a70l"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -166,21 +168,35 @@ offset_top = 3.0
 offset_right = 454.0
 offset_bottom = 35.0
 
-[node name="MinimizeButton" type="Button" parent="Panel/NavButtons/HBoxContainer"]
+[node name="Buttons" type="Control" parent="Panel/NavButtons/HBoxContainer"]
+layout_mode = 2
+script = ExtResource("2_6pnjy")
+focus_marked_container = true
+
+[node name="MinimizeButton" type="Button" parent="Panel/NavButtons/HBoxContainer/Buttons"]
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
+offset_left = 4.0
+offset_right = 134.0
+offset_bottom = 32.0
 text = "Minimize"
 icon = ExtResource("22_31mis")
 
-[node name="MaximizeButton" type="Button" parent="Panel/NavButtons/HBoxContainer"]
+[node name="MaximizeButton" type="Button" parent="Panel/NavButtons/HBoxContainer/Buttons"]
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
+offset_left = 138.0
+offset_right = 268.0
+offset_bottom = 32.0
 text = "Maximize"
 icon = ExtResource("25_qfxl7")
 
-[node name="ExitButton" type="Button" parent="Panel/NavButtons/HBoxContainer"]
+[node name="ExitButton" type="Button" parent="Panel/NavButtons/HBoxContainer/Buttons"]
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
+offset_left = 272.0
+offset_right = 402.0
+offset_bottom = 32.0
 text = "Close"
 icon = ExtResource("1_p3661")
 
@@ -209,58 +225,76 @@ metadata/_tab_index = 0
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/Main/Panel/TabContainer/Buttons and Text"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer"]
+[node name="Contents" type="Control" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
+script = ExtResource("2_6pnjy")
+focus_marked_container = true
 
-[node name="Label" type="Label" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/Contents"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+offset_left = 4.0
+offset_right = 304.0
+offset_bottom = 328.0
+
+[node name="Label" type="Label" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/Contents/VBoxContainer"]
 layout_mode = 2
 text = "Text of LABEL"
 
-[node name="Button" type="Button" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/VBoxContainer"]
+[node name="Button" type="Button" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/Contents/VBoxContainer"]
 layout_mode = 2
 text = "Regular Button"
 
-[node name="LinkButton" type="LinkButton" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/VBoxContainer"]
+[node name="LinkButton" type="LinkButton" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/Contents/VBoxContainer"]
 layout_mode = 2
 text = "Link Button"
 
-[node name="LineEdit" type="LineEdit" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/VBoxContainer"]
+[node name="LineEdit" type="LineEdit" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/Contents/VBoxContainer"]
 layout_mode = 2
 placeholder_text = "Placeholder"
 
-[node name="TextEdit" type="TextEdit" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/VBoxContainer"]
+[node name="TextEdit" type="TextEdit" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/Contents/VBoxContainer"]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/VBoxContainer"]
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/Contents/VBoxContainer"]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 bbcode_enabled = true
 text = "[b]Rich Text[/b] [i]Italic Text[/i]"
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer"]
+[node name="Contents2" type="Control" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer"]
+custom_minimum_size = Vector2(190, 0)
+layout_mode = 2
+script = ExtResource("2_6pnjy")
+focus_marked_container = true
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/Contents2"]
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
+offset_left = 4.0
+offset_right = 184.0
+offset_bottom = 328.0
 
-[node name="Label" type="Label" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/VBoxContainer2"]
+[node name="Label" type="Label" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/Contents2/VBoxContainer2"]
 layout_mode = 2
 text = "Special Buttons"
 
-[node name="HSeparator" type="HSeparator" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/VBoxContainer2"]
+[node name="HSeparator" type="HSeparator" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/Contents2/VBoxContainer2"]
 layout_mode = 2
 
-[node name="CheckBox" type="CheckBox" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/VBoxContainer2"]
+[node name="CheckBox" type="CheckBox" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/Contents2/VBoxContainer2"]
 layout_mode = 2
 text = "Checkbox "
 icon = ExtResource("23_2mg1n")
 
-[node name="CheckButton" type="CheckButton" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/VBoxContainer2"]
+[node name="CheckButton" type="CheckButton" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/Contents2/VBoxContainer2"]
 layout_mode = 2
 text = "Toggle Test"
 icon = ExtResource("20_62p3t")
 
-[node name="MenuButton" type="MenuButton" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/VBoxContainer2"]
+[node name="MenuButton" type="MenuButton" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/Contents2/VBoxContainer2"]
 layout_mode = 2
 text = "Menu Button"
 icon = ExtResource("17_4mq71")
@@ -274,7 +308,7 @@ popup/item_2/text = "Test3"
 popup/item_2/icon = ExtResource("25_qfxl7")
 popup/item_2/id = 2
 
-[node name="OptionButton" type="OptionButton" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/VBoxContainer2"]
+[node name="OptionButton" type="OptionButton" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/Contents2/VBoxContainer2"]
 layout_mode = 2
 item_count = 3
 popup/item_0/text = "Option1"
@@ -283,18 +317,26 @@ popup/item_1/id = 1
 popup/item_2/text = "Option3"
 popup/item_2/id = 2
 
-[node name="VBoxContainer3" type="VBoxContainer" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer"]
+[node name="Contents3" type="Control" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer"]
+layout_mode = 2
+script = ExtResource("2_6pnjy")
+focus_marked_container = true
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/Contents3"]
 custom_minimum_size = Vector2(380, 0)
 layout_mode = 2
+offset_left = 4.0
+offset_right = 384.0
+offset_bottom = 328.0
 
-[node name="Code" type="Label" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/VBoxContainer3"]
+[node name="Code" type="Label" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/Contents3/VBoxContainer3"]
 layout_mode = 2
 text = "Code Edit Test"
 
-[node name="HSeparator" type="HSeparator" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/VBoxContainer3"]
+[node name="HSeparator" type="HSeparator" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/Contents3/VBoxContainer3"]
 layout_mode = 2
 
-[node name="CodeEdit" type="CodeEdit" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/VBoxContainer3"]
+[node name="CodeEdit" type="CodeEdit" parent="Panel/Main/Panel/TabContainer/Buttons and Text/HBoxContainer/Contents3/VBoxContainer3"]
 custom_minimum_size = Vector2(250, 280)
 layout_mode = 2
 gutters_draw_breakpoints_gutter = true
@@ -355,22 +397,36 @@ layout_mode = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer"]
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer"]
+[node name="Sprites" type="Control" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+script = ExtResource("2_6pnjy")
+focus_marked_container = true
+
+[node name="TextureRect" type="TextureRect" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Sprites"]
+layout_mode = 2
+offset_left = 4.0
+offset_right = 68.0
+offset_bottom = 72.0
 texture = ExtResource("4_s2xk4")
 stretch_mode = 2
 script = ExtResource("5_jciqn")
 alt_text = "Lizard creature sprite."
 
-[node name="TextureRect2" type="TextureRect" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer"]
+[node name="TextureRect2" type="TextureRect" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Sprites"]
 layout_mode = 2
+offset_left = 72.0
+offset_right = 136.0
+offset_bottom = 72.0
 texture = ExtResource("6_ku1jh")
 stretch_mode = 2
 script = ExtResource("5_jciqn")
 alt_text = "Mammal Creature Sprite."
 
-[node name="TextureRect3" type="TextureRect" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer"]
+[node name="TextureRect3" type="TextureRect" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Sprites"]
 layout_mode = 2
+offset_left = 140.0
+offset_right = 204.0
+offset_bottom = 72.0
 texture = ExtResource("7_c05bo")
 stretch_mode = 2
 script = ExtResource("5_jciqn")
@@ -382,20 +438,34 @@ custom_minimum_size = Vector2(66, 0)
 layout_mode = 2
 color = Color(1, 1, 1, 0)
 
-[node name="Play" type="Button" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer"]
+[node name="Buttons" type="Control" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+script = ExtResource("2_6pnjy")
+focus_marked_container = true
+
+[node name="Play" type="Button" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Buttons"]
+layout_mode = 2
+offset_left = 4.0
+offset_right = 76.0
+offset_bottom = 72.0
 icon = ExtResource("7_hng67")
 script = ExtResource("8_qg674")
 alt_text = "Play Button"
 
-[node name="Pause" type="Button" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer"]
+[node name="Pause" type="Button" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Buttons"]
 layout_mode = 2
+offset_left = 80.0
+offset_right = 152.0
+offset_bottom = 72.0
 icon = ExtResource("9_soqa6")
 script = ExtResource("8_qg674")
 alt_text = "Pause Button"
 
-[node name="Stop" type="Button" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer"]
+[node name="Stop" type="Button" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Buttons"]
 layout_mode = 2
+offset_left = 156.0
+offset_right = 228.0
+offset_bottom = 72.0
 icon = ExtResource("10_7330b")
 script = ExtResource("8_qg674")
 alt_text = "Stop Button"
@@ -422,6 +492,7 @@ layout_mode = 2
 [node name="Tree" type="Tree" parent="Panel/Main/Panel/TabContainer/More Elements/VBoxContainer"]
 custom_minimum_size = Vector2(0, 250)
 layout_mode = 2
+theme = SubResource("Theme_1a70l")
 
 [node name="Info" type="Control" parent="Panel"]
 anchors_preset = 0
@@ -451,10 +522,10 @@ text = "Version"
 [connection signal="index_pressed" from="Panel/NavButtons/MenuBar/Test Menu" to="." method="_on_test_menu_index_pressed"]
 [connection signal="index_pressed" from="Panel/NavButtons/MenuBar/Extra Items" to="." method="_on_extra_items_index_pressed"]
 [connection signal="index_pressed" from="Panel/NavButtons/MenuBar/Strange" to="." method="_on_strange_index_pressed"]
-[connection signal="pressed" from="Panel/NavButtons/HBoxContainer/MinimizeButton" to="." method="_on_minimize_button_pressed"]
-[connection signal="pressed" from="Panel/NavButtons/HBoxContainer/MaximizeButton" to="." method="_on_maximize_button_pressed"]
-[connection signal="pressed" from="Panel/NavButtons/HBoxContainer/ExitButton" to="." method="_on_exit_button_pressed"]
-[connection signal="pressed" from="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Play" to="." method="_on_play_pressed"]
-[connection signal="pressed" from="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Pause" to="." method="_on_pause_pressed"]
-[connection signal="pressed" from="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Stop" to="." method="_on_stop_pressed"]
+[connection signal="pressed" from="Panel/NavButtons/HBoxContainer/Buttons/MinimizeButton" to="." method="_on_minimize_button_pressed"]
+[connection signal="pressed" from="Panel/NavButtons/HBoxContainer/Buttons/MaximizeButton" to="." method="_on_maximize_button_pressed"]
+[connection signal="pressed" from="Panel/NavButtons/HBoxContainer/Buttons/ExitButton" to="." method="_on_exit_button_pressed"]
+[connection signal="pressed" from="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Buttons/Play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Buttons/Pause" to="." method="_on_pause_pressed"]
+[connection signal="pressed" from="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Buttons/Stop" to="." method="_on_stop_pressed"]
 [connection signal="ready" from="Panel/Main/Panel/TabContainer/More Elements/VBoxContainer/Tree" to="." method="_on_tree_ready"]

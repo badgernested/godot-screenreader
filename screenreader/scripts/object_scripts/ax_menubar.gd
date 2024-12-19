@@ -1,9 +1,5 @@
-## NOTE! Menu bars will simply not be fully navigable if they
-## do not use this script. I will investigate solutions later.
-
 extends MenuBar
 
-@export var focus_marked_container: bool = false
 @export var alt_text: String = ""
 @export var ignore: bool = false
 

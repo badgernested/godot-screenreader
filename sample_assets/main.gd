@@ -31,9 +31,12 @@ func _on_stop_pressed() -> void:
 # Adds elements to the tree
 func _on_tree_ready() -> void:
 	var trees = $"Panel/Main/Panel/TabContainer/More Elements/VBoxContainer/Tree"
+	trees.set_column_title(0, "Test Tree")
 	var root = trees.create_item()
 	root.set_text(0,"res://")
-	
+	var texture = Texture2D.new()
+	root.add_button(0, preload("res://sample_assets/img/icon/icon10.png"),0,false,"Hello World")
+	root.add_button(0, preload("res://sample_assets/img/icon/icon9.png"),1,false,"Hello World")
 	tree_render(trees, root, "res://")
 	
 func tree_render(tree, parent, filepath):

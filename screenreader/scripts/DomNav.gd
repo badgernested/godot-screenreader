@@ -63,9 +63,9 @@ var popup_visible: bool = false
 # Tracks the index of the current popup.
 var popup_index: int = 0
 
-# This stores all MenuBars in the DOM with a dictionary
+# This stores all data objects in the DOM with a dictionary
 # that represents certain values.
-var menubars: Dictionary = {}
+var data_objects: Dictionary = {}
 
 # This is used for inserting accessibility tokens
 # to be read by the screenreader
@@ -93,6 +93,9 @@ const TIMER_SLIDER_SCROLL = 0.2
 
 # How much the movement time is modified for the slider
 const MOVEMENT_TIME = 0.000025
+
+# How much pitch shift for list items decrementing
+const LIST_PITCH_SHIFT = 1.2
 
 # Options
 
@@ -128,7 +131,13 @@ const SFX_LIBRARY = {
 	"text_newline" : preload("res://screenreader/sfx/text_newline.wav"),
 	"tab_nav" : preload("res://screenreader/sfx/tab_nav.wav"),
 	"slider" : preload("res://screenreader/sfx/slider_change.wav"),
-	"slider_move" : preload("res://screenreader/sfx/slider_move.wav")
+	"slider_move" : preload("res://screenreader/sfx/slider_move.wav"),
+	"tree_collapse" : preload("res://screenreader/sfx/tree_collapse.wav"),
+	"tree_uncollapse" : preload("res://screenreader/sfx/tree_uncollapse.wav"),
+	"tree_enter" : preload("res://screenreader/sfx/tree_enter.wav"),
+	"tree_exit" : preload("res://screenreader/sfx/tree_exit.wav"),
+	"tree_no_children" : preload("res://screenreader/sfx/tree_no_children.wav"),
+	"list_nav" : preload("res://screenreader/sfx/list_nav.wav")
 }
 
 # Data Strings
@@ -182,6 +191,14 @@ enum POPUPMENU_CONTROL {
 	UNCHECKED,
 	ON,
 	OFF
+}
+
+const TREE_CONTROL_NAMES = ["Collapsed", "Uncollapsed", "No children", "%s children"]
+enum TREE_CONTROL {
+	COLLAPSED,
+	UNCOLLAPSED,
+	NO_CHILDREN,
+	CHILDREN
 }
 
 # This is used for highlighting UI elements
@@ -345,7 +362,8 @@ func process_input(delta):
 		elif (focused is LineEdit ||
 				focused is TextEdit):
 			default_move = process_text_controls()
-		
+		elif focused is Tree:
+			default_move = process_tree_controls()
 	# Processes parent tabbar
 	
 	if do_screenreader_navigation:
@@ -564,7 +582,7 @@ func process_video_controls():
 # Does the menubar controls
 func process_menubar_controls():
 	var menu_size = focused.get_menu_count()
-	var properties = get_menubar_data(focused)
+	var properties = get_object_data(focused)
 	var menu_pos = 0
 	
 	if !properties.is_empty():
@@ -619,8 +637,10 @@ func process_menubar_controls():
 		if menubar_menu_opened(focused):
 			if Input.is_action_just_pressed("ui_up"):
 				menubar_read_selected_item(properties)
+				play_sound("list_nav", LIST_PITCH_SHIFT)
 			if Input.is_action_just_pressed("ui_down"):
 				menubar_read_selected_item(properties)
+				play_sound("list_nav")
 		
 	# Moves around the top menu
 	var move = menubar_nav_menus(properties)
@@ -729,7 +749,7 @@ func menubar_nav_menus(properties):
 	return true
 
 func menubar_menu_opened(obj):
-	var properties = get_menubar_data(obj)
+	var properties = get_object_data(obj)
 	
 	if obj is MenuBar:
 		if !properties.is_empty():
@@ -739,7 +759,7 @@ func menubar_menu_opened(obj):
 	return false
 				
 func menubar_menu_close_all(obj):
-	var properties = get_menubar_data(obj)
+	var properties = get_object_data(obj)
 	
 	if obj is MenuBar:
 		var menu_size = focused.get_menu_count()
@@ -753,7 +773,7 @@ func menubar_menu_close_all(obj):
 				properties["selected_index"] = 0
 	
 func menubar_menu_update(obj):
-	var properties = get_menubar_data(obj)
+	var properties = get_object_data(obj)
 	if obj is MenuBar:
 		if !properties.is_empty():
 			if properties["selected_index"] != null:
@@ -798,6 +818,10 @@ func menubar_menu_open(obj, index):
 func process_tabbar_controls():
 	var tab_val = focused.current_tab
 	var tab_size = focused.tab_count
+	
+	# Forces navigation for previous
+	if Input.is_action_just_pressed("DOM_prev"):
+		return true
 	
 	if Input.is_action_just_pressed("DOM_item_increment"):
 		tab_val += 1
@@ -1195,6 +1219,7 @@ func process_menu_button_controls():
 				popup_index = 0
 				add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
 			else:
+				play_sound("list_nav", LIST_PITCH_SHIFT)
 				changed = true
 			
 		elif Input.is_action_just_pressed("DOM_item_increment"):
@@ -1206,6 +1231,7 @@ func process_menu_button_controls():
 				popup_index = 0
 				add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
 			else:
+				play_sound("list_nav")
 				changed = true
 			
 		if changed:
@@ -1294,6 +1320,7 @@ func process_option_button_controls():
 				add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
 			else:
 				focused.emit_signal("item_focused",popup_index)
+				play_sound("list_nav", LIST_PITCH_SHIFT)
 				changed = true
 			
 		elif Input.is_action_just_pressed("DOM_item_increment"):
@@ -1306,6 +1333,7 @@ func process_option_button_controls():
 				add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
 			else:
 				focused.emit_signal("item_focused",popup_index)
+				play_sound("list_nav")
 				changed = true
 			
 		if changed:
@@ -1345,6 +1373,74 @@ func process_option_button_controls():
 
 	if Input.is_action_just_released("DOM_select"):
 		play_sound("button_up")
+		
+	return true
+
+func process_tree_controls():
+	var treeitem = focused.get_selected() 
+	var properties = get_object_data(focused)
+	var button_mode = false
+	var button_index = -1
+	
+	if !properties.is_empty():
+		button_mode = properties["button_mode"]
+		button_index = properties["selected_button"]
+	
+	if treeitem != null:
+		if Input.is_action_just_pressed("DOM_select"):
+			if treeitem.get_child_count() > 0:
+				treeitem.collapsed = !treeitem.collapsed
+				
+				if treeitem.collapsed:
+					add_token(TREE_CONTROL_NAMES[TREE_CONTROL.COLLAPSED])
+					play_sound("tree_collapse")
+				else:
+					add_token(TREE_CONTROL_NAMES[TREE_CONTROL.UNCOLLAPSED])
+					play_sound("tree_uncollapse")
+			else:
+				add_token(TREE_CONTROL_NAMES[TREE_CONTROL.NO_CHILDREN])
+				play_sound("tree_no_children")
+		
+			get_accessible_tree_name(focused, false)
+		
+			tts_speak()
+			return false
+			
+		if Input.is_action_just_pressed("DOM_item_increment"):
+			var next = treeitem.get_next_visible()
+			
+			if next != null:
+				focused.focus_mode = FOCUS_ALL
+				focused.grab_focus()
+				focused.set_selected(next,0)
+				focused.scroll_to_item(next)
+				focused.focus_mode = FOCUS_NONE
+				play_sound("list_nav")
+				highlight_tree()
+				
+			get_accessible_name(focused)
+		
+			tts_speak()
+				
+			return false
+			
+		elif Input.is_action_just_pressed("DOM_item_decrement"):
+			var next = treeitem.get_prev_visible()
+			
+			if next != null:
+				focused.focus_mode = FOCUS_ALL
+				focused.grab_focus()
+				focused.set_selected(next,0)
+				focused.scroll_to_item(next)
+				focused.focus_mode = FOCUS_NONE
+				play_sound("list_nav",LIST_PITCH_SHIFT)
+				highlight_tree()
+					
+			get_accessible_name(focused)
+		
+			tts_speak()
+				
+			return false
 		
 	return true
 
@@ -1506,7 +1602,11 @@ func grab_obj_focus(obj):
 				if focused.has_method("get_popup"):
 					focused.get_popup().visible = false
 				
+			# Plays exit sound effects
 			
+			if focused is Tree:
+				stop_sound()
+				play_sound("tree_exit")
 			
 			# resets state
 			update_draw_state(CONTROL_STATE.FOCUSED)
@@ -1540,6 +1640,15 @@ func grab_obj_focus(obj):
 						focused.focus_mode = FOCUS_ALL
 						focused.grab_focus()
 						
+				# If it is the tree type, play an entrance sound
+				# and set the selected index to the root if none
+				# is selected
+				if focused is Tree:
+					stop_sound()
+					play_sound("tree_enter")
+					if focused.get_selected() == null:
+						focused.set_selected(focused.get_root(),0) 
+						
 			if old_focus != focused:
 				# Read the name
 				get_accessible_name(focused)
@@ -1552,12 +1661,18 @@ func grab_obj_focus(obj):
 		# Redraw control highlighter
 		await get_tree().create_timer(0.01).timeout
 		
-		if focused is MenuBar:
-			highlight_menubar()
-		elif focused is TabBar:
-			highlight_tabbar()
-		else:
-			highlight_normal()
+		update_draw_highlight()
+		
+# Updates the draw highlighter
+func update_draw_highlight():
+	if focused is MenuBar:
+		highlight_menubar()
+	elif focused is TabBar:
+		highlight_tabbar()
+	elif focused is Tree:
+		highlight_tree()
+	else:
+		highlight_normal()
 		
 # Releases focus of an object
 func release_obj_focus(obj):
@@ -1638,6 +1753,8 @@ func get_accessible_name(obj):
 		get_accessible_menubar_name(obj)
 	elif obj is TabBar:
 		get_accessible_tabbar_name(obj)
+	elif obj is Tree:
+		get_accessible_tree_name(obj)
 	else:
 		# default name
 		if obj.get("alt_text") != null && !obj.alt_text.is_empty():
@@ -1819,7 +1936,7 @@ func get_accessible_slider_name(obj):
 	add_alt_text(obj)
 		
 func get_accessible_menubar_name(obj):
-	var properties = get_menubar_data(obj)
+	var properties = get_object_data(obj)
 	
 	var selected_menu = properties["selected_menu"]
 	var size = obj.get_menu_count()
@@ -1909,6 +2026,34 @@ func get_accessible_optionbutton_name(obj):
 			else:
 				add_token(obj.get_class()) 
 	
+func get_accessible_tree_name(obj, read_collapse=true):
+	
+	# Read off the currently selected node, if any
+	var selected_item = obj.get_selected()
+	if selected_item != null:
+		add_token(STRING_FORMATS[STRING_FORMAT.SELECTED] % [selected_item.get_text(0)])
+	else:
+		add_token(STRING_FORMATS[STRING_FORMAT.SELECTED] % [TEXTEDIT_STRINGS[TEXTEDIT_STRING.NONE]])
+
+	if selected_item.collapsed:
+		if read_collapse:
+			add_token(TREE_CONTROL_NAMES[TREE_CONTROL.COLLAPSED])
+	else:
+		var child_count = selected_item.get_child_count()
+			
+		if child_count > 0:
+			add_token(TREE_CONTROL_NAMES[TREE_CONTROL.CHILDREN] % [str(child_count)])
+		else:
+			add_token(TREE_CONTROL_NAMES[TREE_CONTROL.NO_CHILDREN])
+	
+	if obj.get("alt_text") != null && !obj.alt_text.is_empty():
+		name = obj.alt_text
+		add_token(name)
+	
+	if verbose:
+		if obj.get_class() != name:
+				add_token(obj.get_class()) 
+	
 # adds alt text	
 func add_alt_text(obj):
 	var name = ""
@@ -1957,6 +2102,8 @@ func recursive_tree_search(obj,level=0):
 		
 		if obj is MenuBar:
 			insert_menubar(obj)
+		elif obj is Tree:
+			insert_tree(obj)
 		
 		inserted = true
 		
@@ -2119,7 +2266,7 @@ func highlight_normal():
 	
 # redraws based on menubar
 func highlight_menubar():
-	var properties = get_menubar_data(focused)
+	var properties = get_object_data(focused)
 	
 	var selected = properties["selected_menu"]
 	
@@ -2172,6 +2319,30 @@ func highlight_tabbar():
 
 	call_deferred("queue_redraw")
 	
+func highlight_tree():
+	
+	var v = focused.get_theme_constant("v_separation")
+	
+	var item = focused.get_selected()
+	
+	if item == null:
+		highlight_normal()
+	else:
+		highlight_box = focused.get_item_area_rect(item)
+		highlight_box.position += focused.global_position
+		highlight_box.position.y -= focused.get_scroll().y
+		highlight_box.size.y += v*2
+		
+		if focused.global_position.y > highlight_box.position.y:
+			highlight_box.position.y = focused.global_position.y
+			highlight_box.size.y = 6
+			
+		if focused.global_position.y + focused.size.y < highlight_box.position.y:
+			highlight_box.position.y = focused.global_position.y + focused.size.y
+			highlight_box.size.y = 6
+		
+		call_deferred("queue_redraw")
+	
 # Sound functions
 
 # Note, this sound object only 
@@ -2200,14 +2371,18 @@ func timer_slider_timeout():
 # Menubar Object Tracker functions
 
 # Gets the menubar from object reference
-func get_menubar_data(menubar):
-	if menubars.has(menubar):
-		return menubars[menubar]
+func get_object_data(obj):
+	if data_objects.has(obj):
+		return data_objects[obj]
 	return {}
 
 # Inserts menubar data into the dictionary
-func insert_menubar(menubar):
-	menubars[menubar] = create_menubar_object()
+func insert_menubar(obj):
+	data_objects[obj] = create_menubar_object()
+
+# Inserts tree data into the dictionary
+func insert_tree(obj):
+	data_objects[obj] = create_tree_object()
 
 # This creates a new initialized menubar info object
 func create_menubar_object():
@@ -2215,6 +2390,13 @@ func create_menubar_object():
 		"selected_menu" : 0,
 		"selected_index" : 0,
 		"menu_opened" : false
+	}
+	
+# This creates a new initialized tree info object
+func create_tree_object():
+	return {
+		"selected_button" : 0,
+		"button_mode" : false
 	}
 	
 # Initializer Functions
@@ -2226,7 +2408,7 @@ func init_DOM():
 	
 	objects = []
 	end_node_list = []
-	menubars = {}
+	data_objects = {}
 	array_stack = [objects]
 	
 	recursive_tree_search(dom_root)
@@ -2268,6 +2450,13 @@ func _input(event: InputEvent) -> void:
 				add_token(get_accessible_name(focused))
 			tts_speak()
 			get_viewport().set_input_as_handled()
+			
+		if event is InputEventMouseButton:
+			if focused is Tree:
+				if (event.button_index == MOUSE_BUTTON_WHEEL_DOWN
+					|| event.button_index == MOUSE_BUTTON_WHEEL_UP):
+						update_draw_highlight()
+						queue_redraw()
 
 
 # Processes the inputs for the DOM object
