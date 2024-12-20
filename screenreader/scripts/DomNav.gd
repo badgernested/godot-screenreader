@@ -1502,67 +1502,6 @@ func find_next_grouping(obj):
 			return next_obj_index
 	return -1
 	
-# Finds the first object in an array	
-func find_first_obj(arr):
-	for c in arr:
-		if !(c is Array):
-			return c
-			
-	return null
-	
-# Finds the first object in an array	
-func find_first_obj_rec(arr):
-	for c in arr:
-		if !(c is Array):
-			return c
-		else:
-			var val = find_first_obj_rec(c)
-			if val != null:
-				return val
-			
-	return null
-	
-	
-# Finds the first object in an array	
-func find_last_obj_rec(arr):
-	var returner = null
-	
-	for c in range(arr.size()-1, -1, -1):
-		if !(arr[c] is Array):
-			returner = arr[c]
-			if returner != null:
-				return returner
-		else:
-			var val = find_last_obj_rec(arr[c])
-			if val != null:
-				return val
-			
-	return returner
-	
-# Finds which tab index the element is stored in.
-func find_tab_index(tabarr, obj):
-	
-	for c in range(0, tabarr.size()):
-		if arr_contains_obj(tabarr[c], obj):
-				return c
-			
-	return -1
-	
-# Determines if an array contains the object
-func arr_contains_obj(arr, obj):
-	if arr.has(obj):
-		return true
-	
-	var result = false
-	
-	for c in arr:
-		if c is Array:
-			result = arr_contains_obj(c,obj)
-			if result:
-				return true
-			
-	return false
-			
 # Finds the previous grouping.
 # This would be the first valid element of the previous available array.
 func find_prev_grouping(obj):
@@ -1650,6 +1589,68 @@ func find_prev_grouping(obj):
 			return next_obj_index
 	return -1
 	
+	
+# Finds the first object in an array	
+func find_first_obj(arr):
+	for c in arr:
+		if !(c is Array):
+			return c
+			
+	return null
+	
+# Finds the first object in an array	
+func find_first_obj_rec(arr):
+	for c in arr:
+		if !(c is Array):
+			return c
+		else:
+			var val = find_first_obj_rec(c)
+			if val != null:
+				return val
+			
+	return null
+	
+	
+# Finds the first object in an array	
+func find_last_obj_rec(arr):
+	var returner = null
+	
+	for c in range(arr.size()-1, -1, -1):
+		if !(arr[c] is Array):
+			returner = arr[c]
+			if returner != null:
+				return returner
+		else:
+			var val = find_last_obj_rec(arr[c])
+			if val != null:
+				return val
+			
+	return returner
+	
+# Finds which tab index the element is stored in.
+func find_tab_index(tabarr, obj):
+	
+	for c in range(0, tabarr.size()):
+		if arr_contains_obj(tabarr[c], obj):
+				return c
+			
+	return -1
+	
+# Determines if an array contains the object
+func arr_contains_obj(arr, obj):
+	if arr.has(obj):
+		return true
+	
+	var result = false
+	
+	for c in arr:
+		if c is Array:
+			result = arr_contains_obj(c,obj)
+			if result:
+				return true
+			
+	return false
+			
 # Returns false if moved in any way.
 # This allows for controls to use basic UI commands to navigate too
 func simple_movement():

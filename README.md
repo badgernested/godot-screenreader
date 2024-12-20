@@ -25,6 +25,10 @@ For now, it is something that can be used to attach to your game to make menus a
     - VSlider
     - TextureRect (Only with script attached for alt text)
     - VideoStreamPlayer
+    - OptionButton
+    - MenuButton
+    - Tree
+        - Note: Tree Buttons are not supported.
 - Ability to ignore nodes if you so wish
 - Screenreader designed as (mostly) standalone script
 - Additional scripts you can attach/extend to Control nodes to expand optional accessibility functionality, such as alt text
