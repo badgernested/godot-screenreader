@@ -398,35 +398,37 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="Sprites" type="Control" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(550, 80)
 layout_mode = 2
 script = ExtResource("2_6pnjy")
 focus_marked_container = true
 
-[node name="TextureRect" type="TextureRect" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Sprites"]
+[node name="CenterContainer" type="CenterContainer" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Sprites"]
+custom_minimum_size = Vector2(550, 80)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Sprites/CenterContainer"]
 layout_mode = 2
-offset_left = 4.0
-offset_right = 68.0
-offset_bottom = 72.0
+theme_override_constants/separation = 40
+
+[node name="TextureRect" type="TextureRect" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Sprites/CenterContainer/HBoxContainer"]
+layout_mode = 2
 texture = ExtResource("4_s2xk4")
 stretch_mode = 2
 script = ExtResource("5_jciqn")
 alt_text = "Lizard creature sprite."
 
-[node name="TextureRect2" type="TextureRect" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Sprites"]
+[node name="TextureRect2" type="TextureRect" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Sprites/CenterContainer/HBoxContainer"]
 layout_mode = 2
-offset_left = 72.0
-offset_right = 136.0
-offset_bottom = 72.0
 texture = ExtResource("6_ku1jh")
 stretch_mode = 2
 script = ExtResource("5_jciqn")
 alt_text = "Mammal Creature Sprite."
 
-[node name="TextureRect3" type="TextureRect" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Sprites"]
+[node name="TextureRect3" type="TextureRect" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Sprites/CenterContainer/HBoxContainer"]
 layout_mode = 2
-offset_left = 140.0
-offset_right = 204.0
-offset_bottom = 72.0
 texture = ExtResource("7_c05bo")
 stretch_mode = 2
 script = ExtResource("5_jciqn")
@@ -439,6 +441,7 @@ layout_mode = 2
 color = Color(1, 1, 1, 0)
 
 [node name="Buttons" type="Control" parent="Panel/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(240, 80)
 layout_mode = 2
 script = ExtResource("2_6pnjy")
 focus_marked_container = true
