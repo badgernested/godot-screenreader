@@ -66,6 +66,9 @@ var popup_visible: bool = false
 # Tracks the index of the current popup.
 var popup_index: int = 0
 
+# The old rect2 of the focused item
+var focused_old: Rect2 = Rect2(0,0,0,0)
+
 # This stores all data objects in the DOM with a dictionary
 # that represents certain values.
 var data_objects: Dictionary = {}
@@ -1923,17 +1926,7 @@ func grab_obj_focus(obj):
 		await get_tree().create_timer(0.01).timeout
 		
 		update_draw_highlight()
-		
-# Updates the draw highlighter
-func update_draw_highlight():
-	if focused is MenuBar:
-		highlight_menubar()
-	elif focused is TabBar:
-		highlight_tabbar()
-	elif focused is Tree:
-		highlight_tree()
-	else:
-		highlight_normal()
+
 		
 # Releases focus of an object
 func release_obj_focus(obj):
@@ -2522,14 +2515,27 @@ func set_focus_on(obj, arr=object_focus_mode):
 
 # Highligher Functions
 
+# Updates the draw highlighter
+func update_draw_highlight():
+	if focused is MenuBar:
+		highlight_menubar()
+	elif focused is TabBar:
+		highlight_tabbar()
+	elif focused is Tree:
+		highlight_tree()
+	else:
+		highlight_normal()
+
 # redraws based on menu position
 func highlight_normal():
-	highlight_box = Rect2(focused.global_position,focused.size)
+	highlight_box = Rect2(focused.get_global_rect())
 	call_deferred("queue_redraw")
 	
 # redraws based on menubar
 func highlight_menubar():
 	var properties = get_object_data(focused)
+	
+	var box = focused.get_global_rect()
 	
 	var selected = properties["selected_menu"]
 	
@@ -2538,7 +2544,7 @@ func highlight_menubar():
 	# This will indicate that accessibility is not configued properly.
 	# make sure you add the script
 	if selected == null || menu_count < 1:
-		highlight_box = Rect2(focused.global_position,focused.size)
+		highlight_box = Rect2(box)
 	else:
 
 		var h_sep = focused.get_theme_constant("h_separation")
@@ -2560,29 +2566,31 @@ func highlight_menubar():
 						-1,
 						font_size)
 		
-		
-		highlight_box = Rect2(focused.global_position.x + float(len),
+		highlight_box = Rect2(focused.global_position.x + float(len) * (box.size.x / focused.size.x),
 								focused.global_position.y,
-								sizer.x + h_sep,
-								sizer.y + font_size*0.5)
+								(sizer.x + h_sep) * (box.size.x / focused.size.x),
+								(sizer.y + font_size*0.5)  * (box.size.y / focused.size.y))
 
 	call_deferred("queue_redraw")
 	
 # redraws based on tabbar
 func highlight_tabbar():
 		
+	var box = focused.get_global_rect()
+		
 	var tab_rect = focused.get_tab_rect(focused.current_tab)
 		
 	highlight_box = Rect2(
-		focused.global_position.x + tab_rect.position.x,
-		focused.global_position.y + tab_rect.position.y,
-		tab_rect.size.x,
-		tab_rect.size.y
+		focused.global_position.x + tab_rect.position.x  * (box.size.x / focused.size.x),
+		focused.global_position.y + tab_rect.position.y  * (box.size.y / focused.size.y),
+		tab_rect.size.x * (box.size.x / focused.size.x),
+		tab_rect.size.y * (box.size.y / focused.size.y)
 	)
 
 	call_deferred("queue_redraw")
 	
 func highlight_tree():
+	
 	
 	var v = focused.get_theme_constant("v_separation")
 	
@@ -2591,17 +2599,27 @@ func highlight_tree():
 	if item == null:
 		highlight_normal()
 	else:
+		var box = focused.get_global_rect()
+		var y_multi = (box.size.y / focused.size.y)
+		
 		highlight_box = focused.get_item_area_rect(item)
+
+		highlight_box.position.y = highlight_box.position.y * y_multi
+		
+		highlight_box.size.x = highlight_box.size.x * (box.size.x / focused.size.x)
+		highlight_box.size.y = highlight_box.size.y * y_multi
+
+
 		highlight_box.position += focused.global_position
-		highlight_box.position.y -= focused.get_scroll().y
-		highlight_box.size.y += v*2
+		highlight_box.position.y -= focused.get_scroll().y  * y_multi
+		highlight_box.size.y += v*2 * y_multi
 		
 		if focused.global_position.y > highlight_box.position.y:
 			highlight_box.position.y = focused.global_position.y
 			highlight_box.size.y = 6
 			
-		if focused.global_position.y + focused.size.y < highlight_box.position.y:
-			highlight_box.position.y = focused.global_position.y + focused.size.y
+		if focused.global_position.y + box.size.y < highlight_box.position.y:
+			highlight_box.position.y = focused.global_position.y + box.size.y
 			highlight_box.size.y = 6
 		
 		call_deferred("queue_redraw")
@@ -2722,10 +2740,16 @@ func _input(event: InputEvent) -> void:
 						update_draw_highlight()
 						queue_redraw()
 
-
 # Processes the inputs for the DOM object
 func _process(delta: float) -> void:
+	if focused != null:
+		if (focused_old != focused.get_global_rect()):
+			update_draw_highlight()
+	
 	process_input(delta)
+	
+	if focused != null:
+		focused_old = focused.get_global_rect()
 	
 # Draws additional stuff on top of the normal draw function
 func _draw():
