@@ -12,6 +12,4 @@ Original Repositories:
 - [LightsOutGames](https://github.com/lightsoutgames/godot-accessibility)
 - [rodolpheh](https://github.com/rodolpheh/godot-accessibility)
 
-Credit is not necessary per the license but you do get internet goodie points every time you give credit! :)
-
 [Back to README](README.md)
