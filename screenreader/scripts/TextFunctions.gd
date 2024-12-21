@@ -1,3 +1,8 @@
+###############################################
+# TextFunctions
+#
+# These are text manipulation functions.
+###############################################
 class_name TextFunctions
 extends Object
 

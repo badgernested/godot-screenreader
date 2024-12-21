@@ -4,7 +4,6 @@
 # This class controls all the other accessibility
 # classes in one nice place.
 ###############################################
-
 extends Control
 
 static var pressed_keys = []

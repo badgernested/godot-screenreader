@@ -3,9 +3,8 @@
 #
 # The screenreader class.
 ###############################################
-
 class_name Screenreader
-extends Control
+extends Object
 
 ## Variables
 
@@ -1247,11 +1246,11 @@ static func _process_tree_controls():
 			var next = treeitem.get_next_visible()
 			
 			if next != null:
-				focused.focus_mode = FOCUS_ALL
+				focused.focus_mode = Control.FOCUS_ALL
 				focused.grab_focus()
 				focused.set_selected(next,0)
 				focused.scroll_to_item(next)
-				focused.focus_mode = FOCUS_NONE
+				focused.focus_mode = Control.FOCUS_NONE
 				_play_sound("list_nav")
 				_highlight_tree()
 				
@@ -1265,11 +1264,11 @@ static func _process_tree_controls():
 			var next = treeitem.get_prev_visible()
 			
 			if next != null:
-				focused.focus_mode = FOCUS_ALL
+				focused.focus_mode = Control.FOCUS_ALL
 				focused.grab_focus()
 				focused.set_selected(next,0)
 				focused.scroll_to_item(next)
-				focused.focus_mode = FOCUS_NONE
+				focused.focus_mode = Control.FOCUS_NONE
 				_play_sound("list_nav",LIST_PITCH_SHIFT)
 				_highlight_tree()
 					
@@ -1598,7 +1597,7 @@ static func _grab_obj_focus(obj):
 			if focused != null:
 				if focused.has_signal("focus_exited"):
 					focused.emit_signal("focus_exited")
-					focused.focus_mode = FOCUS_NONE
+					focused.focus_mode = Control.FOCUS_NONE
 					
 			focused = obj
 			
@@ -1619,7 +1618,7 @@ static func _grab_obj_focus(obj):
 							focused.set_caret_line(0)
 							
 						
-						focused.focus_mode = FOCUS_ALL
+						focused.focus_mode = Control.FOCUS_ALL
 						focused.grab_focus()
 						
 				# If it is the tree type, play an entrance sound
@@ -1645,7 +1644,7 @@ static func _grab_obj_focus(obj):
 static func _release_obj_focus(obj):
 	if dom_nav_enabled:
 		if focused != null:
-			focused.focus_mode = FOCUS_NONE
+			focused.focus_mode = Control.FOCUS_NONE
 		focused = null
 	obj.release_focus()
 	
@@ -2430,7 +2429,7 @@ static func _do_process(delta: float, obj) -> void:
 ## Notification
 
 static func _do_notification(what: int):
-	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+	if what == Control.NOTIFICATION_APPLICATION_FOCUS_OUT:
 		TTS.stop()
 		_OS_focused = false
 		# If MenuBar is access enabled, closes the menu variables
@@ -2443,8 +2442,8 @@ static func _do_notification(what: int):
 		_popup_visible = false
 		_popup_index = 0
 				
-	if what == NOTIFICATION_APPLICATION_FOCUS_IN:
+	if what == Control.NOTIFICATION_APPLICATION_FOCUS_IN:
 		_OS_focused = true
 		
-	if what == NOTIFICATION_EXIT_TREE:
+	if what == Control.NOTIFICATION_EXIT_TREE:
 		TTS.stop()
