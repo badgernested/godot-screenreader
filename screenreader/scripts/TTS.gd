@@ -10,6 +10,7 @@ static var voice_id = null
 
 static func speak(sentence, interrupt = false, language=default_lang, pitch=1.0, rate=1.0, volume=50):
 	print(sentence)
+
 	if voice_id == null:
 		voice_id = DisplayServer.tts_get_voices_for_language(language)[0]
 	if interrupt:

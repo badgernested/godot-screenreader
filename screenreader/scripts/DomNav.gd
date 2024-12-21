@@ -1,12 +1,13 @@
+class_name DomNav
 extends Control
 
 ## Variables
 
 # Whether or not DOM navigation is enabled
-var dom_nav_enabled: bool = false
+static var dom_nav_enabled: bool = false
 
 # The object that is referred to as the root of the Dom.
-var dom_root: Node = null
+static var dom_root: Node = null
 
 # Change this and it will preload a new focus style when focused
 # Note, currently as built, if this value is cleared after being used,
@@ -14,82 +15,88 @@ var dom_root: Node = null
 const DEFAULT_FOCUS_STYLE = preload("res://screenreader/ui/style/focus_end_node.tres")
 
 # This stores the list of objects itself. 
-var objects: Array = []
+static var _objects: Array = []
 
 # Only end node objects list
-var end_node_list: Array = []
+static var _end_node_list: Array = []
 
 # Only branches that have end nodes
-var end_node_branches: Array = []
+static var _end_node_branches: Array = []
 
 # Keeps track of the array stack
-var array_stack: Array = []
+static var _array_stack: Array = []
 
 # This contains a copy of the old "focus mode" state
 # this way you can disable DOM mode and go back
 # to the focus mode built by the developer
-var object_focus_mode: Array = []
+static var _object_focus_mode: Array = []
 
 # This is the current object in focus
-var focused: Node = null
+static var focused: Node = null
 
 # The window is currently in focus in the OS
-var OS_focused: bool = true
+static var _OS_focused: bool = true
 
 # This is the rect2 of the drawing box for highlighting controls
-var highlight_box: Rect2 = Rect2(0,0,0,0)
+static var _highlight_box: Rect2 = Rect2(0,0,0,0)
 
 # Is true if the current control is moving and sliding.
-var slider_moving: bool = false
+static var _slider_moving: bool = false
 
 # Is set to the current text object's text after processing.
-var last_text: String = ""
+static var _last_text: String = ""
 
 # Is set to current caret line for text after processing
-var last_caret_line: int = 0
+static var _last_caret_line: int = 0
 
 # Is set to the last caret position for text after processing
-var last_caret_pos: int = 0
+static var _last_caret_pos: int = 0
 
 # This prevents bugs with holding down navigation keys with text
-var text_wait_to_press: bool = false
+static var _text_wait_to_press: bool = false
 
 # This stores the old value of a slider while sliding
-var slider_value: float = 0
+static var _slider_value: float = 0
 
 # This stores whether or not the slider is actually sliding
-var slider_is_sliding: bool = false
+static var _slider_is_sliding: bool = false
 
 # Checks whether a child popup is visible. gets around weird timing bugs.
-var popup_visible: bool = false
+static var _popup_visible: bool = false
 
 # Tracks the index of the current popup.
-var popup_index: int = 0
+static var _popup_index: int = 0
 
 # The old rect2 of the focused item
-var focused_old: Rect2 = Rect2(0,0,0,0)
+static var _focused_old: Control = null
+
+# The last frame's rectangle size for the focused item
+static var _focused_rect_old: Rect2 = Rect2(0,0,0,0)
+
+# Whether or not the state was updated.
+static var _state_updated: bool = false
 
 # This stores all data objects in the DOM with a dictionary
 # that represents certain values.
-var data_objects: Dictionary = {}
+static var _data_objects: Dictionary = {}
 
 # This is used for inserting accessibility tokens
 # to be read by the screenreader
-var tokens: Array = []
+static var _tokens: Array = []
 
 ## Movement variables
 
 # Tracks your position navigating end nodes
-var end_node_position: int = 0
+static var _end_node_position: int = 0
 
 # Timer object for cooldown
-@onready var timer: Timer = Timer.new()
+static var timer: Timer = Timer.new()
 
 # Timer for slider cooldown
-@onready var timer_slider: Timer = Timer.new()
+static var timer_slider: Timer = Timer.new()
 
 # Timer for slider increment cooldown
-@onready var timer_slider_increment: Timer = Timer.new()
+static var timer_slider_increment: Timer = Timer.new()
 
 # How much time to cooldown
 const TIMER_COOLDOWN = 0.3
@@ -106,28 +113,28 @@ const LIST_PITCH_SHIFT = 1.2
 # Options
 
 # Whether or not sound effects are enabled
-var sfx_enabled: bool = true
+static var sfx_enabled: bool = true
 
 # whether or not navigation wraps around
-var navigation_wrap: bool = true
+static var navigation_wrap: bool = true
 
 # whether or not subtitles are enabled
-var subtitles_enabled: bool = true
+static var subtitles_enabled: bool = true
 
 # whether or not audio description is enabled
-var audio_description_enabled: bool = true
+static var audio_description_enabled: bool = true
 
 # if true, reads more detailed strings
-var verbose: bool = true
+static var verbose: bool = true
 
 # This shows useful debug messages if enabled
-var debug: bool = false
+static var debug: bool = false
 
 # Objects
 
 # Plays sound effects.
 
-var sfx : AudioStreamPlayer = AudioStreamPlayer.new()
+static var _sfx : AudioStreamPlayer = AudioStreamPlayer.new()
 
 # Preloaded library of sfx
 const SFX_LIBRARY = {
@@ -208,8 +215,9 @@ enum TREE_CONTROL {
 }
 
 # This is used for highlighting UI elements
-var control_state: int = CONTROL_STATE.FOCUSED
-var focused_box: Rect2 = Rect2(0,0,0,0)
+static var _control_state: int = CONTROL_STATE.FOCUSED
+static var _focused_box: Rect2 = Rect2(0,0,0,0)
+
 enum CONTROL_STATE {
 	FOCUSED,
 	PRESSED
@@ -276,36 +284,14 @@ enum NODE_TYPE {
 	IGNORE
 }
 
-## Notification
-
-func _notification(what: int):
-	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
-		TTS.stop()
-		OS_focused = false
-		# If MenuBar is access enabled, closes the menu variables
-		if focused is MenuBar:
-			if focused.get("selected_index") != null:
-				focused.selected_index = 0
-				focused.menu_opened = false
-				
-		# Clears popup variables
-		popup_visible = false
-		popup_index = 0
-				
-	if what == NOTIFICATION_APPLICATION_FOCUS_IN:
-		OS_focused = true
-		
-	if what == NOTIFICATION_EXIT_TREE:
-		TTS.stop()
-
 ## Control methods
 
 # Sets the dom root node.
-func set_dom_root(obj):
+static func set_dom_root(obj):
 	dom_root = obj
 	init_DOM()
 
-func enable_dom(value=true):
+static func enable_dom(value=true):
 	dom_nav_enabled = value
 	
 	# disables godot focus, uses custom UI built
@@ -321,9 +307,9 @@ func enable_dom(value=true):
 
 ## Finder methods
 
-func find_object_type(type, max=1):
+static func find_object_type(type, max=1):
 	var counter = 0
-	for c in end_node_list:
+	for c in _end_node_list:
 		if get_node_type(c) == type && counter >= max:
 			return c
 		counter+=1
@@ -332,7 +318,7 @@ func find_object_type(type, max=1):
 ## Processing/navigation functions
 
 # Processes interacting with inputs
-func process_input(delta):
+static func process_input(delta):
 
 	var default_move = true
 	var do_default_processing = true
@@ -396,7 +382,7 @@ func process_input(delta):
 	
 # Processes keys for getting information
 # like rereading the current element
-func process_info_keys():
+static func process_info_keys():
 	if Input.is_action_just_pressed("DOM_read_item"):
 		get_accessible_name(focused)
 		tts_speak()
@@ -407,7 +393,7 @@ func process_info_keys():
 		
 	return true
 
-func find_parent_tabbar(obj):
+static func find_parent_tabbar(obj):
 	var obj_pos = get_node_pos(obj)
 	if !obj_pos.is_empty():
 		var test_obj = null
@@ -434,7 +420,7 @@ func find_parent_tabbar(obj):
 	return null
 
 # Button controls
-func process_button_controls():
+static func process_button_controls():
 	var activated = true
 	var toggle_old = focused.button_pressed
 	var old_text = focused.text
@@ -498,7 +484,7 @@ func process_button_controls():
 
 # Video controls
 # returns false if movement is registered
-func process_video_controls():
+static func process_video_controls():
 	
 	var read_text = ""
 	
@@ -539,7 +525,7 @@ func process_video_controls():
 # Following are menubar control items
 
 # Does the menubar controls
-func process_menubar_controls():
+static func process_menubar_controls():
 	var menu_size = focused.get_menu_count()
 	var properties = get_object_data(focused)
 	var menu_pos = 0
@@ -613,7 +599,7 @@ func process_menubar_controls():
 			
 	return true
 
-func menubar_close_menu(properties):
+static func menubar_close_menu(properties):
 	# Closes menu if open
 	if menubar_menu_opened(focused):
 		menubar_menu_close_all(focused)
@@ -622,7 +608,7 @@ func menubar_close_menu(properties):
 			
 		return false
 
-func menubar_read_selected_item(properties):
+static func menubar_read_selected_item(properties):
 	var menu_size = focused.get_menu_count()
 	var menu_pos = properties["selected_menu"]
 	
@@ -655,7 +641,7 @@ func menubar_read_selected_item(properties):
 	
 	tts_speak()
 
-func menubar_nav_menus(properties):
+static func menubar_nav_menus(properties):
 	if !properties.is_empty():
 		if Input.is_action_just_pressed("DOM_item_increment"):
 			var was_opened = menubar_menu_opened(focused)
@@ -680,6 +666,8 @@ func menubar_nav_menus(properties):
 				get_accessible_menubar_name(focused)
 				tts_speak()
 				
+			_state_updated = true
+				
 			return false
 			
 		elif Input.is_action_just_pressed("DOM_item_decrement"):
@@ -703,11 +691,13 @@ func menubar_nav_menus(properties):
 				get_accessible_menubar_name(focused)
 				tts_speak()
 				
+			_state_updated = true
+				
 			return false	
 			
 	return true
 
-func menubar_menu_opened(obj):
+static func menubar_menu_opened(obj):
 	var properties = get_object_data(obj)
 	
 	if obj is MenuBar:
@@ -717,7 +707,7 @@ func menubar_menu_opened(obj):
 				
 	return false
 				
-func menubar_menu_close_all(obj):
+static func menubar_menu_close_all(obj):
 	var properties = get_object_data(obj)
 	
 	if obj is MenuBar:
@@ -731,7 +721,7 @@ func menubar_menu_close_all(obj):
 			if properties["selected_index"] != null:
 				properties["selected_index"] = 0
 	
-func menubar_menu_update(obj):
+static func menubar_menu_update(obj):
 	var properties = get_object_data(obj)
 	if obj is MenuBar:
 		if !properties.is_empty():
@@ -739,7 +729,7 @@ func menubar_menu_update(obj):
 				var popup = obj.get_menu_popup(properties["selected_menu"])
 				popup.set_focused_item(properties["selected_index"])
 		
-func menubar_menu_open(obj, index):
+static func menubar_menu_open(obj, index):
 	if obj is MenuBar:
 		var popup = obj.get_menu_popup(index)
 		
@@ -774,7 +764,7 @@ func menubar_menu_open(obj, index):
 
 # Following are tabbar movement funcionts
 
-func process_tabbar_controls():
+static func process_tabbar_controls():
 	var tab_val = focused.current_tab
 	var tab_size = focused.tab_count
 	
@@ -801,7 +791,8 @@ func process_tabbar_controls():
 		
 			focused.emit_signal("tab_changed", focused.current_tab)
 			focused.emit_signal("tab_selected", focused.current_tab)
-		
+			_state_updated = true
+			
 		return false
 		
 	elif Input.is_action_just_pressed("DOM_item_decrement"):
@@ -824,7 +815,8 @@ func process_tabbar_controls():
 		
 			focused.emit_signal("tab_changed", focused.current_tab)
 			focused.emit_signal("tab_selected", focused.current_tab)
-		
+			_state_updated = true
+			
 		return false
 		
 	# If moving to the next element, select the first
@@ -836,24 +828,24 @@ func process_tabbar_controls():
 		var parent = focused.get_parent().get_child(focused.current_tab)
 		
 		# find the first node with this ancestor in the object list
-		for c in range(0,end_node_list.size()):
-			if parent.is_ancestor_of(end_node_list[c]):
+		for c in range(0,_end_node_list.size()):
+			if parent.is_ancestor_of(_end_node_list[c]):
 				update_end_node_position(0, c)
 				return false
 	
 	return true
 
 # Processes slider controls
-func process_slider_controls():
+static func process_slider_controls():
 	
-	sfx.pitch_scale = 0.75 + 0.5 * ((focused.value - focused.min_value) / (focused.max_value - focused.min_value))
+	_sfx.pitch_scale = 0.75 + 0.5 * ((focused.value - focused.min_value) / (focused.max_value - focused.min_value))
 	
 	# If released, stops slider mode.
 	if (!(Input.is_action_pressed("DOM_item_decrement")
 		|| Input.is_action_pressed("DOM_item_increment"))
 		&& (Input.is_action_just_released("DOM_item_decrement")
 		|| Input.is_action_just_released("DOM_item_increment"))):
-		slider_moving = false
+		_slider_moving = false
 		stop_sound()
 		
 		# Adds default name tokens if verbose
@@ -870,7 +862,7 @@ func process_slider_controls():
 		
 		if (focused is HSlider ||
 			focused is VSlider):
-				focused.emit_signal("drag_ended", slider_value != focused.value)
+				focused.emit_signal("drag_ended", _slider_value != focused.value)
 		
 		tts_speak()
 		
@@ -881,8 +873,8 @@ func process_slider_controls():
 	# If pressed down, enters slider mode.
 	elif (Input.is_action_just_pressed("DOM_item_decrement")
 		|| Input.is_action_just_pressed("DOM_item_increment")):
-		slider_moving = true
-		slider_value = focused.value
+		_slider_moving = true
+		_slider_value = focused.value
 		TTS.stop()
 		
 		# updates slider position
@@ -909,8 +901,8 @@ func process_slider_controls():
 			slider_amount = cooldown
 			
 		if (Input.is_action_pressed("DOM_item_increment")):
-			if !slider_is_sliding:
-				slider_is_sliding = true
+			if !_slider_is_sliding:
+				_slider_is_sliding = true
 				if (focused is HSlider ||
 					focused is VSlider):
 						focused.emit_signal("drag_started")
@@ -922,8 +914,8 @@ func process_slider_controls():
 			return false
 			
 		elif (Input.is_action_pressed("DOM_item_decrement")):
-			if !slider_is_sliding:
-				slider_is_sliding = true
+			if !_slider_is_sliding:
+				_slider_is_sliding = true
 				if (focused is HSlider ||
 					focused is VSlider):
 						focused.emit_signal("drag_started")
@@ -937,11 +929,11 @@ func process_slider_controls():
 	return true
 
 # checks if unicode is a capital letter
-func unicode_is_capital(unicode):
+static func unicode_is_capital(unicode):
 	return unicode >= 65 && unicode <= 90
 
 # These are special key combos that are ignored for some purposes
-func special_key_combos():
+static func special_key_combos():
 	# paste
 	if (KeyFrame.pressed_keys.has(KEY_CTRL)
 		&& KeyFrame.pressed_keys.has(KEY_V)):
@@ -950,7 +942,7 @@ func special_key_combos():
 	return false
 	
 # Returns the string of certain characters
-func get_character_name(char):
+static func get_character_name(char):
 	if focused is CodeEdit:
 		for c in TEXTEDIT_CHARACTER_NAMES:
 			if c != " ":
@@ -962,19 +954,19 @@ func get_character_name(char):
 	return char
 
 # Does the text edit controls
-func process_text_controls():
+static func process_text_controls():
 	clear_tokens()
 
 	if (Input.is_action_just_pressed("ui_up") ||
 		Input.is_action_just_released("ui_up") ||
 		Input.is_action_just_pressed("ui_down") ||
 		Input.is_action_just_released("ui_down")):
-			text_wait_to_press = true
+			_text_wait_to_press = true
 
 	var lines_count = 0
 	var caret_position = focused.get_caret_column();
 	var lines = focused.text.split("\n")
-	var last_lines = last_text.split("\n")
+	var last_lines = _last_text.split("\n")
 	
 	var pitch = 1.0
 	
@@ -1020,7 +1012,7 @@ func process_text_controls():
 			return false
 			
 	if focused is TextEdit:
-		if text_wait_to_press && (Input.is_action_pressed("ui_up")
+		if _text_wait_to_press && (Input.is_action_pressed("ui_up")
 			|| Input.is_action_just_pressed("ui_up")):
 			# Read the current line
 			var char = lines[lines_count]
@@ -1034,7 +1026,7 @@ func process_text_controls():
 			if unicode_is_capital(char_no):
 				pitch = 2.0
 				
-			if last_caret_line == 0:
+			if _last_caret_line == 0:
 				return true
 				
 			add_token(get_character_name(char))
@@ -1043,10 +1035,10 @@ func process_text_controls():
 				add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS[TEXTEDIT_STRING.LINE])
 				
 			tts_speak(pitch)
-			last_caret_line = lines_count
+			_last_caret_line = lines_count
 			return false
 			
-		elif text_wait_to_press && (Input.is_action_pressed("ui_down")
+		elif _text_wait_to_press && (Input.is_action_pressed("ui_down")
 			|| Input.is_action_just_pressed("ui_down")):
 			var char = lines[lines_count]
 			var char_no = -1
@@ -1059,7 +1051,7 @@ func process_text_controls():
 			if char.length() > 1 && char_no > -1 && unicode_is_capital(char_no):
 				pitch = 2.0
 				
-			if last_caret_line > lines_count-1:
+			if _last_caret_line > lines_count-1:
 				return true
 				
 			# Read the current line
@@ -1069,18 +1061,18 @@ func process_text_controls():
 				add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS[TEXTEDIT_STRING.LINE])
 			
 			tts_speak(pitch)
-			last_caret_line = lines_count
+			_last_caret_line = lines_count
 			return false
 	
 	# If a change is made in the text
-	if last_text != focused.text:
+	if _last_text != focused.text:
 		
 		if Input.is_key_pressed(KEY_BACKSPACE):
 			var char = "" 
-			if last_lines[last_caret_line].length() > 0:
-				if lines.size() > last_caret_line:
+			if last_lines[_last_caret_line].length() > 0:
+				if lines.size() > _last_caret_line:
 					print(min(caret_position,last_lines.size()-1))
-					char = last_lines[last_caret_line][min(caret_position,last_lines[last_caret_line].length()-1)]
+					char = last_lines[_last_caret_line][min(caret_position,last_lines[_last_caret_line].length()-1)]
 			else:
 				char = TEXTEDIT_STRINGS[TEXTEDIT_STRING.NEWLINE]
 			
@@ -1115,14 +1107,14 @@ func process_text_controls():
 				
 		tts_speak(pitch)
 		
-		last_text = focused.text
-		last_caret_line = lines_count
-		last_caret_pos = caret_position
+		_last_text = focused.text
+		_last_caret_line = lines_count
+		_last_caret_pos = caret_position
 		
 		return false
 		
 		
-	elif text_wait_to_press && !KeyFrame.pressed_keys.is_empty() && KeyFrame.key_pressed():
+	elif _text_wait_to_press && !KeyFrame.pressed_keys.is_empty() && KeyFrame.key_pressed():
 		clear_tokens()
 		
 		for c in KeyFrame.pressed_keys:
@@ -1133,7 +1125,7 @@ func process_text_controls():
 	
 	return true
 
-func process_menu_button_controls():
+static func process_menu_button_controls():
 	var popup = focused.get_popup()
 
 	var text = focused.text
@@ -1166,38 +1158,38 @@ func process_menu_button_controls():
 	if focused.get("alt_text") != null && !focused.alt_text.is_empty():
 		text = focused.alt_text
 
-	if popup_visible:
+	if _popup_visible:
 		var changed = false
 		
 		if Input.is_action_just_pressed("DOM_item_decrement"):
-			popup_index-= 1
+			_popup_index-= 1
 			
-			if popup_index < 0:
-				popup_visible = false
+			if _popup_index < 0:
+				_popup_visible = false
 				popup.visible = false
-				popup_index = 0
+				_popup_index = 0
 				add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
 			else:
 				play_sound("list_nav", LIST_PITCH_SHIFT)
 				changed = true
 			
 		elif Input.is_action_just_pressed("DOM_item_increment"):
-			popup_index += 1
+			_popup_index += 1
 			
-			if popup_index > focused.item_count-1:
-				popup_visible = false
+			if _popup_index > focused.item_count-1:
+				_popup_visible = false
 				popup.visible = false
-				popup_index = 0
+				_popup_index = 0
 				add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
 			else:
 				play_sound("list_nav")
 				changed = true
 			
 		if changed:
-			popup.scroll_to_item(popup_index)
-			popup.set_focused_item(popup_index)
+			popup.scroll_to_item(_popup_index)
+			popup.set_focused_item(_popup_index)
 			
-			add_token(popup.get_item_text(popup_index))
+			add_token(popup.get_item_text(_popup_index))
 			tts_speak()
 			
 			return false
@@ -1212,17 +1204,17 @@ func process_menu_button_controls():
 	if Input.is_action_just_pressed("DOM_select"):
 		play_sound("button_down")
 		
-		if popup_visible:
+		if _popup_visible:
 			popup.visible = false
-			popup_index = 0
+			_popup_index = 0
 			add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
 		else:
 			focused.emit_signal("about_to_popup")
 			focused.show_popup()
-			add_token(popup.get_item_text(popup_index))
+			add_token(popup.get_item_text(_popup_index))
 			add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.OPENED] % [text] )
 			
-		popup_visible = !popup_visible
+		_popup_visible = !_popup_visible
 		
 		tts_speak()
 		return false
@@ -1232,7 +1224,7 @@ func process_menu_button_controls():
 		
 	return true
 
-func process_option_button_controls():
+static func process_option_button_controls():
 	var popup = focused.get_popup()
 
 	var text = ""
@@ -1266,40 +1258,40 @@ func process_option_button_controls():
 	if focused.get("alt_text") != null && !focused.alt_text.is_empty():
 		text = focused.alt_text
 
-	if popup_visible:
+	if _popup_visible:
 		var changed = false
 		
 		if Input.is_action_just_pressed("DOM_item_decrement"):
-			popup_index-= 1
+			_popup_index-= 1
 			
-			if popup_index < 0:
-				popup_visible = false
+			if _popup_index < 0:
+				_popup_visible = false
 				popup.visible = false
-				popup_index = 0
+				_popup_index = 0
 				add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
 			else:
-				focused.emit_signal("item_focused",popup_index)
+				focused.emit_signal("item_focused",_popup_index)
 				play_sound("list_nav", LIST_PITCH_SHIFT)
 				changed = true
 			
 		elif Input.is_action_just_pressed("DOM_item_increment"):
-			popup_index += 1
+			_popup_index += 1
 			
-			if popup_index > focused.item_count-1:
-				popup_visible = false
+			if _popup_index > focused.item_count-1:
+				_popup_visible = false
 				popup.visible = false
-				popup_index = 0
+				_popup_index = 0
 				add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
 			else:
-				focused.emit_signal("item_focused",popup_index)
+				focused.emit_signal("item_focused",_popup_index)
 				play_sound("list_nav")
 				changed = true
 			
 		if changed:
-			popup.scroll_to_item(popup_index)
-			popup.set_focused_item(popup_index)
+			popup.scroll_to_item(_popup_index)
+			popup.set_focused_item(_popup_index)
 			
-			add_token(popup.get_item_text(popup_index))
+			add_token(popup.get_item_text(_popup_index))
 			tts_speak()
 			
 			return false
@@ -1314,18 +1306,18 @@ func process_option_button_controls():
 	if Input.is_action_just_pressed("DOM_select"):
 		play_sound("button_down")
 		
-		if popup_visible:
+		if _popup_visible:
 			popup.visible = false
-			add_token(STRING_FORMATS[STRING_FORMAT.SELECTED] % [popup.get_item_text(popup_index)])
+			add_token(STRING_FORMATS[STRING_FORMAT.SELECTED] % [popup.get_item_text(_popup_index)])
 			add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
-			focused.emit_signal("item_selected",popup_index)
+			focused.emit_signal("item_selected",_popup_index)
 		else:
 			focused.show_popup()
-			popup_index = max(focused.selected,0)
-			add_token(popup.get_item_text(popup_index))
+			_popup_index = max(focused.selected,0)
+			add_token(popup.get_item_text(_popup_index))
 			add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.OPENED] % [text] )
 			
-		popup_visible = !popup_visible
+		_popup_visible = !_popup_visible
 		
 		tts_speak()
 		return false
@@ -1335,7 +1327,7 @@ func process_option_button_controls():
 		
 	return true
 
-func process_tree_controls():
+static func process_tree_controls():
 	var treeitem = focused.get_selected() 
 	
 	if treeitem != null:
@@ -1356,6 +1348,7 @@ func process_tree_controls():
 			get_accessible_tree_name(focused, false)
 		
 			tts_speak()
+			_state_updated = true
 			return false
 			
 		if Input.is_action_just_pressed("DOM_item_increment"):
@@ -1373,7 +1366,7 @@ func process_tree_controls():
 			get_accessible_name(focused)
 		
 			tts_speak()
-				
+			_state_updated = true
 			return false
 			
 		elif Input.is_action_just_pressed("DOM_item_decrement"):
@@ -1391,7 +1384,7 @@ func process_tree_controls():
 			get_accessible_name(focused)
 		
 			tts_speak()
-				
+			_state_updated = true
 			return false
 		
 	return true
@@ -1399,7 +1392,7 @@ func process_tree_controls():
 # Does movement between areas.
 # So, for example, if you group buttons together, you can
 # tab next-prev between them.
-func area_movement():
+static func area_movement():
 	
 	if Input.is_action_just_pressed("DOM_prev"):
 		return find_prev_grouping(focused)
@@ -1410,29 +1403,29 @@ func area_movement():
 	
 # Finds the next grouping.
 # This would be the first valid element of the next available array.
-func find_next_grouping(obj):
+static func find_next_grouping(obj):
 	var pos = get_node_pos(obj)
 	if !pos.is_empty():
 		var parent_pos = pos.slice(0,pos.size()-1)
 		var parent_obj = get_node_from_pos(parent_pos)
-		var index = end_node_branches.find(parent_obj)
+		var index = _end_node_branches.find(parent_obj)
 		
 		if index > -1:
 			index += 1
 			
 			if navigation_wrap:
-				if index >= end_node_branches.size():
+				if index >= _end_node_branches.size():
 					index = 0
 				elif index < 0:
-					index = end_node_branches.size()-1
+					index = _end_node_branches.size()-1
 			else:
-				if index >= end_node_branches.size():
-					index = end_node_branches.size()-1
+				if index >= _end_node_branches.size():
+					index = _end_node_branches.size()-1
 				elif index < 0:
 					index = 0
 					
-			var next_obj = find_first_obj(end_node_branches[index])
-			var next_obj_index = end_node_list.find(next_obj)
+			var next_obj = find_first_obj(_end_node_branches[index])
+			var next_obj_index = _end_node_list.find(next_obj)
 			
 			var loops = 0
 			
@@ -1440,80 +1433,80 @@ func find_next_grouping(obj):
 				index += 1
 				
 				if navigation_wrap && loops < 2:
-					if index >= end_node_branches.size():
+					if index >= _end_node_branches.size():
 						index = 0
 						loops+=1
 					elif index < 0:
-						index = end_node_branches.size()-1
+						index = _end_node_branches.size()-1
 						loops+=1
 				else:
-					if index >= end_node_branches.size():
-						index = end_node_branches.size()-1
+					if index >= _end_node_branches.size():
+						index = _end_node_branches.size()-1
 						loops+=1
 					elif index < 0:
 						index = 0
 						loops+=1
 						
-				next_obj = find_first_obj(end_node_branches[index])
-				next_obj_index = end_node_list.find(next_obj)
+				next_obj = find_first_obj(_end_node_branches[index])
+				next_obj_index = _end_node_list.find(next_obj)
 			
 			return next_obj_index
 	return -1
 	
 # Finds the previous grouping.
 # This would be the first valid element of the previous available array.
-func find_prev_grouping(obj):
+static func find_prev_grouping(obj):
 	var pos = get_node_pos(obj)
 	if !pos.is_empty():
 		var parent_pos = pos.slice(0,pos.size()-1)
 		var parent_obj = get_node_from_pos(parent_pos)
-		var index = end_node_branches.find(parent_obj)
+		var index = _end_node_branches.find(parent_obj)
 		
 		if index > -1:
 			index -= 1
 			
 			if navigation_wrap:
-				if index >= end_node_branches.size():
+				if index >= _end_node_branches.size():
 					index = 0
 				elif index < 0:
-					index = end_node_branches.size()-1
+					index = _end_node_branches.size()-1
 			else:
-				if index >= end_node_branches.size():
-					index = end_node_branches.size()-1
+				if index >= _end_node_branches.size():
+					index = _end_node_branches.size()-1
 				elif index < 0:
 					index = 0
 					
-			var next_obj = find_first_obj(end_node_branches[index])
-			var next_obj_index = end_node_list.find(next_obj)
+			var next_obj = find_first_obj(_end_node_branches[index])
+			var next_obj_index = _end_node_list.find(next_obj)
 			var loops = 0
 			
 			while !next_obj.is_visible_in_tree():
 				index -= 1
 				
 				if navigation_wrap && loops < 2:
-					if index >= end_node_branches.size():
+					if index >= _end_node_branches.size():
 						index = 0
 						loops+=1
 					elif index < 0:
-						index = end_node_branches.size()-1
+						index = _end_node_branches.size()-1
 						loops+=1
 				else:
-					if index >= end_node_branches.size():
-						index = end_node_branches.size()-1
+					if index >= _end_node_branches.size():
+						index = _end_node_branches.size()-1
 						loops+=1
 					elif index < 0:
 						index = 0
 						loops+=1
 						
-				next_obj = find_first_obj(end_node_branches[index])
-				next_obj_index = end_node_list.find(next_obj)
+				next_obj = find_first_obj(_end_node_branches[index])
+				next_obj_index = _end_node_list.find(next_obj)
 			
 			return next_obj_index
 	return -1
 	
 	
 # Finds the first object in an array	
-func find_first_obj(arr):
+static func find_first_obj(arr):
 	for c in arr:
 		if !(c is Array):
 			return c
@@ -1522,9 +1515,9 @@ func find_first_obj(arr):
 			
 # Returns false if moved in any way.
 # This allows for controls to use basic UI commands to navigate too
-func simple_movement():
+static func simple_movement():
 
-	if !end_node_list.is_empty():
+	if !_end_node_list.is_empty():
 		
 		if Input.is_action_just_pressed("ui_down"):
 			return 1
@@ -1538,14 +1531,14 @@ func simple_movement():
 	return 0
 
 # Gets the node position as an array of what indices to take to find it.
-func get_node_pos(obj):
+static func get_node_pos(obj):
 	var arr = []
 		
 	get_node_pos_rec(obj,arr)
 				
 	return arr
 	
-func get_node_pos_rec(obj, arr=null, search_array=objects, layer=0):
+static func get_node_pos_rec(obj, arr=null, search_array=_objects, layer=0):
 
 	arr.append(0)
 
@@ -1565,11 +1558,11 @@ func get_node_pos_rec(obj, arr=null, search_array=objects, layer=0):
 	
 # Gets node from given node position array
 # returns null if invalid
-func get_node_from_pos(arr):
+static func get_node_from_pos(arr):
 	if arr.is_empty():
 		return null
 	
-	var node = objects[arr[0]]
+	var node = _objects[arr[0]]
 	
 	for c in range(1,arr.size()):
 		if node is Array:
@@ -1583,11 +1576,11 @@ func get_node_from_pos(arr):
 	return node
 	
 # The selected end node grabs focus.		
-func end_node_grab_focus():
-	grab_obj_focus(end_node_list[end_node_position])
+static func end_node_grab_focus():
+	grab_obj_focus(_end_node_list[_end_node_position])
 	
 # This will take the current object and make its tab visible
-func open_selected_tab(obj):
+static func open_selected_tab(obj):
 	var parent = obj.get_parent()
 	if parent != null:
 		# nearest ancestor tabcontainer is found
@@ -1598,77 +1591,77 @@ func open_selected_tab(obj):
 			open_selected_tab(parent)	
 	return null
 			
-func update_end_node_position(movement=0, index=-1):
-	var old_node_pos = end_node_position
+static func update_end_node_position(movement=0, index=-1):
+	var old_node_pos = _end_node_position
 	
 	focused.release_focus()
 	
 	# if an exact index is defined, use that
 	if index > -1:
-		end_node_position = index
+		_end_node_position = index
 	else:
-		end_node_position+=movement
+		_end_node_position+=movement
 		
 	# Correct navigation position to be within the array
 	# If navigation wraps
 	if navigation_wrap:
-		if end_node_position >= end_node_list.size():
-			end_node_position = 0
-		elif end_node_position < 0:
-			end_node_position = end_node_list.size()-1
+		if _end_node_position >= _end_node_list.size():
+			_end_node_position = 0
+		elif _end_node_position < 0:
+			_end_node_position = _end_node_list.size()-1
 
 	else:
-		if end_node_position >= end_node_list.size():
-			end_node_position = end_node_list.size()-1
-		elif end_node_position < 0:
-			end_node_position = 0
+		if _end_node_position >= _end_node_list.size():
+			_end_node_position = _end_node_list.size()-1
+		elif _end_node_position < 0:
+			_end_node_position = 0
 		
 	if movement > 0:
 		var loops = 0
-		var next_obj = end_node_list[end_node_position]
+		var next_obj = _end_node_list[_end_node_position]
 
 		while !next_obj.is_visible_in_tree():
-			end_node_position += 1
+			_end_node_position += 1
 			
 			if navigation_wrap && loops < 2:
-				if end_node_position >= end_node_list.size():
-					end_node_position = 0
+				if _end_node_position >= _end_node_list.size():
+					_end_node_position = 0
 					loops+=1
-				elif end_node_position < 0:
-					end_node_position = end_node_list.size()-1
+				elif _end_node_position < 0:
+					_end_node_position = _end_node_list.size()-1
 					loops+=1
 			else:
-				if end_node_position >= end_node_list.size():
-					end_node_position = end_node_list.size()-1
+				if _end_node_position >= _end_node_list.size():
+					_end_node_position = _end_node_list.size()-1
 					loops+=1
-				elif end_node_position < 0:
-					end_node_position = 0
+				elif _end_node_position < 0:
+					_end_node_position = 0
 					loops+=1
 					
-			next_obj = end_node_list[end_node_position]
+			next_obj = _end_node_list[_end_node_position]
 	elif movement < 0:
 		var loops = 0
-		var next_obj = end_node_list[end_node_position]
+		var next_obj = _end_node_list[_end_node_position]
 
 		while !next_obj.is_visible_in_tree():
-			end_node_position -= 1
+			_end_node_position -= 1
 			
 			if navigation_wrap && loops < 2:
-				if end_node_position >= end_node_list.size():
-					end_node_position = 0
+				if _end_node_position >= _end_node_list.size():
+					_end_node_position = 0
 					loops+=1
-				elif end_node_position < 0:
-					end_node_position = end_node_list.size()-1
+				elif _end_node_position < 0:
+					_end_node_position = _end_node_list.size()-1
 					loops+=1
 			else:
-				if end_node_position >= end_node_list.size():
-					end_node_position = end_node_list.size()-1
+				if _end_node_position >= _end_node_list.size():
+					_end_node_position = _end_node_list.size()-1
 					loops+=1
-				elif end_node_position < 0:
-					end_node_position = 0
+				elif _end_node_position < 0:
+					_end_node_position = 0
 					loops+=1
 					
-			next_obj = end_node_list[end_node_position]
+			next_obj = _end_node_list[_end_node_position]
 		
 	end_node_grab_focus()
 	
@@ -1677,25 +1670,25 @@ func update_end_node_position(movement=0, index=-1):
 ## Focus methods
 
 # Grabs focus of an object
-func grab_obj_focus(obj):
+static func grab_obj_focus(obj):
 	if obj != null:
 		if dom_nav_enabled:
 			
 			# Release any sliders
-			slider_moving = false
-			sfx.pitch_scale = 1.0
+			_slider_moving = false
+			_sfx.pitch_scale = 1.0
 			timer_slider.stop()
-			slider_value = 0
-			slider_is_sliding = false
+			_slider_value = 0
+			_slider_is_sliding = false
 			
 			# Clears text
-			last_text = ""
-			last_caret_line = 0
-			text_wait_to_press = false
+			_last_text = ""
+			_last_caret_line = 0
+			_text_wait_to_press = false
 			
 			# Clears a popup if any exists
-			popup_visible = false
-			popup_index = 0
+			_popup_visible = false
+			_popup_index = 0
 			if focused != null:
 				if focused.has_method("get_popup"):
 					focused.get_popup().visible = false
@@ -1728,7 +1721,7 @@ func grab_obj_focus(obj):
 						stop_sound()
 						play_sound("text_enter")
 						
-						last_text = focused.text
+						_last_text = focused.text
 						# Reset caret position
 						focused.set_caret_column(0)
 						if focused is TextEdit:
@@ -1755,15 +1748,10 @@ func grab_obj_focus(obj):
 			obj.call_deferred("grab_focus")
 			
 		open_selected_tab(obj)
-		
-		# Redraw control highlighter
-		await get_tree().create_timer(0.01).timeout
-		
-		update_draw_highlight()
 
 		
 # Releases focus of an object
-func release_obj_focus(obj):
+static func release_obj_focus(obj):
 	if dom_nav_enabled:
 		if focused != null:
 			focused.focus
@@ -1772,41 +1760,39 @@ func release_obj_focus(obj):
 	obj.release_focus()
 	
 # Checks the current focused object
-func check_obj_focus(obj):
+static func check_obj_focus(obj):
 	if dom_nav_enabled:
 		return obj == focused
-	else:
-		return obj == get_viewport().gui_get_focus_owner()
 
 ## TTS management methods
 
 # Speaks the current token state
-func tts_speak(pitch=1.0,rate=1.0,volume=50):
-	if tokens.is_empty():
+static func tts_speak(pitch=1.0,rate=1.0,volume=50):
+	if _tokens.is_empty():
 		return
 	
 	var text = ""
-	for c in tokens:
+	for c in _tokens:
 		text += c + " | "
 		
 	clear_tokens()
 		
 	tts_speak_direct(text, pitch, rate, volume)
 	
-func tts_speak_direct(text, pitch=1.0,rate=1.0,volume=50):
+static func tts_speak_direct(text, pitch=1.0,rate=1.0,volume=50):
 	if !text.is_empty():
 		TTS.stop()
 		TTS.speak(text, false, TTS.default_lang, pitch, rate, volume)
 		
 		timer.start(TIMER_COOLDOWN)
 		
-func is_cooled_down():
+static func is_cooled_down():
 	return timer.is_stopped()
 		
 ## Label reading methods
 
 # Gets the name of a control
-func get_accessible_name(obj):
+static func get_accessible_name(obj):
 	
 	var name = null
 	
@@ -1857,7 +1843,7 @@ func get_accessible_name(obj):
 				add_token(obj.get_class())
 	
 # Gets the name for labels
-func get_accessible_label_name(obj):
+static func get_accessible_label_name(obj):
 	var name = ""
 
 	if focused is CodeEdit:
@@ -1882,7 +1868,7 @@ func get_accessible_label_name(obj):
 				add_token(obj.get_class()) 
 			
 # Gets the name for richtext labels
-func get_accessible_richtext_label_name(obj):
+static func get_accessible_richtext_label_name(obj):
 	var name = ""
 	
 	if obj.get("alt_text") != null && !obj.alt_text.is_empty():
@@ -1897,7 +1883,7 @@ func get_accessible_richtext_label_name(obj):
 			add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.LABEL])
 			
 # Gets the name for buttons
-func get_accessible_button_name(obj):
+static func get_accessible_button_name(obj):
 	var name = ""
 	
 	if obj is CheckBox:
@@ -1934,7 +1920,7 @@ func get_accessible_button_name(obj):
 			add_token(token)
 		
 # Gets the name for images
-func get_accessible_image_name(obj):
+static func get_accessible_image_name(obj):
 	var name = ""
 	
 	add_alt_text(obj)
@@ -1944,7 +1930,7 @@ func get_accessible_image_name(obj):
 			add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.IMAGE])
 		
 # Gets the name for progress bars
-func get_accessible_progress_bar_name(obj):
+static func get_accessible_progress_bar_name(obj):
 	var name = ""
 	
 	# reads value
@@ -1969,7 +1955,7 @@ func get_accessible_progress_bar_name(obj):
 			add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.PROGRESS_BAR])
 			
 # Gets the name for spinboxes
-func get_accessible_spinbox_name(obj):
+static func get_accessible_spinbox_name(obj):
 	var name = ""
 	
 	# reads value
@@ -1982,7 +1968,7 @@ func get_accessible_spinbox_name(obj):
 			add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.SPINBOX])
 		
 # Gets the name for hslider
-func get_accessible_hslider_name(obj):
+static func get_accessible_hslider_name(obj):
 	var name = ""
 	
 	get_accessible_slider_name(obj)
@@ -1992,7 +1978,7 @@ func get_accessible_hslider_name(obj):
 			add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.HSLIDER])
 			
 # Gets the name for vslider
-func get_accessible_vslider_name(obj):
+static func get_accessible_vslider_name(obj):
 	var name = ""
 	
 	get_accessible_slider_name(obj)
@@ -2001,7 +1987,7 @@ func get_accessible_vslider_name(obj):
 		if obj.get_class() != name:
 			add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.VSLIDER])
 		
-func get_accessible_slider_name(obj):
+static func get_accessible_slider_name(obj):
 	var name = ""
 	
 	# reads value
@@ -2023,7 +2009,7 @@ func get_accessible_slider_name(obj):
 	
 	add_alt_text(obj)
 		
-func get_accessible_menubar_name(obj):
+static func get_accessible_menubar_name(obj):
 	var properties = get_object_data(obj)
 	
 	var selected_menu = properties["selected_menu"]
@@ -2070,10 +2056,10 @@ func get_accessible_menubar_name(obj):
 		add_alt_text(obj)
 	
 	if verbose:
-		if obj.get_class() != name:
+		if obj.get_class() != text:
 			add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.MENUBAR])
 	
-func get_accessible_tabbar_name(obj):
+static func get_accessible_tabbar_name(obj):
 
 	var selected_menu = obj.current_tab
 	var size = obj.tab_count
@@ -2095,7 +2081,7 @@ func get_accessible_tabbar_name(obj):
 			add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.TABS])
 	
 # Gets the name for optionbuttons
-func get_accessible_optionbutton_name(obj):
+static func get_accessible_optionbutton_name(obj):
 	var name = ""
 
 	if focused.get_selected_id() > -1:
@@ -2114,7 +2100,7 @@ func get_accessible_optionbutton_name(obj):
 			else:
 				add_token(obj.get_class()) 
 	
-func get_accessible_tree_name(obj, read_collapse=true):
+static func get_accessible_tree_name(obj, read_collapse=true):
 	
 	# Read off the currently selected node, if any
 	var selected_item = obj.get_selected()
@@ -2134,6 +2120,8 @@ func get_accessible_tree_name(obj, read_collapse=true):
 		else:
 			add_token(TREE_CONTROL_NAMES[TREE_CONTROL.NO_CHILDREN])
 	
+	var name = ""
+	
 	if obj.get("alt_text") != null && !obj.alt_text.is_empty():
 		name = obj.alt_text
 		add_token(name)
@@ -2143,7 +2131,7 @@ func get_accessible_tree_name(obj, read_collapse=true):
 				add_token(obj.get_class()) 
 	
 # adds alt text	
-func add_alt_text(obj):
+static func add_alt_text(obj):
 	var name = ""
 	
 	# reads alt text, if any
@@ -2152,35 +2140,35 @@ func add_alt_text(obj):
 		add_token(name)
 		
 # Clear tokens
-func clear_tokens():
-	tokens = []
+static func clear_tokens():
+	_tokens = []
 	
 # adds token
-func add_token(token):
+static func add_token(token):
 	token = token.rstrip(" ").lstrip(" ").rstrip("\n").lstrip("\n")
 	if token == ")":
 		pass
 	
 	if(!token.is_empty()):
-		tokens.append(token)
+		_tokens.append(token)
 		
 ## Tree Building Methods
 
 # Searches the tree starting at this node for UI elements to grab
-func recursive_tree_search(obj,level=0):
+static func recursive_tree_search(obj,level=0):
 	var inserted = false
 		
 	var current_objects;
 		
 	var created = 0;
 	if is_marked_container(obj) == 1 || if_parent_is_TabContainer(obj):
-		current_objects = array_stack[array_stack.size()-1]
+		current_objects = _array_stack[_array_stack.size()-1]
 		var new_array = []
-		array_stack.append(new_array)
+		_array_stack.append(new_array)
 		current_objects.append(new_array)
 		created += 1
 		
-	current_objects = array_stack[array_stack.size()-1]
+	current_objects = _array_stack[_array_stack.size()-1]
 		
 	# Inserts under special conditions
 	var node_type = get_node_type(obj)
@@ -2196,14 +2184,14 @@ func recursive_tree_search(obj,level=0):
 		# Tab bars add their children instead
 		if obj is TabBar:
 			var new_array = []
-			array_stack.append(new_array)
+			_array_stack.append(new_array)
 			current_objects.append(new_array)
 			# Go deeper in the recursion
 			for c in obj.get_parent().get_children(true):
 				if obj != c:
 					recursive_tree_search(c,level+1)
 			
-			array_stack.pop_back()
+			_array_stack.pop_back()
 			return true
 
 	# If the node is not an end node
@@ -2219,12 +2207,12 @@ func recursive_tree_search(obj,level=0):
 						break
 	
 	for c in range(0,created):			
-		array_stack.pop_back()
+		_array_stack.pop_back()
 		
 	return false
 
 # Function to check if parent is tab container
-func if_parent_is_TabContainer(obj):
+static func if_parent_is_TabContainer(obj):
 	if obj.get_parent() is TabContainer && obj.get_parent().get_children().has(obj):
 		return true
 	else:
@@ -2233,7 +2221,7 @@ func if_parent_is_TabContainer(obj):
 # Returns if the container is marked to be used as
 # a container in the list.
 # Returns 1 = true, 0 = false, -1 no property found
-func is_marked_container(obj):
+static func is_marked_container(obj):
 	if obj.get("focus_marked_container") != null:
 		if obj.focus_marked_container && get_node_type(obj) == NODE_TYPE.CONTAINER:
 			return 1
@@ -2242,7 +2230,7 @@ func is_marked_container(obj):
 	return -1
 
 # Function to determine if list item is category or end item
-func get_node_type(obj):
+static func get_node_type(obj):
 	
 	# Returns if the node is an end node
 	if (obj is Button 
@@ -2270,18 +2258,18 @@ func get_node_type(obj):
 
 # Gets the object list but with no tree structure
 
-func get_object_list(list=objects):
+static func get_object_list(list=_objects):
 	for c in list:
 		if c is Array:
 			get_object_list(c)
 		else:
 			if get_node_type(NODE_TYPE.INTERACT_NODE):
-				end_node_list.append(c)
-				if !end_node_branches.has(list):
-					end_node_branches.append(list)
+				_end_node_list.append(c)
+				if !_end_node_branches.has(list):
+					_end_node_branches.append(list)
 	
 # Gets the object layers
-func get_object_layer():
+static func get_object_layer():
 	var list = get_object_layer_rec()
 	
 	for c in range(list.size()-1, -1, -1):
@@ -2290,7 +2278,7 @@ func get_object_layer():
 	
 	return list
 
-func get_object_layer_rec(list=objects, list_array=null, layer=0):
+static func get_object_layer_rec(list=_objects, list_array=null, layer=0):
 	if list_array == null:
 		list_array = []
 	
@@ -2307,13 +2295,13 @@ func get_object_layer_rec(list=objects, list_array=null, layer=0):
 
 # gets the Focus Modes of all child elements
 
-func build_focus_mode_list():
-	object_focus_mode = []
+static func build_focus_mode_list():
+	_object_focus_mode = []
 	
-	get_focus_mode_rec(dom_root, object_focus_mode)
+	get_focus_mode_rec(dom_root, _object_focus_mode)
 	
 # recursive function to get focus mode
-func get_focus_mode_rec(obj, arr):
+static func get_focus_mode_rec(obj, arr):
 	for c in obj.get_children(true):
 		if c is Control:
 			arr.append(c.focus_mode)
@@ -2324,7 +2312,7 @@ func get_focus_mode_rec(obj, arr):
 				get_focus_mode_rec(c, new_arr)
 
 # Sets all the focus objects to have no focus mode
-func set_focus_off(obj):
+static func set_focus_off(obj):
 	if obj != null:
 		for c in obj.get_children(true):
 			if c is Control:
@@ -2333,8 +2321,8 @@ func set_focus_off(obj):
 				if c.get_child_count(true) > 0:
 					set_focus_off(c)
 				
-func set_focus_on(obj, arr=object_focus_mode):
-	if obj != null && !object_focus_mode.is_empty():
+static func set_focus_on(obj, arr=_object_focus_mode):
+	if obj != null && !_object_focus_mode.is_empty():
 		var counter = 0
 		for c in obj.get_children(true):
 			if c is Control:
@@ -2357,14 +2345,15 @@ func update_draw_highlight():
 		highlight_tree()
 	else:
 		highlight_normal()
+		
+	call_deferred("queue_redraw")
 
 # redraws based on menu position
-func highlight_normal():
-	highlight_box = Rect2(focused.get_global_rect())
-	call_deferred("queue_redraw")
+static func highlight_normal():
+	_highlight_box = Rect2(focused.get_global_rect())
 	
 # redraws based on menubar
-func highlight_menubar():
+static func highlight_menubar():
 	var properties = get_object_data(focused)
 	
 	var box = focused.get_global_rect()
@@ -2376,7 +2365,7 @@ func highlight_menubar():
 	# This will indicate that accessibility is not configued properly.
 	# make sure you add the script
 	if selected == null || menu_count < 1:
-		highlight_box = Rect2(box)
+		_highlight_box = Rect2(box)
 	else:
 
 		var h_sep = focused.get_theme_constant("h_separation")
@@ -2398,30 +2387,26 @@ func highlight_menubar():
 						-1,
 						font_size)
 		
-		highlight_box = Rect2(focused.global_position.x + float(len) * (box.size.x / focused.size.x),
+		_highlight_box = Rect2(focused.global_position.x + float(len) * (box.size.x / focused.size.x),
 								focused.global_position.y,
 								(sizer.x + h_sep) * (box.size.x / focused.size.x),
 								(sizer.y + font_size*0.5)  * (box.size.y / focused.size.y))
-
-	call_deferred("queue_redraw")
 	
 # redraws based on tabbar
-func highlight_tabbar():
+static func highlight_tabbar():
 		
 	var box = focused.get_global_rect()
 		
 	var tab_rect = focused.get_tab_rect(focused.current_tab)
 		
-	highlight_box = Rect2(
+	_highlight_box = Rect2(
 		focused.global_position.x + tab_rect.position.x  * (box.size.x / focused.size.x),
 		focused.global_position.y + tab_rect.position.y  * (box.size.y / focused.size.y),
 		tab_rect.size.x * (box.size.x / focused.size.x),
 		tab_rect.size.y * (box.size.y / focused.size.y)
 	)
-
-	call_deferred("queue_redraw")
 	
-func highlight_tree():
+static func highlight_tree():
 	
 	
 	var v = focused.get_theme_constant("v_separation")
@@ -2434,91 +2419,97 @@ func highlight_tree():
 		var box = focused.get_global_rect()
 		var y_multi = (box.size.y / focused.size.y)
 		
-		highlight_box = focused.get_item_area_rect(item)
+		_highlight_box = focused.get_item_area_rect(item)
 
-		highlight_box.position.y = highlight_box.position.y * y_multi
+		_highlight_box.position.y = _highlight_box.position.y * y_multi
 		
-		highlight_box.size.x = highlight_box.size.x * (box.size.x / focused.size.x)
-		highlight_box.size.y = highlight_box.size.y * y_multi
+		_highlight_box.size.x = _highlight_box.size.x * (box.size.x / focused.size.x)
+		_highlight_box.size.y = _highlight_box.size.y * y_multi
 
 
-		highlight_box.position += focused.global_position
-		highlight_box.position.y -= focused.get_scroll().y  * y_multi
-		highlight_box.size.y += v*2 * y_multi
+		_highlight_box.position += focused.global_position
+		_highlight_box.position.y -= focused.get_scroll().y  * y_multi
+		_highlight_box.size.y += v*2 * y_multi
 		
-		if focused.global_position.y > highlight_box.position.y:
-			highlight_box.position.y = focused.global_position.y
-			highlight_box.size.y = 6
+		if focused.global_position.y > _highlight_box.position.y:
+			_highlight_box.position.y = focused.global_position.y
+			_highlight_box.size.y = 6
 			
-		if focused.global_position.y + box.size.y < highlight_box.position.y:
-			highlight_box.position.y = focused.global_position.y + box.size.y
-			highlight_box.size.y = 6
-		
-		call_deferred("queue_redraw")
+		if focused.global_position.y + box.size.y < _highlight_box.position.y:
+			_highlight_box.position.y = focused.global_position.y + box.size.y
+			_highlight_box.size.y = 6
 	
 # Sound functions
 
 # Note, this sound object only 
 
 # Init functions here, stuff like audio bank can be set.
-func sound_init():
-	add_child(sfx)
+static func sound_init(obj):
+	obj.add_child(_sfx)
 
 # plays a sound effect
 # only from preloaded assets in SFX_LIBRARY
-func play_sound(name, pitch=1):
+static func play_sound(name, pitch=1):
 	if sfx_enabled:
 		if SFX_LIBRARY.has(name):
-			sfx.stream = SFX_LIBRARY[name]
-			sfx.pitch_scale = pitch
-			sfx.play()
+			_sfx.stream = SFX_LIBRARY[name]
+			_sfx.pitch_scale = pitch
+			_sfx.play()
 		
 # stops a sound effect
-func stop_sound():
-	sfx.stop()
+static func stop_sound():
+	_sfx.stop()
 	
 # Starts playing the sound for the slider
-func timer_slider_timeout():
+static func timer_slider_timeout():
 	play_sound("slider")
 	
 # Menubar Object Tracker functions
 
 # Gets the menubar from object reference
-func get_object_data(obj):
-	if data_objects.has(obj):
-		return data_objects[obj]
+static func get_object_data(obj):
+	if _data_objects.has(obj):
+		return _data_objects[obj]
 	return {}
 
 # Inserts menubar data into the dictionary
-func insert_menubar(obj):
-	data_objects[obj] = create_menubar_object()
+static func insert_menubar(obj):
+	_data_objects[obj] = create_menubar_object()
 
 # This creates a new initialized menubar info object
-func create_menubar_object():
+static func create_menubar_object():
 	return {
 		"selected_menu" : 0,
 		"selected_index" : 0,
 		"menu_opened" : false
 	}
 	
+# Draws the highlighted selection
+func draw_highlight():
+	draw_style_box(DEFAULT_FOCUS_STYLE, _highlight_box)
+	
+# Updates what state to draw the current control in
+static func update_draw_state(state):
+	_control_state = state
+	
 # Initializer Functions
 
 # Gets the DOM state populated
-func init_DOM():
+static func init_DOM():
 	
 	set_focus_on(dom_root)
 	
-	objects = []
-	end_node_list = []
-	end_node_branches = []
-	data_objects = {}
-	array_stack = [objects]
+	_objects = []
+	_end_node_list = []
+	_end_node_branches = []
+	_data_objects = {}
+	_array_stack = [_objects]
 	
 	recursive_tree_search(dom_root)
 	get_object_list()
 	build_focus_mode_list()
 	
-func prdebug(string):
+static func prdebug(string):
 	if debug:
 		print_debug(string)
 		
@@ -2536,7 +2527,7 @@ func _ready():
 	add_child(timer)
 	add_child(timer_slider)
 	add_child(timer_slider_increment)
-	sound_init()
+	sound_init(self)
 
 # This forces reading the contents to override anything else.
 func _input(event: InputEvent) -> void:
@@ -2563,14 +2554,21 @@ func _input(event: InputEvent) -> void:
 
 # Processes the inputs for the DOM object
 func _process(delta: float) -> void:
-	if focused != null:
-		if (focused_old != focused.get_global_rect()):
-			update_draw_highlight()
-	
 	process_input(delta)
 	
 	if focused != null:
-		focused_old = focused.get_global_rect()
+		if (_focused_old != focused):
+			update_draw_highlight()
+		elif (_focused_rect_old != focused.get_global_rect()):
+			update_draw_highlight()
+		elif _state_updated:
+			update_draw_highlight()
+	
+	_state_updated = false
+	
+	if focused != null:
+		_focused_old = focused
+		_focused_rect_old = focused.get_global_rect()
 	
 # Draws additional stuff on top of the normal draw function
 func _draw():
@@ -2579,11 +2577,24 @@ func _draw():
 	if focused != null:
 		draw_highlight()
 
-# Draws the highlighted selection
-func draw_highlight():
-	draw_style_box(DEFAULT_FOCUS_STYLE, highlight_box)
-	
-# Updates what state to draw the current control in
-func update_draw_state(state):
-	control_state = state
-	queue_redraw()
+## Notification
+
+func _notification(what: int):
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+		TTS.stop()
+		_OS_focused = false
+		# If MenuBar is access enabled, closes the menu variables
+		if focused is MenuBar:
+			if focused.get("selected_index") != null:
+				focused.selected_index = 0
+				focused.menu_opened = false
+				
+		# Clears popup variables
+		_popup_visible = false
+		_popup_index = 0
+				
+	if what == NOTIFICATION_APPLICATION_FOCUS_IN:
+		_OS_focused = true
+		
+	if what == NOTIFICATION_EXIT_TREE:
+		TTS.stop()

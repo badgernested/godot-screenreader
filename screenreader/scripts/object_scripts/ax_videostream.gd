@@ -94,7 +94,7 @@ func _process(delta: float) -> void:
 									box_size.y + subtitle_font_size * (line_count-1))
 	
 	# Only read audio captions when focused
-	if DOMNavigator.is_cooled_down() && DOMNavigator.OS_focused:
+	if DOMNavigator.is_cooled_down() && DOMNavigator._OS_focused:
 		if DOMNavigator.audio_description_enabled:
 			if DOMNavigator.focused == self:
 				if !paused && is_playing():
