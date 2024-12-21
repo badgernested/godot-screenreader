@@ -8,6 +8,8 @@ All sound effects are either CC0 and found on [freesound.org](https://freesound.
 
 All graphics were produced either by me or found on [Icon Finder](https://iconfinder.com).
 
+F25 Bank Printer font from [DaFont.com](https://www.dafont.com/f25-bank-printer.font).
+
 Original Repositories:
 - [LightsOutGames](https://github.com/lightsoutgames/godot-accessibility)
 - [rodolpheh](https://github.com/rodolpheh/godot-accessibility)
