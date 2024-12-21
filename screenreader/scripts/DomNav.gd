@@ -1337,13 +1337,6 @@ func process_option_button_controls():
 
 func process_tree_controls():
 	var treeitem = focused.get_selected() 
-	var properties = get_object_data(focused)
-	var button_mode = false
-	var button_index = -1
-	
-	if !properties.is_empty():
-		button_mode = properties["button_mode"]
-		button_index = properties["selected_button"]
 	
 	if treeitem != null:
 		if Input.is_action_just_pressed("DOM_select"):
@@ -1441,63 +1434,28 @@ func find_next_grouping(obj):
 			var next_obj = find_first_obj(end_node_branches[index])
 			var next_obj_index = end_node_list.find(next_obj)
 			
-			# Check if next_obj_index has a different parent
-			# tab index. if it does, skip to the next object not
-			# in the current parent tab.
+			var loops = 0
 			
-			var focused_tab = find_parent_tabbar(focused)
-			var next_tab = find_parent_tabbar(next_obj)
-			
-			# checks if the switch is in the same tabbar
-			if focused_tab is TabBar:
-				if next_tab == focused_tab:
-					# checks if the switch is between tabs
-					var tab_array_pos = get_node_pos(focused_tab)
-					tab_array_pos = tab_array_pos.slice(0,tab_array_pos.size()-1)
-					var arrz = get_node_from_pos(tab_array_pos)
-					if arrz is Array:
-						# TabBar are always assumed to be 
-						# one object before the array of its contents
-						var nav_array = arrz[arrz.find(focused_tab) + 1]
+			while !next_obj.is_visible_in_tree():
+				index += 1
+				
+				if navigation_wrap && loops < 2:
+					if index >= end_node_branches.size():
+						index = 0
+						loops+=1
+					elif index < 0:
+						index = end_node_branches.size()-1
+						loops+=1
+				else:
+					if index >= end_node_branches.size():
+						index = end_node_branches.size()-1
+						loops+=1
+					elif index < 0:
+						index = 0
+						loops+=1
 						
-						if find_tab_index(nav_array, focused) != find_tab_index(nav_array, next_obj):
-							# Find the next valid entry that doesn't have the same tab bar
-							var new_tab_bar = find_parent_tabbar(next_obj)
-							var loops = 0
-							
-							var new_next = -1
-							
-							# Searches for the next object with a different
-							# tab bar parent
-							while new_tab_bar == focused_tab && loops < 2:
-								
-								index += 1
-								
-								if navigation_wrap:
-									if index >= end_node_branches.size():
-										index = 0
-										loops+=1
-									elif index < 0:
-										index = end_node_branches.size()-1
-										loops+=1
-								else:
-									if index >= end_node_branches.size():
-										index = end_node_branches.size()-1
-										loops+=1
-									elif index < 0:
-										index = 0
-										loops+=1
-										
-								next_obj = find_first_obj(end_node_branches[index])
-								
-								new_tab_bar = find_parent_tabbar(next_obj)
-								
-								if new_tab_bar != focused_tab:
-									new_next = end_node_list.find(next_obj)
-									
-							# If new_next was set, this is the new obj index.
-							if new_next > -1:
-									next_obj_index = new_next
+				next_obj = find_first_obj(end_node_branches[index])
+				next_obj_index = end_node_list.find(next_obj)
 			
 			return next_obj_index
 	return -1
@@ -1527,64 +1485,28 @@ func find_prev_grouping(obj):
 					
 			var next_obj = find_first_obj(end_node_branches[index])
 			var next_obj_index = end_node_list.find(next_obj)
+			var loops = 0
 			
-			# Check if next_obj_index has a different parent
-			# tab index. if it does, skip to the next object not
-			# in the current parent tab.
-			
-			var focused_tab = find_parent_tabbar(focused)
-			var next_tab = find_parent_tabbar(next_obj)
-			
-			# checks if the switch is in the same tabbar
-			if focused_tab is TabBar:
-				if next_tab == focused_tab:
-					# checks if the switch is between tabs
-					var tab_array_pos = get_node_pos(focused_tab)
-					tab_array_pos = tab_array_pos.slice(0,tab_array_pos.size()-1)
-					var arrz = get_node_from_pos(tab_array_pos)
-					if arrz is Array:
-						# TabBar are always assumed to be 
-						# one object before the array of its contents
-						var nav_array = arrz[arrz.find(focused_tab) + 1]
+			while !next_obj.is_visible_in_tree():
+				index -= 1
+				
+				if navigation_wrap && loops < 2:
+					if index >= end_node_branches.size():
+						index = 0
+						loops+=1
+					elif index < 0:
+						index = end_node_branches.size()-1
+						loops+=1
+				else:
+					if index >= end_node_branches.size():
+						index = end_node_branches.size()-1
+						loops+=1
+					elif index < 0:
+						index = 0
+						loops+=1
 						
-						if find_tab_index(nav_array, focused) != find_tab_index(nav_array, next_obj):
-							# Find the next valid entry that doesn't have the same tab bar
-							var new_tab_bar = find_parent_tabbar(next_obj)
-							var loops = 0
-							
-							var new_next = -1
-							
-							# Searches for the next object with a different
-							# tab bar parent
-							while new_tab_bar == focused_tab && loops < 2:
-								
-								index -= 1
-								
-								if navigation_wrap:
-									if index >= end_node_branches.size():
-										index = 0
-										loops+=1
-									elif index < 0:
-										index = end_node_branches.size()-1
-										loops+=1
-								else:
-									if index >= end_node_branches.size():
-										index = end_node_branches.size()-1
-										loops+=1
-									elif index < 0:
-										index = 0
-										loops+=1
-										
-								next_obj = find_first_obj(end_node_branches[index])
-								
-								new_tab_bar = find_parent_tabbar(next_obj)
-								
-								if new_tab_bar != focused_tab:
-									new_next = end_node_list.find(next_obj)
-									
-							# If new_next was set, this is the new obj index.
-							if new_next > -1:
-									next_obj_index = new_next
+				next_obj = find_first_obj(end_node_branches[index])
+				next_obj_index = end_node_list.find(next_obj)
 			
 			return next_obj_index
 	return -1
@@ -1597,59 +1519,6 @@ func find_first_obj(arr):
 			return c
 			
 	return null
-	
-# Finds the first object in an array	
-func find_first_obj_rec(arr):
-	for c in arr:
-		if !(c is Array):
-			return c
-		else:
-			var val = find_first_obj_rec(c)
-			if val != null:
-				return val
-			
-	return null
-	
-	
-# Finds the first object in an array	
-func find_last_obj_rec(arr):
-	var returner = null
-	
-	for c in range(arr.size()-1, -1, -1):
-		if !(arr[c] is Array):
-			returner = arr[c]
-			if returner != null:
-				return returner
-		else:
-			var val = find_last_obj_rec(arr[c])
-			if val != null:
-				return val
-			
-	return returner
-	
-# Finds which tab index the element is stored in.
-func find_tab_index(tabarr, obj):
-	
-	for c in range(0, tabarr.size()):
-		if arr_contains_obj(tabarr[c], obj):
-				return c
-			
-	return -1
-	
-# Determines if an array contains the object
-func arr_contains_obj(arr, obj):
-	if arr.has(obj):
-		return true
-	
-	var result = false
-	
-	for c in arr:
-		if c is Array:
-			result = arr_contains_obj(c,obj)
-			if result:
-				return true
-			
-	return false
 			
 # Returns false if moved in any way.
 # This allows for controls to use basic UI commands to navigate too
@@ -1753,89 +1622,53 @@ func update_end_node_position(movement=0, index=-1):
 			end_node_position = end_node_list.size()-1
 		elif end_node_position < 0:
 			end_node_position = 0
-
-	# TabBar exception. 
-	# If entering a tab bar, do not change the page.
-	# Jump to the first item on the current page.
-	
-	# There's probably a better way to do this, if you can make it work,
-	# be my guest!
-	var test_node = end_node_list[end_node_position]
-	var tab_bar = find_parent_tabbar(test_node)
-	if !(focused is TabBar) && find_parent_tabbar(focused) == null && tab_bar != null:
-
-			# Extract the tab array
-			var tab_array_pos = get_node_pos(tab_bar)
-			tab_array_pos = tab_array_pos.slice(0,tab_array_pos.size()-1)
-			var arrz = get_node_from_pos(tab_array_pos)
 		
-			if arrz is Array:
-				# TabBar are always assumed to be 
-				# one object before the array of its contents
-				var nav_array = arrz[arrz.find(tab_bar) + 1]
-				
-				if (find_tab_index(nav_array, test_node) != tab_bar.current_tab):
-					if Input.is_action_just_pressed("DOM_prev"):
-						end_node_position = end_node_list.find(find_last_obj_rec(nav_array[tab_bar.current_tab]))
-					elif Input.is_action_just_pressed("DOM_next"):
-						end_node_position = end_node_list.find(find_first_obj_rec(nav_array[tab_bar.current_tab]))
-	
-	elif find_parent_tabbar(focused) != null && tab_bar != null:
-			# Extract the tab array
-			var tab_array_pos = get_node_pos(tab_bar)
-			tab_array_pos = tab_array_pos.slice(0,tab_array_pos.size()-1)
-			var arrz = get_node_from_pos(tab_array_pos)
-		
-			if arrz is Array:
-				# TabBar are always assumed to be 
-				# one object before the array of its contents
-				var nav_array = arrz[arrz.find(tab_bar) + 1]
-				
-				if (find_tab_index(nav_array, test_node) != tab_bar.current_tab):
-					if (Input.is_action_just_pressed("DOM_up")
-						|| Input.is_action_just_pressed("DOM_left")):
-						end_node_position = end_node_list.find(tab_bar)
-					elif (Input.is_action_just_pressed("DOM_down") ||
-						Input.is_action_just_pressed("DOM_right")):
-						
-						var new_tab_bar = find_parent_tabbar(focused)
-						var loops = 0
-						
-						var new_next = -1
-						
-						var focus_array_pos = get_node_pos(focused)
-						focus_array_pos = focus_array_pos.slice(0,focus_array_pos.size()-1)
-						var focus_arrz = get_node_from_pos(focus_array_pos)
-								
-						index = end_node_branches.find(focus_arrz)
-									
-						# Searches for the next object with a different
-						# tab bar parent
-						while new_tab_bar == tab_bar && loops < 2:
-							
-							index += 1
-							
-							if navigation_wrap:
-								if index >= end_node_branches.size():
-									index = 0
-									loops+=1
-								elif index < 0:
-									index = end_node_branches.size()-1
-									loops+=1
-							else:
-								if index >= end_node_branches.size():
-									index = end_node_branches.size()-1
-									loops+=1
-								elif index < 0:
-									index = 0
-									loops+=1
-									
-							focused = find_first_obj(end_node_branches[index])
-							
-							new_tab_bar = find_parent_tabbar(focused)
-							
-							if new_tab_bar != tab_bar:
-								end_node_position = end_node_list.find(focused)
+	if movement > 0:
+		var loops = 0
+		var next_obj = end_node_list[end_node_position]
+
+		while !next_obj.is_visible_in_tree():
+			end_node_position += 1
+			
+			if navigation_wrap && loops < 2:
+				if end_node_position >= end_node_list.size():
+					end_node_position = 0
+					loops+=1
+				elif end_node_position < 0:
+					end_node_position = end_node_list.size()-1
+					loops+=1
+			else:
+				if end_node_position >= end_node_list.size():
+					end_node_position = end_node_list.size()-1
+					loops+=1
+				elif end_node_position < 0:
+					end_node_position = 0
+					loops+=1
+					
+			next_obj = end_node_list[end_node_position]
+	elif movement < 0:
+		var loops = 0
+		var next_obj = end_node_list[end_node_position]
+
+		while !next_obj.is_visible_in_tree():
+			end_node_position -= 1
+			
+			if navigation_wrap && loops < 2:
+				if end_node_position >= end_node_list.size():
+					end_node_position = 0
+					loops+=1
+				elif end_node_position < 0:
+					end_node_position = end_node_list.size()-1
+					loops+=1
+			else:
+				if end_node_position >= end_node_list.size():
+					end_node_position = end_node_list.size()-1
+					loops+=1
+				elif end_node_position < 0:
+					end_node_position = 0
+					loops+=1
+					
+			next_obj = end_node_list[end_node_position]
 		
 	end_node_grab_focus()
 	
@@ -2357,8 +2190,6 @@ func recursive_tree_search(obj,level=0):
 		
 		if obj is MenuBar:
 			insert_menubar(obj)
-		elif obj is Tree:
-			insert_tree(obj)
 		
 		inserted = true
 		
@@ -2662,23 +2493,12 @@ func get_object_data(obj):
 func insert_menubar(obj):
 	data_objects[obj] = create_menubar_object()
 
-# Inserts tree data into the dictionary
-func insert_tree(obj):
-	data_objects[obj] = create_tree_object()
-
 # This creates a new initialized menubar info object
 func create_menubar_object():
 	return {
 		"selected_menu" : 0,
 		"selected_index" : 0,
 		"menu_opened" : false
-	}
-	
-# This creates a new initialized tree info object
-func create_tree_object():
-	return {
-		"selected_button" : 0,
-		"button_mode" : false
 	}
 	
 # Initializer Functions
