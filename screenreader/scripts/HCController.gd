@@ -9,12 +9,14 @@ extends Object
 # These are the focus styles for the selected object
 const FOCUS_STYLE = {
 	"default" : preload("res://screenreader/ui/style/focus_end_node.tres"),
-	"hc_dark" : preload("res://screenreader/ui/style/focus_end_node_hc_dark.tres")
+	"hc_dark" : preload("res://screenreader/ui/style/focus_end_node_hc_dark.tres"),
+	"hc_light" : preload("res://screenreader/ui/style/focus_end_node_hc_dark.tres")
 }
 
 # This is the style 
 const STYLES = {
-	"hc_dark" : preload("res://screenreader/ui/style/HiContrast_Dark.tres")
+	"hc_dark" : preload("res://screenreader/ui/style/HiContrast_Dark.tres"),
+	"hc_light" : preload("res://screenreader/ui/style/HiContrast_Light.tres")
 }
 
 # This stores the theme data for every object within the root.
