@@ -22,7 +22,6 @@ general/text_to_speech=true
 
 [autoload]
 
-KeyFrame="*res://screenreader/scripts/KeyFrame.gd"
 ScreenreaderController="*res://screenreader/scripts/ScreenreaderController.gd"
 
 [display]

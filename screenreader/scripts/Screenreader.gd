@@ -222,7 +222,6 @@ enum TREE_CONTROL {
 
 # This is used for highlighting UI elements
 static var _control_state: int = CONTROL_STATE.FOCUSED
-static var _focused_box: Rect2 = Rect2(0,0,0,0)
 
 enum CONTROL_STATE {
 	FOCUSED,
@@ -313,10 +312,10 @@ static func enable_dom(value=true):
 
 ## Finder methods
 
-static func find_object_type(type, max=1):
+static func find_object_type(type, maximum=1):
 	var counter = 0
 	for c in _end_node_list:
-		if get_node_type(c) == type && counter >= max:
+		if get_node_type(c) == type && counter >= maximum:
 			return c
 		counter+=1
 	return null
@@ -324,7 +323,7 @@ static func find_object_type(type, max=1):
 ## Processing/navigation functions
 
 # Processes interacting with inputs
-static func process_input(delta):
+static func process_input(_delta):
 
 	var default_move = true
 	var do_default_processing = true
@@ -532,7 +531,6 @@ static func process_video_controls():
 
 # Does the menubar controls
 static func process_menubar_controls():
-	var menu_size = focused.get_menu_count()
 	var properties = get_object_data(focused)
 	var menu_pos = 0
 	
@@ -563,9 +561,6 @@ static func process_menubar_controls():
 				return false
 			else:
 				# If menu is opened, press the button
-				var popup = focused.get_menu_popup(menu_pos)
-				var selected_pos = properties["selected_index"]
-				
 				var text = MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [focused.get_menu_title(menu_pos)]
 				add_token(text)
 				
@@ -615,7 +610,6 @@ static func menubar_close_menu(properties):
 		return false
 
 static func menubar_read_selected_item(properties):
-	var menu_size = focused.get_menu_count()
 	var menu_pos = properties["selected_menu"]
 	
 	var popup = focused.get_menu_popup(menu_pos)
@@ -652,13 +646,13 @@ static func menubar_nav_menus(properties):
 		if Input.is_action_just_pressed("DOM_item_increment"):
 			var was_opened = menubar_menu_opened(focused)
 			
-			var size = focused.get_menu_count()
+			var sizer = focused.get_menu_count()
 			menubar_menu_close_all(focused)
 
 			properties["selected_menu"] += 1
 
-			if properties["selected_menu"] >= size:
-				properties["selected_menu"] = size-1
+			if properties["selected_menu"] >= sizer:
+				properties["selected_menu"] = sizer-1
 				if properties["menu_opened"] != null:
 					properties["menu_opened"] = false
 				update_end_node_position(1)
@@ -745,25 +739,18 @@ static func menubar_menu_open(obj, index):
 		
 		var h_sep = focused.get_theme_constant("h_separation")
 
-		var len = 0
+		var length = 0
 		var font_size = focused.get_theme_font_size("font_size")
 		for c in range(0, index):
-			len += focused.get_theme_font("font").get_string_size(
+			length += focused.get_theme_font("font").get_string_size(
 							focused.get_menu_title(c) + " ",
 							HORIZONTAL_ALIGNMENT_LEFT,
 							-1,
 							font_size).x
 			
-			len += h_sep*2
-
-		var sizer = focused.get_theme_font("font").get_string_size(
-						focused.get_menu_title(index) + " ",
-						HORIZONTAL_ALIGNMENT_LEFT,
-						-1,
-						font_size)
+			length += h_sep*2
 		
-		
-		popup.position = Vector2(focused.global_position.x + float(len),
+		popup.position = Vector2(focused.global_position.x + float(length),
 						focused.global_position.y + font_size * 1.5)
 		
 		menubar_menu_update(obj)
@@ -941,23 +928,23 @@ static func unicode_is_capital(unicode):
 # These are special key combos that are ignored for some purposes
 static func special_key_combos():
 	# paste
-	if (KeyFrame.pressed_keys.has(KEY_CTRL)
-		&& KeyFrame.pressed_keys.has(KEY_V)):
+	if (ScreenreaderController.pressed_keys.has(KEY_CTRL)
+		&& ScreenreaderController.pressed_keys.has(KEY_V)):
 		return true
 	
 	return false
 	
 # Returns the string of certain characters
-static func get_character_name(char):
+static func get_character_name(character):
 	if focused is CodeEdit:
 		for c in TEXTEDIT_CHARACTER_NAMES:
 			if c != " ":
-				char = char.replace(c, " " + TEXTEDIT_CHARACTER_NAMES[c] + " ")
+				character = character.replace(c, " " + TEXTEDIT_CHARACTER_NAMES[c] + " ")
 	
-	if TEXTEDIT_CHARACTER_NAMES.has(char):
-		return TEXTEDIT_CHARACTER_NAMES[char]
+	if TEXTEDIT_CHARACTER_NAMES.has(character):
+		return TEXTEDIT_CHARACTER_NAMES[character]
 	
-	return char
+	return character
 
 # Does the text edit controls
 static func process_text_controls():
@@ -980,9 +967,9 @@ static func process_text_controls():
 		lines_count = focused.get_caret_line()
 	
 	# pasted clipboard contents
-	if (KeyFrame.key_pressed() && 
-		KeyFrame.pressed_keys.has(KEY_CTRL)
-		&& KeyFrame.pressed_keys.has(KEY_V)):
+	if (ScreenreaderController.key_pressed() && 
+		ScreenreaderController.pressed_keys.has(KEY_CTRL)
+		&& ScreenreaderController.pressed_keys.has(KEY_V)):
 		add_token(DisplayServer.clipboard_get()
 			+ " " + TEXTEDIT_STRINGS[TEXTEDIT_STRING.PASTED])
 		tts_speak()
@@ -994,26 +981,26 @@ static func process_text_controls():
 		|| Input.is_action_pressed("ui_right")
 		|| Input.is_action_just_pressed("ui_right")):
 			
-			var char = ""
+			var character = ""
 			var char_no = 0
 			if !lines[lines_count].is_empty():
 				if caret_position >= lines[lines_count].length():
-					char = lines[lines_count][lines[lines_count].length()-1]
+					character = lines[lines_count][lines[lines_count].length()-1]
 				else:
-					char = lines[lines_count][caret_position]
+					character = lines[lines_count][caret_position]
 				
-				char_no = char.unicode_at(0)
+				char_no = character.unicode_at(0)
 				
-			if char == " ":
-				char = TEXTEDIT_STRINGS[TEXTEDIT_STRING.SPACE]
-			elif char == "\t":
-				char = TEXTEDIT_STRINGS[TEXTEDIT_STRING.TAB]
+			if character == " ":
+				character = TEXTEDIT_STRINGS[TEXTEDIT_STRING.SPACE]
+			elif character == "\t":
+				character = TEXTEDIT_STRINGS[TEXTEDIT_STRING.TAB]
 				
 			# Higher pitched if capital
 			if unicode_is_capital(char_no):
 				pitch = 2.0
 				
-			add_token(get_character_name(char))
+			add_token(get_character_name(character))
 			tts_speak(pitch)
 			return false
 			
@@ -1021,12 +1008,12 @@ static func process_text_controls():
 		if _text_wait_to_press && (Input.is_action_pressed("ui_up")
 			|| Input.is_action_just_pressed("ui_up")):
 			# Read the current line
-			var char = lines[lines_count]
+			var character = lines[lines_count]
 			var char_no = -1
-			if char.length() == 1:
-				char_no = char.unicode_at(0)
+			if character.length() == 1:
+				char_no = character.unicode_at(0)
 				
-			char = get_character_name(char)
+			character = get_character_name(character)
 				
 			# Higher pitched if capital
 			if unicode_is_capital(char_no):
@@ -1035,7 +1022,7 @@ static func process_text_controls():
 			if _last_caret_line == 0:
 				return true
 				
-			add_token(get_character_name(char))
+			add_token(get_character_name(character))
 				
 			if focused is CodeEdit:
 				add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS[TEXTEDIT_STRING.LINE])
@@ -1046,22 +1033,22 @@ static func process_text_controls():
 			
 		elif _text_wait_to_press && (Input.is_action_pressed("ui_down")
 			|| Input.is_action_just_pressed("ui_down")):
-			var char = lines[lines_count]
+			var character = lines[lines_count]
 			var char_no = -1
-			if char.length() == 1:
-				char_no = char.unicode_at(0)
+			if character.length() == 1:
+				char_no = character.unicode_at(0)
 				
-			char = get_character_name(char)
+			character = get_character_name(character)
 				
 			# Higher pitched if capital
-			if char.length() > 1 && char_no > -1 && unicode_is_capital(char_no):
+			if character.length() > 1 && char_no > -1 && unicode_is_capital(char_no):
 				pitch = 2.0
 				
 			if _last_caret_line > lines_count-1:
 				return true
 				
 			# Read the current line
-			add_token(get_character_name(char))
+			add_token(get_character_name(character))
 			
 			if focused is CodeEdit:
 				add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS[TEXTEDIT_STRING.LINE])
@@ -1074,15 +1061,15 @@ static func process_text_controls():
 	if _last_text != focused.text:
 		
 		if Input.is_key_pressed(KEY_BACKSPACE):
-			var char = "" 
+			var character = "" 
 			if last_lines[_last_caret_line].length() > 0:
 				if lines.size() > _last_caret_line:
 					print(min(caret_position,last_lines.size()-1))
-					char = last_lines[_last_caret_line][min(caret_position,last_lines[_last_caret_line].length()-1)]
+					character = last_lines[_last_caret_line][min(caret_position,last_lines[_last_caret_line].length()-1)]
 			else:
-				char = TEXTEDIT_STRINGS[TEXTEDIT_STRING.NEWLINE]
+				character = TEXTEDIT_STRINGS[TEXTEDIT_STRING.NEWLINE]
 			
-			add_token(get_character_name(char))
+			add_token(get_character_name(character))
 				
 			add_token(TEXTEDIT_STRINGS[TEXTEDIT_STRING.DELETED])
 			
@@ -1102,14 +1089,14 @@ static func process_text_controls():
 			
 		else:
 			if !special_key_combos():
-				var char = lines[lines_count][max(caret_position-1,0)]
-				var char_no = char.unicode_at(0)
+				var character = lines[lines_count][max(caret_position-1,0)]
+				var char_no = character.unicode_at(0)
 					
 				# Higher pitched if capital
 				if unicode_is_capital(char_no):
 					pitch = 2.0
 		
-				add_token(get_character_name(char))
+				add_token(get_character_name(character))
 				
 		tts_speak(pitch)
 		
@@ -1120,10 +1107,10 @@ static func process_text_controls():
 		return false
 		
 		
-	elif _text_wait_to_press && !KeyFrame.pressed_keys.is_empty() && KeyFrame.key_pressed():
+	elif _text_wait_to_press && !ScreenreaderController.pressed_keys.is_empty() && ScreenreaderController.key_pressed():
 		clear_tokens()
 		
-		for c in KeyFrame.pressed_keys:
+		for c in ScreenreaderController.pressed_keys:
 			add_token(OS.get_keycode_string(c).replace("Kp","").lstrip(" ").rstrip(" "))
 		
 		tts_speak()
@@ -1234,7 +1221,6 @@ static func process_option_button_controls():
 	var popup = focused.get_popup()
 
 	var text = ""
-	var focused_text = focused.text
 	
 	# this is just for processing basebutton signals
 	var toggle_old = focused.button_pressed
@@ -1598,7 +1584,6 @@ static func open_selected_tab(obj):
 	return null
 			
 static func update_end_node_position(movement=0, index=-1):
-	var old_node_pos = _end_node_position
 	
 	focused.release_focus()
 	
@@ -1760,7 +1745,6 @@ static func grab_obj_focus(obj):
 static func release_obj_focus(obj):
 	if dom_nav_enabled:
 		if focused != null:
-			focused.focus
 			focused.focus_mode = FOCUS_NONE
 		focused = null
 	obj.release_focus()
@@ -1800,7 +1784,7 @@ static func is_cooled_down():
 # Gets the name of a control
 static func get_accessible_name(obj):
 	
-	var name = null
+	var name_val = null
 	
 	if obj.has_method("ax_custom_text"):
 		var text = obj.ax_custom_text()
@@ -1838,19 +1822,19 @@ static func get_accessible_name(obj):
 	else:
 		# default name
 		if obj.get("alt_text") != null && !obj.alt_text.is_empty():
-			name = obj.alt_text
-			add_token(name)
+			name_val = obj.alt_text
+			add_token(name_val)
 		else:
-			name = obj.name
-			add_token(name)
+			name_val = obj.name
+			add_token(name_val)
 			
 		if verbose:
-			if obj.get_class() != name:
+			if obj.get_class() != name_val:
 				add_token(obj.get_class())
 	
 # Gets the name for labels
 static func get_accessible_label_name(obj):
-	var name = ""
+	var name_val = ""
 
 	if focused is CodeEdit:
 		var lines = focused.text.split("\n")
@@ -1859,15 +1843,15 @@ static func get_accessible_label_name(obj):
 		add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS[TEXTEDIT_STRING.LINE])
 	
 	else:
-		name = obj.text
-		add_token(name)
+		name_val = obj.text
+		add_token(name_val)
 		
 	if obj.get("alt_text") != null && !obj.alt_text.is_empty():
-		name = obj.alt_text
-		add_token(name)
+		name_val = obj.alt_text
+		add_token(name_val)
 		
 	if verbose:
-		if obj.get_class() != name:
+		if obj.get_class() != name_val:
 			if focused is Label:
 				add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.LABEL])
 			else:
@@ -1875,22 +1859,22 @@ static func get_accessible_label_name(obj):
 			
 # Gets the name for richtext labels
 static func get_accessible_richtext_label_name(obj):
-	var name = ""
+	var name_val = ""
 	
 	if obj.get("alt_text") != null && !obj.alt_text.is_empty():
-		name = obj
+		name_val = obj
 	else:
-		name = obj.get_parsed_text()
+		name_val = obj.get_parsed_text()
 		
-	add_token(name)
+	add_token(name_val)
 			
 	if verbose:
-		if obj.get_class() != name:
+		if obj.get_class() != name_val:
 			add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.LABEL])
 			
 # Gets the name for buttons
 static func get_accessible_button_name(obj):
-	var name = ""
+	var name_val = ""
 	
 	if obj is CheckBox:
 		if obj.button_pressed:
@@ -1906,14 +1890,14 @@ static func get_accessible_button_name(obj):
 			add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.OFF])
 				
 	if obj.get("alt_text") != null && !obj.alt_text.is_empty():
-		name = obj.alt_text
-		add_token(name)
+		name_val = obj.alt_text
+		add_token(name_val)
 	else:
-		name = obj.text
-		add_token(name)
+		name_val = obj.text
+		add_token(name_val)
 			
 	if verbose:
-		if obj.get_class() != name:
+		if obj.get_class() != name_val:
 			var token = SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.BUTTON]
 			if obj is CheckBox:
 				token = SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.CHECKBOX]
@@ -1927,17 +1911,17 @@ static func get_accessible_button_name(obj):
 		
 # Gets the name for images
 static func get_accessible_image_name(obj):
-	var name = ""
+	var name_val = ""
 	
 	add_alt_text(obj)
 			
 	if verbose:
-		if obj.get_class() != name:
+		if obj.get_class() != name_val:
 			add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.IMAGE])
 		
 # Gets the name for progress bars
 static func get_accessible_progress_bar_name(obj):
-	var name = ""
+	var name_val = ""
 	
 	# reads value
 	
@@ -1957,12 +1941,12 @@ static func get_accessible_progress_bar_name(obj):
 	add_alt_text(obj)
 	
 	if verbose:
-		if obj.get_class() != name:
+		if obj.get_class() != name_val:
 			add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.PROGRESS_BAR])
 			
 # Gets the name for spinboxes
 static func get_accessible_spinbox_name(obj):
-	var name = ""
+	var name_val = ""
 	
 	# reads value
 	add_token(str(obj.value))
@@ -1970,32 +1954,30 @@ static func get_accessible_spinbox_name(obj):
 	add_alt_text(obj)
 	
 	if verbose:
-		if obj.get_class() != name:
+		if obj.get_class() != name_val:
 			add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.SPINBOX])
 		
 # Gets the name for hslider
 static func get_accessible_hslider_name(obj):
-	var name = ""
+	var name_val = ""
 	
 	get_accessible_slider_name(obj)
 			
 	if verbose:
-		if obj.get_class() != name:
+		if obj.get_class() != name_val:
 			add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.HSLIDER])
 			
 # Gets the name for vslider
 static func get_accessible_vslider_name(obj):
-	var name = ""
+	var name_val = ""
 	
 	get_accessible_slider_name(obj)
 			
 	if verbose:
-		if obj.get_class() != name:
+		if obj.get_class() != name_val:
 			add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.VSLIDER])
 		
 static func get_accessible_slider_name(obj):
-	var name = ""
-	
 	# reads value
 	
 	if obj.get("read_fraction") != null:
@@ -2019,7 +2001,7 @@ static func get_accessible_menubar_name(obj):
 	var properties = get_object_data(obj)
 	
 	var selected_menu = properties["selected_menu"]
-	var size = obj.get_menu_count()
+	var sizer = obj.get_menu_count()
 	var text = ""
 	
 	if selected_menu == null:
@@ -2056,7 +2038,7 @@ static func get_accessible_menubar_name(obj):
 		# Announce out of 3
 		if verbose:
 			if properties["selected_menu"] != null:
-				text = STRING_FORMATS[STRING_FORMAT.FRACTION] % [str(selected_menu+1), str(size)]
+				text = STRING_FORMATS[STRING_FORMAT.FRACTION] % [str(selected_menu+1), str(sizer)]
 				add_token(text)
 		
 		add_alt_text(obj)
@@ -2068,27 +2050,27 @@ static func get_accessible_menubar_name(obj):
 static func get_accessible_tabbar_name(obj):
 
 	var selected_menu = obj.current_tab
-	var size = obj.tab_count
+	var sizer = obj.tab_count
 	
-	var name = obj.get_tab_title(selected_menu)
+	var name_val = obj.get_tab_title(selected_menu)
 
-	var text = STRING_FORMATS[STRING_FORMAT.SELECTED] % [name]
+	var text = STRING_FORMATS[STRING_FORMAT.SELECTED] % [name_val]
 	add_token(text)
 	
 	# Announce out of 3
 	if verbose:
-		text = STRING_FORMATS[STRING_FORMAT.FRACTION] % [str(selected_menu+1), str(size)]
+		text = STRING_FORMATS[STRING_FORMAT.FRACTION] % [str(selected_menu+1), str(sizer)]
 		add_token(text)
 	
 	add_alt_text(obj)
 	
 	if verbose:
-		if obj.get_class() != name:
+		if obj.get_class() != name_val:
 			add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.TABS])
 	
 # Gets the name for optionbuttons
 static func get_accessible_optionbutton_name(obj):
-	var name = ""
+	var name_val = ""
 
 	if focused.get_selected_id() > -1:
 		add_token(STRING_FORMATS[STRING_FORMAT.SELECTED] % [focused.get_item_text(focused.get_selected_id())])
@@ -2096,11 +2078,11 @@ static func get_accessible_optionbutton_name(obj):
 		add_token(STRING_FORMATS[STRING_FORMAT.SELECTED] % [TEXTEDIT_STRINGS[TEXTEDIT_STRING.NONE]])
 		
 	if obj.get("alt_text") != null && !obj.alt_text.is_empty():
-		name = obj.alt_text
-		add_token(name)
+		name_val = obj.alt_text
+		add_token(name_val)
 		
 	if verbose:
-		if obj.get_class() != name:
+		if obj.get_class() != name_val:
 			if focused is Label:
 				add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.LABEL])
 			else:
@@ -2126,24 +2108,24 @@ static func get_accessible_tree_name(obj, read_collapse=true):
 		else:
 			add_token(TREE_CONTROL_NAMES[TREE_CONTROL.NO_CHILDREN])
 	
-	var name = ""
+	var name_val = ""
 	
 	if obj.get("alt_text") != null && !obj.alt_text.is_empty():
-		name = obj.alt_text
-		add_token(name)
+		name_val = obj.alt_text
+		add_token(name_val)
 	
 	if verbose:
-		if obj.get_class() != name:
+		if obj.get_class() != name_val:
 				add_token(obj.get_class()) 
 	
 # adds alt text	
 static func add_alt_text(obj):
-	var name = ""
+	var name_val = ""
 	
 	# reads alt text, if any
 	if obj.get("alt_text") != null && !obj.alt_text.is_empty():
-		name = obj.alt_text
-		add_token(name)
+		name_val = obj.alt_text
+		add_token(name_val)
 		
 # Clear tokens
 static func clear_tokens():
@@ -2162,8 +2144,6 @@ static func add_token(token):
 
 # Searches the tree starting at this node for UI elements to grab
 static func recursive_tree_search(obj,level=0):
-	var inserted = false
-		
 	var current_objects;
 		
 	var created = 0;
@@ -2184,8 +2164,6 @@ static func recursive_tree_search(obj,level=0):
 		
 		if obj is MenuBar:
 			insert_menubar(obj)
-		
-		inserted = true
 		
 		# Tab bars add their children instead
 		if obj is TabBar:
@@ -2374,16 +2352,16 @@ static func highlight_menubar():
 
 		var h_sep = focused.get_theme_constant("h_separation")
 
-		var len = 0
+		var length = 0
 		var font_size = focused.get_theme_font_size("font_size")
 		for c in range(0, selected):
-			len += focused.get_theme_font("font").get_string_size(
+			length += focused.get_theme_font("font").get_string_size(
 							focused.get_menu_title(c) + " ",
 							HORIZONTAL_ALIGNMENT_LEFT,
 							-1,
 							font_size).x
 			
-			len += h_sep*2
+			length += h_sep*2
 
 		var sizer = focused.get_theme_font("font").get_string_size(
 						focused.get_menu_title(selected) + " ",
@@ -2391,7 +2369,7 @@ static func highlight_menubar():
 						-1,
 						font_size)
 		
-		_highlight_box = Rect2(focused.global_position.x + float(len) * (box.size.x / focused.size.x),
+		_highlight_box = Rect2(focused.global_position.x + float(length) * (box.size.x / focused.size.x),
 								focused.global_position.y,
 								(sizer.x + h_sep) * (box.size.x / focused.size.x),
 								(sizer.y + font_size*0.5)  * (box.size.y / focused.size.y))
@@ -2453,10 +2431,10 @@ static func sound_init(obj):
 
 # plays a sound effect
 # only from preloaded assets in SFX_LIBRARY
-static func play_sound(name, pitch=1):
+static func play_sound(name_val, pitch=1.0):
 	if sfx_enabled:
-		if SFX_LIBRARY.has(name):
-			_sfx.stream = SFX_LIBRARY[name]
+		if SFX_LIBRARY.has(name_val):
+			_sfx.stream = SFX_LIBRARY[name_val]
 			_sfx.pitch_scale = pitch
 			_sfx.play()
 		

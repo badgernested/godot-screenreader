@@ -8,15 +8,32 @@
 
 extends Control
 
+static var pressed_keys = []
+static var last_pressed_keys = []
+
 func _ready():
 	Screenreader.do_ready(self)
 
 # This forces reading the contents to override anything else.
 func _input(event: InputEvent) -> void:
-	Screenreader.do_input(event)
+	if event is InputEventKey:
+		if event.echo:
+			# If the event is an echo event, skip it
+			return
+		if event.pressed:
+			pressed_keys.push_back(event.keycode)
+		else:
+			while pressed_keys.has(event.keycode):
+				pressed_keys.erase(event.keycode)
+	
+	var result = Screenreader.do_input(event)
+	if result:
+		get_viewport().set_input_as_handled()
 
 # Processes the inputs for the DOM object
 func _process(delta: float) -> void:
+	last_pressed_keys = pressed_keys.duplicate()
+	
 	Screenreader.do_process(delta, self)
 	
 # Draws additional stuff on top of the normal draw function
@@ -33,3 +50,19 @@ func _draw_highlight():
 
 func _notification(what: int):
 	Screenreader.do_notification(what)
+
+# Returns if a key is pressed
+func key_pressed():
+	if key_changed():
+		return last_pressed_keys.size() < pressed_keys.size()
+
+# Returns if a key is changed	
+func key_changed():
+	if last_pressed_keys.size() != pressed_keys.size():
+		return true
+		
+	for c in range(0, pressed_keys.size()):
+		if pressed_keys[c] != last_pressed_keys[c]:
+			return true
+	
+	return false
