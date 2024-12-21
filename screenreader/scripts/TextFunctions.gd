@@ -44,8 +44,8 @@ static func unicode_is_capital(unicode):
 # These are special key combos that are ignored for some purposes
 static func special_key_combos():
 	# paste
-	if (ScreenreaderController.pressed_keys.has(KEY_CTRL)
-		&& ScreenreaderController.pressed_keys.has(KEY_V)):
+	if (AXController.pressed_keys.has(KEY_CTRL)
+		&& AXController.pressed_keys.has(KEY_V)):
 		return true
 	
 	return false

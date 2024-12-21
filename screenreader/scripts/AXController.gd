@@ -1,9 +1,8 @@
 ###############################################
-# DomController
+# AXController
 #
-# The default interface for the global. This way,
-# the screenreader can be static and this just
-# controls the screenreader in the node tree.
+# This class controls all the other accessibility
+# classes in one nice place.
 ###############################################
 
 extends Control
@@ -44,7 +43,7 @@ func _draw():
 
 # Draws the highlighted selection
 func _draw_highlight():
-	draw_style_box(Screenreader.DEFAULT_FOCUS_STYLE, Screenreader._highlight_box)
+	draw_style_box(HCController.get_focus_style(), Screenreader._highlight_box)
 
 ## Notification
 
@@ -66,3 +65,23 @@ func key_changed():
 			return true
 	
 	return false
+
+## Screenreader Control
+
+func enable_screenreader(root):
+	Screenreader.set_dom_root(root)
+	Screenreader.enable_dom()
+	
+func reset_screenreader():
+	Screenreader.enable_dom(false)
+
+## Accessibility themes
+
+# Pass an element to make all its children 
+# the dark high contrast theme
+func set_high_contrast_dark_theme(root):
+	HCController.set_theme(root, "hc_dark")
+	
+# Passes an element to remove all special themes
+func reset_theme(root):
+	HCController.reset_theme(root)

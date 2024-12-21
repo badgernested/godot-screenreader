@@ -9,28 +9,29 @@ func _on_exit_button_pressed() -> void:
 ## Default methods
 
 func _ready() -> void:
-	Screenreader.set_dom_root($Panel)
+	AXController.set_high_contrast_dark_theme($Panel)
 	
-	Screenreader.enable_dom()
-	$Panel/Info/HBoxContainer/VersionNO.text += " " + ProjectSettings.get_setting("application/config/version")
+	AXController.enable_screenreader($Panel)
+	
+	$Panel/VBoxContainer/Info/HBoxContainer/VersionNO.text += " " + ProjectSettings.get_setting("application/config/version")
 	
 
 func _on_play_pressed() -> void:
-	var streamer = $Panel/Main/Panel/TabContainer/Media/VBoxContainer/VideoStreamPlayer;
+	var streamer = $Panel/VBoxContainer/Main/Panel/TabContainer/Media/VBoxContainer/VideoStreamPlayer;
 	streamer.play_video()
 
 func _on_pause_pressed() -> void:
-	var streamer = $Panel/Main/Panel/TabContainer/Media/VBoxContainer/VideoStreamPlayer;
+	var streamer = $Panel/VBoxContainer/Main/Panel/TabContainer/Media/VBoxContainer/VideoStreamPlayer;
 	streamer.pause_video()
 
 
 func _on_stop_pressed() -> void:
-	var streamer = $Panel/Main/Panel/TabContainer/Media/VBoxContainer/VideoStreamPlayer;
+	var streamer = $Panel/VBoxContainer/Main/Panel/TabContainer/Media/VBoxContainer/VideoStreamPlayer;
 	streamer.stop_video()
 
 # Adds elements to the tree
 func _on_tree_ready() -> void:
-	var trees = $"Panel/Main/Panel/TabContainer/More Elements/VBoxContainer/Tree"
+	var trees = $"Panel/VBoxContainer/Main/Panel/TabContainer/More Elements/VBoxContainer/Tree"
 	trees.set_column_title(0, "Test Tree")
 	var root = trees.create_item()
 	root.set_text(0,"res://")
@@ -79,7 +80,7 @@ func _on_minimize_button_pressed() -> void:
 func _on_maximize_button_pressed() -> void:
 	if get_tree().root.mode == Window.MODE_WINDOWED:
 		get_tree().root.mode = Window.MODE_MAXIMIZED
-		$Panel/NavButtons/HBoxContainer/MaximizeButton.text = "Windowed"
+		$Panel/VBoxContainer/NavButtons/HBoxContainer/HBoxContainer/Buttons/MaximizeButton.text = "Windowed"
 	elif get_tree().root.mode == Window.MODE_MAXIMIZED:
 		get_tree().root.mode = Window.MODE_WINDOWED
-		$Panel/NavButtons/HBoxContainer/MaximizeButton.text = "Maximize"
+		$Panel/VBoxContainer/NavButtons/HBoxContainer/HBoxContainer/Buttons/MaximizeButton.text = "Maximize"

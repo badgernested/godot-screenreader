@@ -22,7 +22,7 @@ general/text_to_speech=true
 
 [autoload]
 
-ScreenreaderController="*res://screenreader/scripts/ScreenreaderController.gd"
+AXController="*res://screenreader/scripts/AXController.gd"
 
 [display]
 

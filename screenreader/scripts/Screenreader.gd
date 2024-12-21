@@ -15,11 +15,6 @@ static var dom_nav_enabled: bool = false
 # The object that is referred to as the root of the Dom.
 static var dom_root: Node = null
 
-# Change this and it will preload a new focus style when focused
-# Note, currently as built, if this value is cleared after being used,
-# it will not reset currently loaded UI elements.
-const DEFAULT_FOCUS_STYLE = preload("res://screenreader/ui/style/focus_end_node.tres")
-
 # This stores the list of objects itself. 
 static var _objects: Array = []
 
@@ -279,66 +274,67 @@ static func enable_dom(value=true):
 # Processes interacting with inputs
 static func _process_input(_delta):
 
-	var default_move = true
-	var do_default_processing = true
-	var do_screenreader_navigation = true
-	
-	if focused.has_method("ax_function_override"):
-		if focused.ax_function_override():
-			do_default_processing = false
-			
-	if focused.has_method("ax_screenreader_navigation"):
-		if !focused.ax_screenreader_navigation():
-			do_screenreader_navigation = false
-	
-	if do_default_processing:
-		if focused is VideoStreamPlayer:
-			default_move = _process_video_controls()
-		elif focused is MenuBar:
-			default_move = _process_menubar_controls()
-		elif focused is TabBar:
-			default_move = _process_tabbar_controls()
-		elif focused is MenuButton:
-			default_move = _process_menu_button_controls()
-		elif focused is OptionButton:
-			default_move = _process_option_button_controls()
-		elif (focused is Button ||
-				focused is LinkButton ||
-				focused is TextureButton):
-				default_move = _process_button_controls()
-		elif (focused is HSlider ||
-				focused is VSlider ||
-				focused is SpinBox):
-			default_move = _process_slider_controls()
-		elif (focused is LineEdit ||
-				focused is TextEdit):
-			default_move = _process_text_controls()
-		elif focused is Tree:
-			default_move = _process_tree_controls()
-	# Processes parent tabbar
-	
-	if default_move && do_screenreader_navigation:
+	if focused != null:
+		var default_move = true
+		var do_default_processing = true
+		var do_screenreader_navigation = true
+		
+		if focused.has_method("ax_function_override"):
+			if focused.ax_function_override():
+				do_default_processing = false
+				
+		if focused.has_method("ax_screenreader_navigation"):
+			if !focused.ax_screenreader_navigation():
+				do_screenreader_navigation = false
+		
+		if do_default_processing:
+			if focused is VideoStreamPlayer:
+				default_move = _process_video_controls()
+			elif focused is MenuBar:
+				default_move = _process_menubar_controls()
+			elif focused is TabBar:
+				default_move = _process_tabbar_controls()
+			elif focused is MenuButton:
+				default_move = _process_menu_button_controls()
+			elif focused is OptionButton:
+				default_move = _process_option_button_controls()
+			elif (focused is Button ||
+					focused is LinkButton ||
+					focused is TextureButton):
+					default_move = _process_button_controls()
+			elif (focused is HSlider ||
+					focused is VSlider ||
+					focused is SpinBox):
+				default_move = _process_slider_controls()
+			elif (focused is LineEdit ||
+					focused is TextEdit):
+				default_move = _process_text_controls()
+			elif focused is Tree:
+				default_move = _process_tree_controls()
+		# Processes parent tabbar
+		
+		if default_move && do_screenreader_navigation:
 
-		var new_movement = 0
-		var new_position = -1
+			var new_movement = 0
+			var new_position = -1
 
-		# This does movements between areas
-		new_position = _area_movement()
-			
-		# If able, do the normal tabbing dom movement
-		new_movement = _simple_movement()
+			# This does movements between areas
+			new_position = _area_movement()
+				
+			# If able, do the normal tabbing dom movement
+			new_movement = _simple_movement()
 
-		if new_movement != 0:
-			default_move = false
-			_update_end_node_position(new_movement)
-		elif new_position > -1:
-			default_move = false
-			_update_end_node_position(0, new_position)
-			
-	# If no movement, process information keys
-	if default_move:
-		default_move = _process_info_keys()
-	
+			if new_movement != 0:
+				default_move = false
+				_update_end_node_position(new_movement)
+			elif new_position > -1:
+				default_move = false
+				_update_end_node_position(0, new_position)
+				
+		# If no movement, process information keys
+		if default_move:
+			default_move = _process_info_keys()
+		
 # Processes keys for getting information
 # like rereading the current element
 static func _process_info_keys():
@@ -870,9 +866,9 @@ static func _process_text_controls():
 		lines_count = focused.get_caret_line()
 	
 	# pasted clipboard contents
-	if (ScreenreaderController.key_pressed() && 
-		ScreenreaderController.pressed_keys.has(KEY_CTRL)
-		&& ScreenreaderController.pressed_keys.has(KEY_V)):
+	if (AXController.key_pressed() && 
+		AXController.pressed_keys.has(KEY_CTRL)
+		&& AXController.pressed_keys.has(KEY_V)):
 		_add_token(DisplayServer.clipboard_get()
 			+ " " + TEXTEDIT_STRINGS[TEXTEDIT_STRING.PASTED])
 		_tts_speak()
@@ -1010,10 +1006,10 @@ static func _process_text_controls():
 		return false
 		
 		
-	elif _text_wait_to_press && !ScreenreaderController.pressed_keys.is_empty() && ScreenreaderController.key_pressed():
+	elif _text_wait_to_press && !AXController.pressed_keys.is_empty() && AXController.key_pressed():
 		_clear_tokens()
 		
-		for c in ScreenreaderController.pressed_keys:
+		for c in AXController.pressed_keys:
 			_add_token(OS.get_keycode_string(c).replace("Kp","").lstrip(" ").rstrip(" "))
 		
 		_tts_speak()
