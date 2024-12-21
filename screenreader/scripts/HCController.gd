@@ -42,6 +42,7 @@ static func get_style():
 # Sets the theme to a new theme
 static func set_theme(root, theme):
 	reset_theme(root)
+	_theme_data[root] = root.theme
 	theme_style = theme
 	_set_theme_rec(root, get_style())
 	
@@ -60,9 +61,6 @@ static func reset_theme(root):
 	_theme_data = {}
 	
 static func _reset_theme_rec(root):
-	for c in root.get_children():
-		if _theme_data.has(c):
-			root.theme = _theme_data[c]
-		
-		if c.get_child_count() > 0:
-			_reset_theme_rec(c)
+	for c in _theme_data:
+		if is_instance_valid(c):
+			c.theme = _theme_data[c]

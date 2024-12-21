@@ -10,6 +10,7 @@ func _on_exit_button_pressed() -> void:
 
 func _ready() -> void:
 	#AXController.set_high_contrast_light_theme($Panel)
+	#AXController.reset_theme($Panel)
 	
 	AXController.enable_screenreader($Panel)
 	
