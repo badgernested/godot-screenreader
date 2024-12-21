@@ -22,8 +22,8 @@ general/text_to_speech=true
 
 [autoload]
 
-DOMNavigator="*res://screenreader/scripts/DomNav.gd"
 KeyFrame="*res://screenreader/scripts/KeyFrame.gd"
+ScreenreaderController="*res://screenreader/scripts/ScreenreaderController.gd"
 
 [display]
 

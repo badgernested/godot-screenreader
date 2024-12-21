@@ -9,9 +9,9 @@ func _on_exit_button_pressed() -> void:
 ## Default methods
 
 func _ready() -> void:
-	DOMNavigator.set_dom_root($Panel)
+	Screenreader.set_dom_root($Panel)
 	
-	DOMNavigator.enable_dom()
+	Screenreader.enable_dom()
 	$Panel/Info/HBoxContainer/VersionNO.text += " " + ProjectSettings.get_setting("application/config/version")
 	
 

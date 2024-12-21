@@ -63,7 +63,7 @@ func _process(delta: float) -> void:
 	read_text = ""
 	
 	# Do subtitles
-	if DOMNavigator.subtitles_enabled:
+	if Screenreader.subtitles_enabled:
 		for c in subtitle_data:
 			# in a subtitle
 			if c[0] < stream_position && c[1] > stream_position:
@@ -94,9 +94,9 @@ func _process(delta: float) -> void:
 									box_size.y + subtitle_font_size * (line_count-1))
 	
 	# Only read audio captions when focused
-	if DOMNavigator.is_cooled_down() && DOMNavigator._OS_focused:
-		if DOMNavigator.audio_description_enabled:
-			if DOMNavigator.focused == self:
+	if Screenreader.is_cooled_down() && Screenreader._OS_focused:
+		if Screenreader.audio_description_enabled:
+			if Screenreader.focused == self:
 				if !paused && is_playing():
 					for c in audio_desc_data:
 						# in a subtitle
@@ -122,17 +122,17 @@ func play_video():
 	if !is_playing():
 		play()
 		
-	DOMNavigator.tts_speak_direct(DOMNavigator.VIDEO_NAVIGATION_STRINGS[DOMNavigator.VIDEO_NAVIGATION.PLAY])
+	Screenreader.tts_speak_direct(Screenreader.VIDEO_NAVIGATION_STRINGS[Screenreader.VIDEO_NAVIGATION.PLAY])
 	
 func stop_video():
 	TTS.stop()
 	stop()
 	
-	DOMNavigator.tts_speak_direct(DOMNavigator.VIDEO_NAVIGATION_STRINGS[DOMNavigator.VIDEO_NAVIGATION.STOPPED])
+	Screenreader.tts_speak_direct(Screenreader.VIDEO_NAVIGATION_STRINGS[Screenreader.VIDEO_NAVIGATION.STOPPED])
 	
 func pause_video():
 	TTS.stop()
 	paused = true
 	
-	DOMNavigator.tts_speak_direct(DOMNavigator.VIDEO_NAVIGATION_STRINGS[DOMNavigator.VIDEO_NAVIGATION.PAUSED])
+	Screenreader.tts_speak_direct(Screenreader.VIDEO_NAVIGATION_STRINGS[Screenreader.VIDEO_NAVIGATION.PAUSED])
 	

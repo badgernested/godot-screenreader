@@ -1,4 +1,10 @@
-class_name DomNav
+###############################################
+# Screenreader
+#
+# The screenreader class.
+###############################################
+
+class_name Screenreader
 extends Control
 
 ## Variables
@@ -90,13 +96,13 @@ static var _tokens: Array = []
 static var _end_node_position: int = 0
 
 # Timer object for cooldown
-static var timer: Timer = Timer.new()
+static var _timer: Timer = Timer.new()
 
 # Timer for slider cooldown
-static var timer_slider: Timer = Timer.new()
+static var _timer_slider: Timer = Timer.new()
 
 # Timer for slider increment cooldown
-static var timer_slider_increment: Timer = Timer.new()
+static var _timer_slider_increment: Timer = Timer.new()
 
 # How much time to cooldown
 const TIMER_COOLDOWN = 0.3
@@ -849,7 +855,7 @@ static func process_slider_controls():
 		stop_sound()
 		
 		# Adds default name tokens if verbose
-		# Only reads if timer is stopped
+		# Only reads if _timer is stopped
 		if verbose:
 			if focused is HSlider:
 				get_accessible_hslider_name(focused)
@@ -866,7 +872,7 @@ static func process_slider_controls():
 		
 		tts_speak()
 		
-		timer_slider.stop()
+		_timer_slider.stop()
 		
 		return false
 	
@@ -887,12 +893,12 @@ static func process_slider_controls():
 		
 		play_sound("slider_move")
 		
-		timer_slider.start(TIMER_SLIDER_SCROLL)
+		_timer_slider.start(TIMER_SLIDER_SCROLL)
 		
 		return false
 	
 	# Only runs if timeout is complete	
-	elif timer_slider.is_stopped():
+	elif _timer_slider.is_stopped():
 		var slider_amount = float(focused.max_value - focused.min_value)/float(1.0/focused.step) * MOVEMENT_TIME
 		
 		var cooldown = focused.get("cooldown_time")
@@ -907,9 +913,9 @@ static func process_slider_controls():
 					focused is VSlider):
 						focused.emit_signal("drag_started")
 			
-			if timer_slider_increment.is_stopped():
+			if _timer_slider_increment.is_stopped():
 				focused.value += focused.step
-				timer_slider_increment.start(slider_amount)
+				_timer_slider_increment.start(slider_amount)
 				focused.emit_signal("value_changed", focused.value)
 			return false
 			
@@ -920,9 +926,9 @@ static func process_slider_controls():
 					focused is VSlider):
 						focused.emit_signal("drag_started")
 			
-			if timer_slider_increment.is_stopped():
+			if _timer_slider_increment.is_stopped():
 				focused.value -= focused.step
-				timer_slider_increment.start(slider_amount)
+				_timer_slider_increment.start(slider_amount)
 				focused.emit_signal("value_changed", focused.value)
 			return false
 		
@@ -1677,7 +1683,7 @@ static func grab_obj_focus(obj):
 			# Release any sliders
 			_slider_moving = false
 			_sfx.pitch_scale = 1.0
-			timer_slider.stop()
+			_timer_slider.stop()
 			_slider_value = 0
 			_slider_is_sliding = false
 			
@@ -1784,10 +1790,10 @@ static func tts_speak_direct(text, pitch=1.0,rate=1.0,volume=50):
 		TTS.stop()
 		TTS.speak(text, false, TTS.default_lang, pitch, rate, volume)
 		
-		timer.start(TIMER_COOLDOWN)
+		_timer.start(TIMER_COOLDOWN)
 		
 static func is_cooled_down():
-	return timer.is_stopped()
+	return _timer.is_stopped()
 		
 ## Label reading methods
 
@@ -2336,7 +2342,7 @@ static func set_focus_on(obj, arr=_object_focus_mode):
 # Highligher Functions
 
 # Updates the draw highlighter
-func update_draw_highlight():
+static func update_draw_highlight():
 	if focused is MenuBar:
 		highlight_menubar()
 	elif focused is TabBar:
@@ -2345,8 +2351,6 @@ func update_draw_highlight():
 		highlight_tree()
 	else:
 		highlight_normal()
-		
-	call_deferred("queue_redraw")
 
 # redraws based on menu position
 static func highlight_normal():
@@ -2484,10 +2488,6 @@ static func create_menubar_object():
 		"menu_opened" : false
 	}
 	
-# Draws the highlighted selection
-func draw_highlight():
-	draw_style_box(DEFAULT_FOCUS_STYLE, _highlight_box)
-	
 # Updates what state to draw the current control in
 static func update_draw_state(state):
 	_control_state = state
@@ -2516,21 +2516,21 @@ static func prdebug(string):
 # Inherited functions
 
 # Runs when intialized
-func _ready():
+static func do_ready(obj):
 	# Makes it so that the selector always is drawn over the UI elements
-	z_index = 100
-	timer.one_shot = true
-	timer_slider.one_shot = true
-	timer_slider_increment.one_shot = true
+	obj.z_index = 100
+	_timer.one_shot = true
+	_timer_slider.one_shot = true
+	_timer_slider_increment.one_shot = true
 	
-	timer_slider.connect("timeout", timer_slider_timeout)
-	add_child(timer)
-	add_child(timer_slider)
-	add_child(timer_slider_increment)
-	sound_init(self)
+	_timer_slider.connect("timeout", timer_slider_timeout)
+	obj.add_child(_timer)
+	obj.add_child(_timer_slider)
+	obj.add_child(_timer_slider_increment)
+	sound_init(obj)
 
 # This forces reading the contents to override anything else.
-func _input(event: InputEvent) -> void:
+static func do_input(event: InputEvent):
 	if dom_nav_enabled:
 		if Input.is_action_just_pressed("DOM_read_item"):
 			if focused is CodeEdit:
@@ -2543,26 +2543,30 @@ func _input(event: InputEvent) -> void:
 			else:
 				add_token(get_accessible_name(focused))
 			tts_speak()
-			get_viewport().set_input_as_handled()
+			return true
 			
 		if event is InputEventMouseButton:
 			if focused is Tree:
 				if (event.button_index == MOUSE_BUTTON_WHEEL_DOWN
 					|| event.button_index == MOUSE_BUTTON_WHEEL_UP):
-						update_draw_highlight()
-						queue_redraw()
+						_state_updated = true
+						
+	return false
 
 # Processes the inputs for the DOM object
-func _process(delta: float) -> void:
+static func do_process(delta: float, obj) -> void:
 	process_input(delta)
 	
 	if focused != null:
 		if (_focused_old != focused):
 			update_draw_highlight()
+			obj.queue_redraw()
 		elif (_focused_rect_old != focused.get_global_rect()):
 			update_draw_highlight()
+			obj.queue_redraw()
 		elif _state_updated:
 			update_draw_highlight()
+			obj.queue_redraw()
 	
 	_state_updated = false
 	
@@ -2570,16 +2574,9 @@ func _process(delta: float) -> void:
 		_focused_old = focused
 		_focused_rect_old = focused.get_global_rect()
 	
-# Draws additional stuff on top of the normal draw function
-func _draw():
-	
-	# Draws the focused item if there is no focus stylebox
-	if focused != null:
-		draw_highlight()
-
 ## Notification
 
-func _notification(what: int):
+static func do_notification(what: int):
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
 		TTS.stop()
 		_OS_focused = false
