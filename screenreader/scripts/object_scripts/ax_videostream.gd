@@ -94,7 +94,7 @@ func _process(delta: float) -> void:
 									box_size.y + subtitle_font_size * (line_count-1))
 	
 	# Only read audio captions when focused
-	if Screenreader.is_cooled_down() && Screenreader._OS_focused:
+	if Screenreader._is_cooled_down() && Screenreader._OS_focused:
 		if Screenreader.audio_description_enabled:
 			if Screenreader.focused == self:
 				if !paused && is_playing():
@@ -122,17 +122,17 @@ func play_video():
 	if !is_playing():
 		play()
 		
-	Screenreader.tts_speak_direct(Screenreader.VIDEO_NAVIGATION_STRINGS[Screenreader.VIDEO_NAVIGATION.PLAY])
+	Screenreader._tts_speak_direct(Screenreader.VIDEO_NAVIGATION_STRINGS[Screenreader.VIDEO_NAVIGATION.PLAY])
 	
 func stop_video():
 	TTS.stop()
 	stop()
 	
-	Screenreader.tts_speak_direct(Screenreader.VIDEO_NAVIGATION_STRINGS[Screenreader.VIDEO_NAVIGATION.STOPPED])
+	Screenreader._tts_speak_direct(Screenreader.VIDEO_NAVIGATION_STRINGS[Screenreader.VIDEO_NAVIGATION.STOPPED])
 	
 func pause_video():
 	TTS.stop()
 	paused = true
 	
-	Screenreader.tts_speak_direct(Screenreader.VIDEO_NAVIGATION_STRINGS[Screenreader.VIDEO_NAVIGATION.PAUSED])
+	Screenreader._tts_speak_direct(Screenreader.VIDEO_NAVIGATION_STRINGS[Screenreader.VIDEO_NAVIGATION.PAUSED])
 	

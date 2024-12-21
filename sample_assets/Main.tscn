@@ -1,9 +1,8 @@
-[gd_scene load_steps=33 format=3 uid="uid://21bd0kykts0b"]
+[gd_scene load_steps=32 format=3 uid="uid://21bd0kykts0b"]
 
 [ext_resource type="Script" path="res://sample_assets/main.gd" id="1_liw1t"]
 [ext_resource type="Texture2D" uid="uid://ck5fd8hxcl8if" path="res://sample_assets/img/icon/test_icon.png" id="1_p3661"]
 [ext_resource type="Script" path="res://screenreader/scripts/object_scripts/ax_control.gd" id="2_6pnjy"]
-[ext_resource type="Script" path="res://screenreader/scripts/object_scripts/ax_menubar.gd" id="3_7pcv3"]
 [ext_resource type="Script" path="res://screenreader/scripts/object_scripts/ax_progressbar.gd" id="3_sdcnn"]
 [ext_resource type="Script" path="res://screenreader/scripts/object_scripts/ax_spinbox.gd" id="4_6nq4s"]
 [ext_resource type="Texture2D" uid="uid://cdyhup3t88t4q" path="res://sample_assets/img/sprite/character1.png" id="4_s2xk4"]
@@ -66,7 +65,6 @@ offset_top = 3.0
 offset_right = -119.0
 offset_bottom = 34.0
 prefer_global_menu = false
-script = ExtResource("3_7pcv3")
 
 [node name="Test Menu" type="PopupMenu" parent="Panel/NavButtons/MenuBar"]
 item_count = 8

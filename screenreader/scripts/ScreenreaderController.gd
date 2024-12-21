@@ -12,7 +12,7 @@ static var pressed_keys = []
 static var last_pressed_keys = []
 
 func _ready():
-	Screenreader.do_ready(self)
+	Screenreader._do_ready(self)
 
 # This forces reading the contents to override anything else.
 func _input(event: InputEvent) -> void:
@@ -26,7 +26,7 @@ func _input(event: InputEvent) -> void:
 			while pressed_keys.has(event.keycode):
 				pressed_keys.erase(event.keycode)
 	
-	var result = Screenreader.do_input(event)
+	var result = Screenreader._do_input(event)
 	if result:
 		get_viewport().set_input_as_handled()
 
@@ -34,7 +34,7 @@ func _input(event: InputEvent) -> void:
 func _process(delta: float) -> void:
 	last_pressed_keys = pressed_keys.duplicate()
 	
-	Screenreader.do_process(delta, self)
+	Screenreader._do_process(delta, self)
 	
 # Draws additional stuff on top of the normal draw function
 func _draw():
@@ -49,7 +49,7 @@ func _draw_highlight():
 ## Notification
 
 func _notification(what: int):
-	Screenreader.do_notification(what)
+	Screenreader._do_notification(what)
 
 # Returns if a key is pressed
 func key_pressed():
