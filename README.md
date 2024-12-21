@@ -33,3 +33,4 @@ For now, it is something that can be used to attach to your game to make menus a
 - Screenreader designed as (mostly) standalone script
 - Additional scripts you can attach/extend to Control nodes to expand optional accessibility functionality, such as alt text
 - Video Streams support subtitles and audio captions in ``VTT`` format (saved as ``.TXT`` files) 
+- High contrast mode theme switcher
