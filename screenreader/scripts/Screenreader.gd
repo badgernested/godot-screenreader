@@ -76,6 +76,9 @@ static var _focused_rect_old: Rect2 = Rect2(0,0,0,0)
 # Whether or not the state was updated.
 static var _state_updated: bool = false
 
+# The last scroll value recorded for a tree.
+static var _scroll_old: Vector2 = Vector2.ZERO
+
 # This stores all data objects in the DOM with a dictionary
 # that represents certain values.
 static var _data_objects: Dictionary = {}
@@ -2225,6 +2228,16 @@ static func _highlight_menubar():
 	else:
 
 		var h_sep = focused.get_theme_constant("h_separation")
+		var stylebox = focused.get_theme_stylebox("normal")
+		
+		var perm1 = Vector2.ZERO
+		var perm2 = Vector2.ZERO
+		
+		if stylebox is StyleBoxFlat:
+			perm1.x += stylebox.content_margin_left
+			perm1.y += stylebox.content_margin_top
+			perm2.x += stylebox.content_margin_right
+			perm2.y += stylebox.content_margin_bottom
 
 		var length = 0
 		var font_size = focused.get_theme_font_size("font_size")
@@ -2243,10 +2256,10 @@ static func _highlight_menubar():
 						-1,
 						font_size)
 		
-		_highlight_box = Rect2(focused.global_position.x + float(length) * (box.size.x / focused.size.x),
+		_highlight_box = Rect2(focused.global_position.x + float(length + perm2.x * selected) * (box.size.x / focused.size.x),
 								focused.global_position.y,
-								(sizer.x + h_sep) * (box.size.x / focused.size.x),
-								(sizer.y + font_size*0.5)  * (box.size.y / focused.size.y))
+								(sizer.x + h_sep + perm1.x) * (box.size.x / focused.size.x),
+								(sizer.y + font_size*0.5 + perm1.y)  * (box.size.y / focused.size.y))
 	
 # redraws based on tabbar
 static func _highlight_tabbar():
@@ -2269,6 +2282,17 @@ static func _highlight_tree():
 	
 	var item = focused.get_selected()
 	
+	var stylebox = focused.get_theme_stylebox("normal")
+	
+	var perm1 = Vector2.ZERO
+	var perm2 = Vector2.ZERO
+	
+	if stylebox is StyleBoxFlat:
+		perm1.x += stylebox.content_margin_left
+		perm1.y += stylebox.content_margin_top
+		perm2.x += stylebox.content_margin_right
+		perm2.y += stylebox.content_margin_bottom
+	
 	if item == null:
 		_highlight_normal()
 	else:
@@ -2277,7 +2301,7 @@ static func _highlight_tree():
 		
 		_highlight_box = focused.get_item_area_rect(item)
 
-		_highlight_box.position.y = _highlight_box.position.y * y_multi
+		_highlight_box.position.y = _highlight_box.position.y * y_multi + perm1.y
 		
 		_highlight_box.size.x = _highlight_box.size.x * (box.size.x / focused.size.x)
 		_highlight_box.size.y = _highlight_box.size.y * y_multi
@@ -2419,6 +2443,11 @@ static func _do_process(delta: float, obj) -> void:
 		elif _state_updated:
 			_update_draw_highlight()
 			obj.queue_redraw()
+		elif focused is Tree:
+			if focused.get_scroll() != _scroll_old:
+				_scroll_old = focused.get_scroll()
+				_update_draw_highlight()
+				obj.queue_redraw()
 	
 	_state_updated = false
 	

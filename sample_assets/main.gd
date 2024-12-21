@@ -9,7 +9,7 @@ func _on_exit_button_pressed() -> void:
 ## Default methods
 
 func _ready() -> void:
-	AXController.set_high_contrast_dark_theme($Panel)
+	#AXController.set_high_contrast_dark_theme($Panel)
 	
 	AXController.enable_screenreader($Panel)
 	

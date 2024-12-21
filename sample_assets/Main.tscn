@@ -216,7 +216,7 @@ offset_bottom = 500.0
 
 [node name="TabContainer" type="TabContainer" parent="Panel/VBoxContainer/Main/Panel"]
 layout_mode = 2
-current_tab = 3
+current_tab = 1
 
 [node name="Buttons and Text" type="PanelContainer" parent="Panel/VBoxContainer/Main/Panel/TabContainer"]
 visible = false
@@ -348,7 +348,6 @@ gutters_zero_pad_line_numbers = true
 gutters_draw_fold_gutter = true
 
 [node name="Sliders" type="PanelContainer" parent="Panel/VBoxContainer/Main/Panel/TabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -373,6 +372,8 @@ alt_text = "Tester Value"
 
 [node name="HSlider" type="HSlider" parent="Panel/VBoxContainer/Main/Panel/TabContainer/Sliders/VBoxContainer"]
 layout_mode = 2
+tick_count = 10
+ticks_on_borders = true
 script = ExtResource("5_t4av2")
 read_percent = true
 read_value = true
@@ -381,8 +382,10 @@ read_value = true
 layout_mode = 2
 
 [node name="VSlider" type="VSlider" parent="Panel/VBoxContainer/Main/Panel/TabContainer/Sliders/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(0, 50)
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
+tick_count = 6
+ticks_on_borders = true
 script = ExtResource("6_yyflb")
 read_fraction = true
 read_value = true
@@ -486,6 +489,7 @@ audio_description = "res://sample_assets/video/audio_desc.txt"
 subtitles = "res://sample_assets/video/subtitles.txt"
 
 [node name="More Elements" type="PanelContainer" parent="Panel/VBoxContainer/Main/Panel/TabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 3
 
