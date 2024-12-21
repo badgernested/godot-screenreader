@@ -30,7 +30,13 @@ For now, it is something that can be used to attach to your game to make menus a
     - Tree
         - Note: Tree Buttons are not supported.
 - Ability to ignore nodes if you so wish
-- Screenreader designed as (mostly) standalone script
+- Screenreader designed as standalone script
 - Additional scripts you can attach/extend to Control nodes to expand optional accessibility functionality, such as alt text
 - Video Streams support subtitles and audio captions in ``VTT`` format (saved as ``.TXT`` files) 
 - High contrast mode theme switcher
+
+## Extra Information
+
+If you want to know more about the screenreader, you can view the following:
+- [Credits](CREDITS.md)
+- [License - MIT](LICENSE)
