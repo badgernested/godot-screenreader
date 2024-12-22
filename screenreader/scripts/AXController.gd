@@ -137,6 +137,10 @@ func update_screenreader_highlight():
 	await get_tree().create_timer(0.001).timeout
 	Screenreader._update_draw_highlight()
 	queue_redraw()
+	
+# Focuses on a specific end node. Must be an end node.
+func screenreader_focus(node: Control):
+	Screenreader._update_end_node(node)
 
 # Gets the focus node of the given node
 func _get_focus_node(obj:Node):

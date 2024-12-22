@@ -892,7 +892,7 @@ offset_bottom = 234.0
 scale = Vector2(1.5, 1.5)
 texture = ExtResource("14_hoags")
 
-[node name="Button" type="Button" parent="Tab/Conclusion/HBoxContainer/Control"]
+[node name="FinishButton" type="Button" parent="Tab/Conclusion/HBoxContainer/Control"]
 custom_minimum_size = Vector2(200, 48)
 layout_mode = 1
 anchors_preset = 3
@@ -931,4 +931,4 @@ theme_override_font_sizes/font_size = 30
 text = "Congratulations!"
 
 [connection signal="ready" from="Tab/Trees/HBox/SampleArea/Tree" to="." method="_on_tree_ready"]
-[connection signal="pressed" from="Tab/Conclusion/HBoxContainer/Control/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="Tab/Conclusion/HBoxContainer/Control/FinishButton" to="." method="_on_button_pressed"]

@@ -1509,6 +1509,14 @@ static func _open_selected_tab(obj: Node):
 			_open_selected_tab(parent)	
 	return null
 			
+# Moves to a specific end node.
+static func _update_end_node(node: Control):
+	var index = _end_node_list.find(node)
+	
+	if index > -1:
+		_update_end_node_position(0, index)
+			
+# Moves to a specific end node position.
 static func _update_end_node_position(movement:int = 0, index:int = -1):
 	
 	focused.release_focus()

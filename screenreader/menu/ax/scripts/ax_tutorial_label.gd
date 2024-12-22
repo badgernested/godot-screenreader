@@ -20,6 +20,8 @@ func ax_function_override():
 		
 		if index >= tabbar.tab_count:
 			index = tabbar.tab_count - 1
+			goto_button()
+			return false
 		elif index < 0:
 			index = 0
 			
@@ -36,6 +38,8 @@ func ax_function_override():
 		
 		if index >= tabbar.tab_count:
 			index = tabbar.tab_count - 1
+			goto_button()
+			return false
 		elif index < 0:
 			index = 0
 			
@@ -99,3 +103,17 @@ func get_first_of_tabbar(obj: TabBar) -> int:
 func update_tab_position(tabbar: TabBar):
 	await get_tree().create_timer(0.001).timeout
 	Screenreader._update_end_node_position(0,get_first_of_tabbar(tabbar))
+	
+# Updates the tab position
+# You have to add a slight delay to prevent a flashing bug.
+func goto_button():
+	await get_tree().create_timer(0.001).timeout
+	# Finds the button
+	var butt = null
+	
+	for c in range(0,Screenreader._end_node_list.size()):
+		if Screenreader._end_node_list[c].name == "FinishButton":
+			butt = c
+			break
+	
+	Screenreader._update_end_node_position(0, butt)
