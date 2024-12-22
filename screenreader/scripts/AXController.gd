@@ -67,7 +67,7 @@ func key_changed():
 
 ## Screenreader Control
 
-func enable_screenreader(root):
+func enable_screenreader(root: Control):
 	Screenreader.set_dom_root(root)
 	Screenreader.enable_dom()
 	
@@ -78,14 +78,14 @@ func reset_screenreader():
 
 # Pass an element to make all its children 
 # the dark high contrast theme
-func set_high_contrast_dark_theme(root):
+func set_high_contrast_dark_theme(root: Control):
 	HCController.set_theme(root, "hc_dark")
 	
 # Pass an element to make all its children 
 # the light high contrast theme
-func set_high_contrast_light_theme(root):
+func set_high_contrast_light_theme(root: Control):
 	HCController.set_theme(root, "hc_light")
 	
 # Passes an element to remove all special themes
-func reset_theme(root):
+func reset_theme(root: Control):
 	HCController.reset_theme(root)

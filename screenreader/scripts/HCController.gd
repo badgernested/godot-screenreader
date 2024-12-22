@@ -40,13 +40,13 @@ static func get_style():
 	return null
 
 # Sets the theme to a new theme
-static func set_theme(root, theme):
+static func set_theme(root: Control, theme: String):
 	reset_theme(root)
 	_theme_data[root] = root.theme
 	theme_style = theme
 	_set_theme_rec(root, get_style())
 	
-static func _set_theme_rec(root,theme):
+static func _set_theme_rec(root: Control, theme: Theme):
 	for c in root.get_children():
 		_theme_data[c] = c.theme
 		root.theme = theme
@@ -55,12 +55,12 @@ static func _set_theme_rec(root,theme):
 			_set_theme_rec(c,theme)
 	
 # Resets the theme to the original
-static func reset_theme(root):
+static func reset_theme(root: Control):
 	_reset_theme_rec(root)
 	theme_style = ""
 	_theme_data = {}
 	
-static func _reset_theme_rec(root):
+static func _reset_theme_rec(root: Control):
 	for c in _theme_data:
 		if is_instance_valid(c):
 			c.theme = _theme_data[c]

@@ -43,7 +43,7 @@ const CHARACTER_NAMES = {
 }
 
 # checks if unicode is a capital letter
-static func unicode_is_capital(unicode):
+static func unicode_is_capital(unicode: int):
 	return unicode >= 65 && unicode <= 90
 
 # These are special key combos that are ignored for some purposes
@@ -56,7 +56,12 @@ static func special_key_combos():
 	return false
 	
 # Returns the string of certain characters
-static func get_character_name(character):
+static func get_character_name(character: String):
+	if !character.is_empty():
+		character = character[0]
+	else:
+		character = " "
+	
 	for c in CHARACTER_NAMES:
 		if c != " ":
 			character = character.replace(c, " " + CHARACTER_NAMES[c] + " ")
