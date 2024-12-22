@@ -930,5 +930,17 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
 text = "Congratulations!"
 
+[node name="InvisibleLabel" type="Label" parent="Tab/Conclusion/HBoxContainer/Control"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_left = 230.0
+offset_top = 289.0
+offset_right = 388.0
+offset_bottom = 340.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Created by
+PunishedFelix"
+horizontal_alignment = 2
+
 [connection signal="ready" from="Tab/Trees/HBox/SampleArea/Tree" to="." method="_on_tree_ready"]
 [connection signal="pressed" from="Tab/Conclusion/HBoxContainer/Control/FinishButton" to="." method="_on_button_pressed"]
