@@ -89,3 +89,17 @@ func set_high_contrast_light_theme(root: Control):
 # Passes an element to remove all special themes
 func reset_theme(root: Control):
 	HCController.reset_theme(root)
+	
+## Text to Speech manager
+
+# Adds a token to the screen reader to be read.
+func add_token(token: String):
+	Screenreader._add_token(token)
+	
+# Reads the current tokens.
+func read_tokens():
+	Screenreader._tts_speak()
+	
+# Reads a tts string directly
+func tts_speak(text: String, pitch:float = 1.0, rate:float= 1.0 , volume:float = 50):
+	Screenreader._tts_speak_direct(text, pitch, rate, volume)

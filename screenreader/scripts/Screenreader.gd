@@ -1651,31 +1651,6 @@ static func _release_obj_focus(obj: Control):
 static func _check_obj_focus(obj: Control):
 	if dom_nav_enabled:
 		return obj == focused
-
-## TTS management methods
-
-# Speaks the current token state
-static func _tts_speak(pitch:float = 1.0,rate: float = 1.0, volume: float = 50):
-	if _tokens.is_empty():
-		return
-	
-	var text = ""
-	for c in _tokens:
-		text += c + " | "
-		
-	_clear_tokens()
-		
-	_tts_speak_direct(text, pitch, rate, volume)
-	
-static func _tts_speak_direct(text: String, pitch:float = 1.0,rate:float= 1.0 ,volume:float = 50):
-	if !text.is_empty():
-		TTS.stop()
-		TTS.speak(text, false, TTS.default_lang, pitch, rate, volume)
-		
-		_timer.start(TIMER_COOLDOWN)
-		
-static func _is_cooled_down():
-	return _timer.is_stopped()
 		
 ## Label reading methods
 
@@ -2024,20 +1999,7 @@ static func _add_alt_text(obj:Control):
 	if obj.get("alt_text") != null && !obj.alt_text.is_empty():
 		name_val = obj.alt_text
 		_add_token(name_val)
-		
-# Clear tokens
-static func _clear_tokens():
-	_tokens = []
-	
-# adds token
-static func _add_token(token: String):
-	token = token.rstrip(" ").lstrip(" ").rstrip("\n").lstrip("\n")
-	if token == ")":
-		pass
-	
-	if(!token.is_empty()):
-		_tokens.append(token)
-		
+
 ## Tree Building Methods
 
 # Searches the tree starting at this node for UI elements to grab
@@ -2092,6 +2054,44 @@ static func _recursive_tree_search(obj:Control, level:int = 0):
 		_array_stack.pop_back()
 		
 	return false
+
+## TTS management methods
+
+# Clear tokens
+static func _clear_tokens():
+	_tokens = []
+	
+# adds token
+static func _add_token(token: String):
+	token = token.rstrip(" ").lstrip(" ").rstrip("\n").lstrip("\n")
+	if token == ")":
+		pass
+	
+	if(!token.is_empty()):
+		_tokens.append(token)
+		
+# Speaks the current token state
+static func _tts_speak(pitch:float = 1.0,rate: float = 1.0, volume: float = 50):
+	if _tokens.is_empty():
+		return
+	
+	var text = ""
+	for c in _tokens:
+		text += c + " | "
+		
+	_clear_tokens()
+		
+	_tts_speak_direct(text, pitch, rate, volume)
+	
+static func _tts_speak_direct(text: String, pitch:float = 1.0,rate:float= 1.0 ,volume:float = 50):
+	if !text.is_empty():
+		TTS.stop()
+		TTS.speak(text, false, TTS.default_lang, pitch, rate, volume)
+		
+		_timer.start(TIMER_COOLDOWN)
+		
+static func _is_cooled_down():
+	return _timer.is_stopped()
 
 # Function to check if parent is tab container
 static func _if_parent_is_TabContainer(obj:Control):
