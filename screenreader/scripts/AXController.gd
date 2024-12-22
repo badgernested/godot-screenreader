@@ -9,24 +9,37 @@ extends Control
 static var pressed_keys = []
 static var last_pressed_keys = []
 
+# Strings for the screenreader functionality
 const STRINGS = {
 	"enabled" : "Screenreader enabled.",
 	"disabled" : "Screenreader disabled."
 }
 
+const EVENT_FILE = "events.sav"
+const AX_PATH = "ax/"
+
 # An array of events, to prevent repeat events.
-var events: Array = []
+static var events: Array = []
 
 # Whether or not the screenreader is enabled/disabled
-var _screenreader_enabled: bool = false
+static var _screenreader_enabled: bool = false
 
 # The DOM root. if null, you can't open the screenreader.
-var dom_root = null
+static var dom_root: Control = null
+
+# If true, loads events stored in a save file a frame
+# after the instance loads.
+# This way the screenreader tutorial only appears once
+# when playing a game.
+static var load_file: bool = true
 
 func _ready():
 	AXMenuManager.init(get_tree().get_root())
 	Screenreader._do_ready(self)
 	TextFunctions.update_keyboard_action_names()
+	
+	await get_tree().create_timer(0.001).timeout
+	_load_events_from_file()
 
 # This forces reading the contents to override anything else.
 func _input(event: InputEvent) -> void:
@@ -81,6 +94,9 @@ func _draw_highlight():
 
 func _notification(what: int):
 	Screenreader._do_notification(what)
+		
+	if what == Control.NOTIFICATION_EXIT_TREE:
+		_save_events_to_file()
 
 # Returns if a key is pressed
 func key_pressed():
@@ -196,3 +212,34 @@ func _remove_event(event):
 # Checks if event exists
 func _event_exists(event):
 	return events.has(event)
+
+# Saves events to a file
+func _save_events_to_file():
+	if load_file:
+		var dir = DirAccess.open("user://")
+		
+		if !dir.dir_exists(AX_PATH):
+			dir.make_dir_recursive(AX_PATH)
+			
+		var path = "user://" + AX_PATH + EVENT_FILE
+			
+		var file = FileAccess.open(path,FileAccess.WRITE)
+		
+		for c in events:
+			file.store_line(c)
+		
+		file.close()
+
+# Loads data from the file
+func _load_events_from_file():
+	if load_file:
+		var path = "user://" + AX_PATH + EVENT_FILE
+		
+		if FileAccess.file_exists(path):
+			events = []
+			var file = FileAccess.open(path, FileAccess.READ)
+			
+			while !file.eof_reached():
+				events.append(file.get_line())
+			
+			file.close()
