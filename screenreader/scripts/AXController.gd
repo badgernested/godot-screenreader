@@ -31,7 +31,7 @@ static var dom_root: Control = null
 # after the instance loads.
 # This way the screenreader tutorial only appears once
 # when playing a game.
-static var load_file: bool = true
+static var load_file: bool = false
 
 func _ready():
 	AXMenuManager.init(get_tree().get_root())

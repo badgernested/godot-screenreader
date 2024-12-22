@@ -31,3 +31,7 @@ func tree_render(tree, parent, filepath):
 # Exits the tutorial
 func _on_button_pressed() -> void:
 	AXMenuManager.pop_menu()
+
+
+func _on_invisible_label_pressed() -> void:
+	OS.shell_open("https://punishedfelix.com/")

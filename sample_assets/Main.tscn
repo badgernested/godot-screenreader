@@ -514,15 +514,19 @@ offset_right = 900.0
 offset_bottom = 60.0
 
 [node name="Label" type="Label" parent="Panel/VBoxContainer/Info/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 text = "Test TTS UI Function"
+horizontal_alignment = 1
 
 [node name="VSeparator" type="VSeparator" parent="Panel/VBoxContainer/Info/HBoxContainer"]
 layout_mode = 2
 
 [node name="VersionNO" type="Label" parent="Panel/VBoxContainer/Info/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 text = "Version"
+horizontal_alignment = 1
 
 [connection signal="index_pressed" from="Panel/VBoxContainer/NavButtons/HBoxContainer/CenterContainer/MenuBar/Test Menu" to="." method="_on_test_menu_index_pressed"]
 [connection signal="index_pressed" from="Panel/VBoxContainer/NavButtons/HBoxContainer/CenterContainer/MenuBar/Extra Items" to="." method="_on_extra_items_index_pressed"]
