@@ -11,6 +11,7 @@ static var last_pressed_keys = []
 
 func _ready():
 	Screenreader._do_ready(self)
+	TextFunctions.update_keyboard_action_names()
 
 # This forces reading the contents to override anything else.
 func _input(event: InputEvent) -> void:
@@ -67,9 +68,10 @@ func key_changed():
 
 ## Screenreader Control
 
-func enable_screenreader(root: Control):
+
+func enable_screenreader(root: Control, enabled:bool = true, focus_obj: Control = null):
 	Screenreader.set_dom_root(root)
-	Screenreader.enable_dom()
+	Screenreader.enable_dom(enabled, focus_obj)
 	
 func reset_screenreader():
 	Screenreader.enable_dom(false)

@@ -257,7 +257,7 @@ static func set_dom_root(obj: Control):
 	dom_root = obj
 	init_DOM()
 
-static func enable_dom(value: bool = true):
+static func enable_dom(value: bool = true, obj: Control=null):
 	dom_nav_enabled = value
 	
 	# disables godot focus, uses custom UI built
@@ -265,6 +265,13 @@ static func enable_dom(value: bool = true):
 	if dom_nav_enabled:
 		_set_focus_off(dom_root)
 		# grabs the first active end node
+		if obj == null:
+			_end_node_position = 0
+		else:
+			_end_node_position = _end_node_list.find(obj)
+			
+			if _end_node_position < -1:
+				_end_node_position = 0
 		_end_node_grab_focus()
 	
 	# enables dom
@@ -737,7 +744,6 @@ static func _process_tabbar_controls():
 	# If moving to the next element, select the first
 	# element in the current panel
 	elif (Input.is_action_just_pressed("DOM_next") ||
-		Input.is_action_just_pressed("DOM_right") ||
 		Input.is_action_just_pressed("DOM_down")):
 		
 		var parent = focused.get_parent().get_child(focused.current_tab)
@@ -1055,25 +1061,19 @@ static func _process_menu_button_controls():
 			_popup_index-= 1
 			
 			if _popup_index < 0:
-				_popup_visible = false
-				popup.visible = false
 				_popup_index = 0
-				_add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
-			else:
-				_play_sound("list_nav", LIST_PITCH_SHIFT)
-				changed = true
+				
+			_play_sound("list_nav", LIST_PITCH_SHIFT)
+			changed = true
 			
 		elif Input.is_action_just_pressed("DOM_item_increment"):
 			_popup_index += 1
 			
 			if _popup_index > focused.item_count-1:
-				_popup_visible = false
-				popup.visible = false
-				_popup_index = 0
-				_add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
-			else:
-				_play_sound("list_nav")
-				changed = true
+				_popup_index = focused.item_count-1
+
+			_play_sound("list_nav")
+			changed = true
 			
 		if changed:
 			popup.scroll_to_item(_popup_index)
@@ -1085,9 +1085,7 @@ static func _process_menu_button_controls():
 			return false
 			
 		# If not changed, if you leave the button while open, announce its closing
-		if (Input.is_action_just_pressed("DOM_left") ||
-			Input.is_action_just_pressed("DOM_right") ||
-			Input.is_action_just_pressed("DOM_up") ||
+		if (Input.is_action_just_pressed("DOM_up") ||
 			Input.is_action_just_pressed("DOM_down")):
 				_add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
 	
@@ -1106,6 +1104,18 @@ static func _process_menu_button_controls():
 			_add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.OPENED] % [text] )
 			
 		_popup_visible = !_popup_visible
+		
+		_tts_speak()
+		return false
+		
+	if Input.is_action_just_pressed("DOM_cancel"):
+		_play_sound("button_down")
+		
+		if _popup_visible:
+			_popup_visible = false
+			popup.visible = false
+			_popup_index = 0
+			_add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
 		
 		_tts_speak()
 		return false
@@ -1155,27 +1165,21 @@ static func _process_option_button_controls():
 			_popup_index-= 1
 			
 			if _popup_index < 0:
-				_popup_visible = false
-				popup.visible = false
 				_popup_index = 0
-				_add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
-			else:
-				focused.emit_signal("item_focused",_popup_index)
-				_play_sound("list_nav", LIST_PITCH_SHIFT)
-				changed = true
+
+			focused.emit_signal("item_focused",_popup_index)
+			_play_sound("list_nav", LIST_PITCH_SHIFT)
+			changed = true
 			
 		elif Input.is_action_just_pressed("DOM_item_increment"):
 			_popup_index += 1
 			
 			if _popup_index > focused.item_count-1:
-				_popup_visible = false
-				popup.visible = false
-				_popup_index = 0
-				_add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
-			else:
-				focused.emit_signal("item_focused",_popup_index)
-				_play_sound("list_nav")
-				changed = true
+				_popup_index = focused.item_count-1
+
+			focused.emit_signal("item_focused",_popup_index)
+			_play_sound("list_nav")
+			changed = true
 			
 		if changed:
 			popup.scroll_to_item(_popup_index)
@@ -1187,9 +1191,7 @@ static func _process_option_button_controls():
 			return false
 			
 		# If not changed, if you leave the button while open, announce its closing
-		if (Input.is_action_just_pressed("DOM_left") ||
-			Input.is_action_just_pressed("DOM_right") ||
-			Input.is_action_just_pressed("DOM_up") ||
+		if (Input.is_action_just_pressed("DOM_up") ||
 			Input.is_action_just_pressed("DOM_down")):
 				_add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
 	
@@ -1208,6 +1210,18 @@ static func _process_option_button_controls():
 			_add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.OPENED] % [text] )
 			
 		_popup_visible = !_popup_visible
+		
+		_tts_speak()
+		return false
+
+	if Input.is_action_just_pressed("DOM_cancel"):
+		_play_sound("button_down")
+		
+		if _popup_visible:
+			_popup_visible = false
+			popup.visible = false
+			_popup_index = 0
+			_add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
 		
 		_tts_speak()
 		return false
@@ -1409,14 +1423,10 @@ static func _simple_movement():
 
 	if !_end_node_list.is_empty():
 		
-		if Input.is_action_just_pressed("ui_down"):
+		if Input.is_action_just_pressed("DOM_down"):
 			return 1
-		elif Input.is_action_just_pressed("ui_up"):
+		elif Input.is_action_just_pressed("DOM_up"):
 			return -1
-		elif Input.is_action_just_pressed("ui_right"):
-			return 1
-		elif Input.is_action_just_pressed("ui_left"):
-			return -1	
 
 	return 0
 

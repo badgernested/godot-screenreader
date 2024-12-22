@@ -42,6 +42,9 @@ const CHARACTER_NAMES = {
 	"\t" : "Tab"
 }
 
+# Dictionary of action names
+static var keyboard_action_names:Dictionary = {}
+
 # checks if unicode is a capital letter
 static func unicode_is_capital(unicode: int):
 	return unicode >= 65 && unicode <= 90
@@ -70,3 +73,53 @@ static func get_character_name(character: String):
 		return CHARACTER_NAMES[character]
 	
 	return character
+
+# Gets all the action names
+static func update_keyboard_action_names():
+	keyboard_action_names = {}
+	
+	var actions = InputMap.get_actions()
+	
+	for c in actions:
+		var events = InputMap.action_get_events(c)
+		var keys = []
+		for d in events:
+			if d is InputEventKey:
+				if d.keycode > 0:
+					keys.append( OS.get_keycode_string(d.get_keycode_with_modifiers()))
+				elif d.physical_keycode > 0:
+					keys.append( OS.get_keycode_string(d.get_physical_keycode_with_modifiers()))
+					
+		if !keys.is_empty():
+			keyboard_action_names[c] = keys
+		
+# Gets the keyboard buttons of the actions from the action name.
+static func get_action_keyboard_name_string(action:String, quantity:int = -1):
+	
+	if !keyboard_action_names.has(action):
+		return "[]"
+		
+	var action_data = keyboard_action_names[action]
+	
+	var ackt = ""
+	
+	if quantity <= -1:
+		for c in action_data:
+			ackt += c + ", "
+			
+		if ackt.length() > 1:	
+			ackt = ackt.substr(0, ackt.length()-2)
+	else:
+		for c in range(0, min(quantity, action_data)):
+			ackt += action_data[c] + ", "
+		
+		if ackt.length() > 1:	
+			ackt = ackt.substr(0, ackt.length()-2)
+		
+	return "[%s]" % [ackt]
+
+static func replace_all_keyboard_strings(text:String, quantity:int = -1):
+	for c in keyboard_action_names:
+		text = text.replace("[%s]" % c, get_action_keyboard_name_string(c, quantity))
+
+	return text

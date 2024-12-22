@@ -19,6 +19,13 @@ const STYLES = {
 	"hc_light" : preload("res://screenreader/ui/style/HiContrast_Light.tres")
 }
 
+# This is the gradient for the top borders of accessibility menus
+const GRADIENT_STYLES = {
+	"hc_dark" : preload("res://screenreader/ui/gradient/DarkMode.tres"),
+	"hc_light" : preload("res://screenreader/ui/gradient/LightMode.tres")
+}
+
+
 # This stores the theme data for every object within the root.
 static var _theme_data: Dictionary = {}
 
@@ -36,6 +43,13 @@ static func get_focus_style():
 static func get_style():
 	if STYLES.has(theme_style):
 		return STYLES[theme_style]
+		
+	return null
+	
+# Gets the gradient
+static func get_gradient():
+	if GRADIENT_STYLES.has(theme_style):
+		return GRADIENT_STYLES[theme_style]
 		
 	return null
 

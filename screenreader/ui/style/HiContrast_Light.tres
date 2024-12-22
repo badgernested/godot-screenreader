@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=95 format=3 uid="uid://bf0v5pjuwtmde"]
+[gd_resource type="Theme" load_steps=97 format=3 uid="uid://bf0v5pjuwtmde"]
 
 [ext_resource type="Texture2D" uid="uid://dje6nt7o0de7m" path="res://screenreader/ui/img/light/checkbox_ticked.png" id="1_in7gv"]
 [ext_resource type="Texture2D" uid="uid://k0ijyiqqilnc" path="res://screenreader/ui/img/light/checkbox_disabled_ticked.png" id="2_rvfjf"]
@@ -23,7 +23,9 @@
 [ext_resource type="Texture2D" uid="uid://bshy0cqhn2wdp" path="res://screenreader/ui/img/light/grabber_selected.png" id="21_tt724"]
 [ext_resource type="Texture2D" uid="uid://jydhqeuiwjpj" path="res://screenreader/ui/img/light/grabber_tick.png" id="22_vc4on"]
 [ext_resource type="Texture2D" uid="uid://co17gclfvo1gr" path="res://screenreader/ui/img/light/arrows.png" id="23_jvein"]
+[ext_resource type="Texture2D" uid="uid://cwrjij7c1u1gw" path="res://screenreader/ui/img/light/three_dots_trans.png" id="24_ddgfm"]
 [ext_resource type="Texture2D" uid="uid://cl8nuhijgy6tg" path="res://screenreader/ui/img/light/arrow_left.png" id="24_x3s1b"]
+[ext_resource type="Texture2D" uid="uid://d375co20p3boy" path="res://screenreader/ui/img/light/three_dots.png" id="25_d7m81"]
 [ext_resource type="Texture2D" uid="uid://gkb5lio54ns7" path="res://screenreader/ui/img/light/scroll_up.png" id="25_xs5wy"]
 [ext_resource type="Texture2D" uid="uid://plj5eccurw7r" path="res://screenreader/ui/img/light/scroll_up_disabled.png" id="26_qyss8"]
 [ext_resource type="Texture2D" uid="uid://bq1uprdejomwg" path="res://screenreader/ui/img/light/scroll_down.png" id="27_saoq7"]
@@ -773,6 +775,12 @@ TabContainer/colors/font_hovered_color = Color(1, 1, 1, 1)
 TabContainer/colors/font_selected_color = Color(1, 1, 1, 1)
 TabContainer/colors/font_unselected_color = Color(0, 0, 0, 1)
 TabContainer/constants/outline_size = 0
+TabContainer/icons/decrement = ExtResource("16_ne1hb")
+TabContainer/icons/decrement_highlight = ExtResource("15_fmt3n")
+TabContainer/icons/increment = ExtResource("18_sb8e7")
+TabContainer/icons/increment_highlight = ExtResource("17_d0lx4")
+TabContainer/icons/menu = ExtResource("24_ddgfm")
+TabContainer/icons/menu_highlight = ExtResource("25_d7m81")
 TabContainer/styles/panel = SubResource("StyleBoxFlat_exhl3")
 TabContainer/styles/tab_disabled = SubResource("StyleBoxFlat_k5l2n")
 TabContainer/styles/tab_focus = SubResource("StyleBoxFlat_74w5b")

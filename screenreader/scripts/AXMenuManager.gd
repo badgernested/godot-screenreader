@@ -11,3 +11,8 @@
 ###############################################
 class_name AXMenuManager
 extends Object
+
+# This contains the menus you're allowed to instantiate.
+const MENUS = {
+	
+}

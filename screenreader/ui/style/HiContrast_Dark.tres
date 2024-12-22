@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=89 format=3 uid="uid://fme4v6oqduj1"]
+[gd_resource type="Theme" load_steps=91 format=3 uid="uid://fme4v6oqduj1"]
 
 [ext_resource type="Texture2D" uid="uid://crvj8qlrx0te2" path="res://screenreader/ui/img/dark/checkbox_ticked.png" id="1_aklg6"]
 [ext_resource type="Texture2D" uid="uid://dohwt7eehgkga" path="res://screenreader/ui/img/dark/checkbox_disabled_ticked.png" id="2_cn0fu"]
@@ -25,6 +25,8 @@
 [ext_resource type="Texture2D" uid="uid://6e0nsx7l2fqp" path="res://screenreader/ui/img/dark/scroll_down_disabled_h.png" id="18_bbe61"]
 [ext_resource type="Texture2D" uid="uid://jdjoxpf3lvv8" path="res://screenreader/ui/img/dark/grabber_tick.png" id="18_i3k0u"]
 [ext_resource type="Texture2D" uid="uid://b7t8gj6vg2ujq" path="res://screenreader/ui/img/dark/grabber_tick_h.png" id="21_0s5c4"]
+[ext_resource type="Texture2D" uid="uid://dmgpsdvt0cw2h" path="res://screenreader/ui/img/dark/three_dots_trans.png" id="24_50ssn"]
+[ext_resource type="Texture2D" uid="uid://duhskdhbfnidu" path="res://screenreader/ui/img/dark/three_dots.png" id="25_6iodm"]
 [ext_resource type="Texture2D" uid="uid://b5gjjbbdt3yva" path="res://screenreader/ui/img/dark/scroll_up.png" id="25_nhtdv"]
 [ext_resource type="Texture2D" uid="uid://bqlhbw3gjluqp" path="res://screenreader/ui/img/dark/scroll_up_disabled.png" id="26_8rdqn"]
 [ext_resource type="Texture2D" uid="uid://ca01hnktghaa1" path="res://screenreader/ui/img/dark/scroll_down.png" id="27_pux4h"]
@@ -743,6 +745,12 @@ TabContainer/colors/font_hovered_color = Color(0, 0, 0, 1)
 TabContainer/colors/font_selected_color = Color(0, 0, 0, 1)
 TabContainer/colors/font_unselected_color = Color(1, 1, 1, 1)
 TabContainer/constants/outline_size = 0
+TabContainer/icons/decrement = ExtResource("15_27rhq")
+TabContainer/icons/decrement_highlight = ExtResource("16_oorh6")
+TabContainer/icons/increment = ExtResource("17_n6f7q")
+TabContainer/icons/increment_highlight = ExtResource("18_bbe61")
+TabContainer/icons/menu = ExtResource("24_50ssn")
+TabContainer/icons/menu_highlight = ExtResource("25_6iodm")
 TabContainer/styles/panel = SubResource("StyleBoxFlat_exhl3")
 TabContainer/styles/tab_disabled = SubResource("StyleBoxFlat_k5l2n")
 TabContainer/styles/tab_focus = SubResource("StyleBoxFlat_74w5b")
