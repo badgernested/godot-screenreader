@@ -13,7 +13,8 @@ extends Node
 
 # This contains the menus you're allowed to instantiate.
 const MENUS = {
-	"tutorial" : preload("res://screenreader/menu/ax/Tutorial.tscn")
+	"tutorial" : preload("res://screenreader/menu/ax/Tutorial.tscn"),
+	"main" : preload("res://screenreader/menu/ax/AxMenu.tscn")
 }
 
 # The original DOM node before switching to menu mode
@@ -35,19 +36,28 @@ func focus_top_menu():
 		var menu = _menu_stack[_menu_stack.size()-1]
 		var focus_node = AXController._get_focus_node(menu)
 			
-		AXController._set_screenreader_subject(menu, true, focus_node)
+		# Select the previously selected node if able
+		if menu.focused_element != null:
+			focus_node = menu.focused_element
+			
+		AXController._set_screenreader_subject(menu, AXController._screenreader_enabled, focus_node)
 	else:
 		if _DOM_node != null:
-			AXController._set_screenreader_subject(_DOM_node)
+			AXController._set_screenreader_subject(_DOM_node, AXController._screenreader_enabled)
 	
 # Pushes the menu to the stack
 func push_menu(menu_name: String):
 
 	if MENUS.has(menu_name):
 		if _menu_stack.is_empty():
-			_DOM_node = Screenreader.dom_root
-			# Turns off the dom node
-			Screenreader._set_focus_off(_DOM_node)
+			if Screenreader.dom_root != null && is_instance_valid(Screenreader.dom_root):
+				_DOM_node = Screenreader.dom_root
+				# Turns off the dom node
+				Screenreader._set_focus_off(_DOM_node)
+		else:
+			var top = _menu_stack[_menu_stack.size()-1]
+			print(Screenreader.focused)
+			top.set("focused_element", Screenreader.focused)
 			
 		var inst = MENUS[menu_name].instantiate()
 		

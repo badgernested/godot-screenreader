@@ -125,8 +125,6 @@ grow_horizontal = 0
 alignment = 2
 
 [node name="Close" type="Button" parent="Panel/VBox/Title/HBoxContainer/ColorRect/Grid/EndButtons/HBox"]
-z_index = 1
-z_as_relative = false
 layout_mode = 2
 shortcut = SubResource("Shortcut_nbomf")
 icon = ExtResource("5_ekyef")

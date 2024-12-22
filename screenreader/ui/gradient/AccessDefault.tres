@@ -6,4 +6,4 @@ colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0.2, 1, 0, 0, 0.6, 1)
 
 [resource]
 gradient = SubResource("Gradient_3u4bg")
-width = 602
+width = 502

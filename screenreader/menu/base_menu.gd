@@ -16,6 +16,8 @@ var mouse_titlebar:bool = false
 # Position on the panel when clicked
 var click_position:Vector2 = Vector2.ZERO
 
+var focused_element = null
+
 const BUTTON_STYLES = {
 	"default" : preload("res://screenreader/ui/img/default/x_box.png"),
 	"hc_dark" : preload("res://screenreader/ui/img/dark/x_box.png"),

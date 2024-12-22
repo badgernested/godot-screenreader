@@ -77,6 +77,10 @@ func _process(delta: float) -> void:
 			
 			enable_screenreader(changer, _screenreader_enabled, focus_node)
 			
+	elif Input.is_action_just_pressed("DOM_screenreader_menu"):
+		if Screenreader.dom_nav_enabled:
+			if AXMenuManager._menu_stack.is_empty():
+				AXMenuManager.push_menu("main")
 	
 	Screenreader._do_process(delta, self)
 	
