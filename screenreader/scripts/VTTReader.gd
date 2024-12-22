@@ -1,3 +1,11 @@
+###############################################
+# VTTReader
+#
+# Class that converts VTT-formated .TXT files
+# into [start_time, end_time, content] arrays.
+# This way they can be easily displayed as 
+# subtitles or audio description.
+###############################################
 extends Node
 class_name VTTReader
 

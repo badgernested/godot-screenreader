@@ -1,3 +1,12 @@
+###############################################
+# TTS
+#
+# Text-to-Speech Interface.
+# Originally written by LightsOutGames for
+# Godot 3.x, updated to Godot 4.x by rodolpheh.
+# 
+# Both licensed under MIT License.
+###############################################
 extends Node
 class_name TTS
 
