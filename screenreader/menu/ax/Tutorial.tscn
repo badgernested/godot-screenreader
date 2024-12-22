@@ -6,9 +6,7 @@
 
 [node name="Tutorial" instance=ExtResource("1_v81io")]
 script = ExtResource("2_2mmsm")
-
-[node name="ColorRect" parent="." index="0"]
-layout_mode = 0
+focus_node = NodePath("Panel/VBox/Content/Center/Panel/Contents/TutorialControl/Tab/Introduction/CenterContainer")
 
 [node name="Panel" parent="." index="1"]
 custom_minimum_size = Vector2(1000, 600)
@@ -54,13 +52,25 @@ layout_mode = 0
 offset_right = 974.0
 offset_bottom = 504.0
 
+[node name="CenterContainer" parent="Panel/VBox/Content/Center/Panel/Contents/TutorialControl/Tab/Introduction" index="0"]
+text = "Welcome to the screenreader!
+
+To continue the tutorial, press [DOM_item_increment].
+
+If you turned on the screenreader by mistake, you can turn it off with [DOM_screenreader_enable].
+
+You can also navigate the tutorial through the Tab Bar. Press [DOM_up] or [DOM_down] to navigate the interface to the Tab Bar, and press [DOM_item_decrement] or [DOM_item_increment] to navigate the tabs.
+
+You can re-read selected elements by pressing [DOM_read_item]. You can stop the TTS's speaking by pressing [DOM_stop_talk].
+
+To exit, press [ui_cancel]."
+
 [node name="BottomControls" parent="Panel/VBox" index="2"]
 visible = false
 custom_minimum_size = Vector2(600, 0)
 
 [node name="Center" parent="Panel/VBox/BottomControls" index="0"]
 custom_minimum_size = Vector2(600, 0)
-layout_mode = 0
 offset_right = 600.0
 offset_bottom = 70.0
 

@@ -1,8 +1,8 @@
 extends Control
 
 @export var focus_marked_container: bool = false
-@export var alt_text: String = ""
 @export var ignore: bool = false
+@export var enable_mouse: bool = false
 
 # If this value returns a non-empty value, it will read that
 # string instead of the default string for the screenreader

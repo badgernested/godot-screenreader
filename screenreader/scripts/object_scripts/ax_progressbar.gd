@@ -4,6 +4,7 @@ extends ProgressBar
 @export var ignore: bool = false
 @export var read_fraction: bool = false
 @export var read_percent: bool = false
+@export var enable_mouse: bool = false
 
 # If this value returns a non-empty value, it will read that
 # string instead of the default string for the screenreader

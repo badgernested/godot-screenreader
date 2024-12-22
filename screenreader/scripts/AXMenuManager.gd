@@ -9,10 +9,71 @@
 # manager for your game, you should base
 # it off of this one instead.
 ###############################################
-class_name AXMenuManager
-extends Object
+extends Node
 
 # This contains the menus you're allowed to instantiate.
 const MENUS = {
-	
+	"tutorial" : preload("res://screenreader/menu/ax/Tutorial.tscn")
 }
+
+# The original DOM node before switching to menu mode
+var _DOM_node: Control = null
+
+# Where the menu children are placed in the node tree.
+var _root_node: Node = null
+
+# The current menu stack.
+var _menu_stack = []
+
+# Initializes the menu manuager
+func init(root: Node):
+	_root_node = root
+	
+# Focuses the menu on the top of the stack
+func focus_top_menu():
+	if !_menu_stack.is_empty():
+		var menu = _menu_stack[_menu_stack.size()-1]
+		var focus_node = AXController._get_focus_node(menu)
+			
+		AXController._set_screenreader_subject(menu, true, focus_node)
+	else:
+		if _DOM_node != null:
+			AXController._set_screenreader_subject(_DOM_node)
+	
+# Pushes the menu to the stack
+func push_menu(menu_name: String):
+
+	if MENUS.has(menu_name):
+		if _menu_stack.is_empty():
+			_DOM_node = Screenreader.dom_root
+			# Turns off the dom node
+			Screenreader._set_focus_off(_DOM_node)
+			
+		var inst = MENUS[menu_name].instantiate()
+		
+		if _root_node != null:
+			_root_node.call_deferred("add_child",inst)
+			_menu_stack.append(inst)
+			
+			call_deferred("focus_top_menu")
+			
+		else:
+			Screenreader._prdebug("You must first set _root_node with _init()")
+	else:
+		Screenreader._prdebug("Tried to push invalid ax menu %s" % [menu_name])
+
+# Pops a menu from the stack
+func pop_menu():
+	TTS.stop()
+	var last_menu = _menu_stack.pop_back()
+
+	if last_menu != null:
+		last_menu.queue_free()
+	
+	call_deferred("focus_top_menu")
+	
+	AXController.call_deferred("update_screenreader_highlight")
+
+# Gets the top menu
+func peek_menu():
+	return _menu_stack[_menu_stack.size()-1]

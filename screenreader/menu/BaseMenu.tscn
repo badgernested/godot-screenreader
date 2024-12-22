@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://bl5husybo5s2r"]
+[gd_scene load_steps=13 format=3 uid="uid://bl5husybo5s2r"]
 
 [ext_resource type="Script" path="res://screenreader/menu/base_menu.gd" id="1_bx15o"]
 [ext_resource type="Theme" uid="uid://cs1vqepidtt1a" path="res://screenreader/ui/style/Access.tres" id="2_3qw7s"]
 [ext_resource type="Script" path="res://screenreader/scripts/object_scripts/ax_control.gd" id="3_lvgwa"]
+[ext_resource type="Script" path="res://screenreader/scripts/object_scripts/ax_panel.gd" id="3_v2c1p"]
 [ext_resource type="Texture2D" uid="uid://olyxlpqj6df1" path="res://screenreader/ui/gradient/AccessDefault.tres" id="4_pnw2u"]
 [ext_resource type="Texture2D" uid="uid://bl88nqyr458nl" path="res://screenreader/ui/img/default/x_box.png" id="5_ekyef"]
 [ext_resource type="Script" path="res://screenreader/scripts/object_scripts/ax_button.gd" id="5_k62w1"]
@@ -17,7 +18,15 @@ content_margin_top = 8.0
 content_margin_right = 10.0
 content_margin_bottom = 8.0
 
+[sub_resource type="InputEventAction" id="InputEventAction_0or0r"]
+action = &"ui_cancel"
+pressed = true
+
+[sub_resource type="Shortcut" id="Shortcut_nbomf"]
+events = [SubResource("InputEventAction_0or0r")]
+
 [node name="BaseMenu" type="Control"]
+z_as_relative = false
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_bx15o")
@@ -25,6 +34,7 @@ centered = true
 
 [node name="ColorRect" type="ColorRect" parent="."]
 custom_minimum_size = Vector2(1920, 1080)
+layout_mode = 0
 offset_right = 1920.0
 offset_bottom = 1080.0
 color = Color(0, 0, 0, 0.545098)
@@ -35,6 +45,8 @@ layout_mode = 0
 offset_right = 616.0
 offset_bottom = 494.0
 theme = ExtResource("2_3qw7s")
+script = ExtResource("3_v2c1p")
+enable_mouse = true
 
 [node name="VBox" type="VBoxContainer" parent="Panel"]
 layout_mode = 1
@@ -113,12 +125,16 @@ grow_horizontal = 0
 alignment = 2
 
 [node name="Close" type="Button" parent="Panel/VBox/Title/HBoxContainer/ColorRect/Grid/EndButtons/HBox"]
+z_index = 1
+z_as_relative = false
 layout_mode = 2
+shortcut = SubResource("Shortcut_nbomf")
 icon = ExtResource("5_ekyef")
 flat = true
 icon_alignment = 1
 script = ExtResource("5_k62w1")
 alt_text = "Close"
+enable_mouse = true
 
 [node name="Content" type="Control" parent="Panel/VBox"]
 custom_minimum_size = Vector2(600, 350)
@@ -149,6 +165,7 @@ focus_marked_container = true
 
 [node name="Center" type="CenterContainer" parent="Panel/VBox/BottomControls"]
 custom_minimum_size = Vector2(600, 70)
+layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
@@ -181,5 +198,7 @@ offset_right = 150.0
 offset_bottom = 40.0
 alignment = 2
 
+[connection signal="tree_entered" from="." to="." method="_on_tree_entered"]
+[connection signal="tree_exited" from="." to="." method="_on_tree_exited"]
 [connection signal="gui_input" from="Panel" to="." method="_on_panel_gui_input"]
 [connection signal="pressed" from="Panel/VBox/Title/HBoxContainer/ColorRect/Grid/EndButtons/HBox/Close" to="." method="_on_close_pressed"]

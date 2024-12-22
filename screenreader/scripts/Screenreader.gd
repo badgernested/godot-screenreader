@@ -29,7 +29,7 @@ static var _array_stack: Array = []
 # This contains a copy of the old "focus mode" state
 # this way you can disable DOM mode and go back
 # to the focus mode built by the developer
-static var _object_focus_mode: Array = []
+static var _object_focus_mode: Dictionary = {}
 
 # This is the current object in focus
 static var focused: Node = null
@@ -153,7 +153,9 @@ const SFX_LIBRARY = {
 	"tree_enter" : preload("res://screenreader/sfx/tree_enter.wav"),
 	"tree_exit" : preload("res://screenreader/sfx/tree_exit.wav"),
 	"tree_no_children" : preload("res://screenreader/sfx/tree_no_children.wav"),
-	"list_nav" : preload("res://screenreader/sfx/list_nav.wav")
+	"list_nav" : preload("res://screenreader/sfx/list_nav.wav"),
+	"menu_open" : preload("res://screenreader/sfx/menu_open.wav"),
+	"menu_close" : preload("res://screenreader/sfx/menu_close.wav"),
 }
 
 # Data Strings
@@ -277,6 +279,7 @@ static func enable_dom(value: bool = true, obj: Control=null):
 	# enables dom
 	else:
 		_set_focus_on(dom_root)
+		_clear_DOM()
 
 ## Processing/navigation functions
 
@@ -363,54 +366,56 @@ static func _process_button_controls():
 	var toggle_old = focused.button_pressed
 	var old_text = focused.text
 	
+	var current_focus = focused
+	
 	var pressed = false
 	
 	# Allows you to press buttons normally
 	if Input.is_action_just_pressed("ui_accept"):
-		focused.emit_signal("button_down")
+		current_focus.emit_signal("button_down")
 		_play_sound("button_down")
 		_update_draw_state(CONTROL_STATE.PRESSED)
 		activated = false
 	elif Input.is_action_just_released("ui_accept"):
-		focused.emit_signal("button_up")
+		current_focus.emit_signal("button_up")
 		_play_sound("button_up")
 		_update_draw_state(CONTROL_STATE.FOCUSED)
 		activated = false
 		
-	if focused.action_mode == BaseButton.ACTION_MODE_BUTTON_PRESS:
+	if current_focus.action_mode == BaseButton.ACTION_MODE_BUTTON_PRESS:
 		if Input.is_action_just_pressed("ui_accept"):
-			focused.emit_signal("pressed")
+			current_focus.emit_signal("pressed")
 			activated = false
-			if focused.toggle_mode:
-				focused.button_pressed = !focused.button_pressed
+			if current_focus.toggle_mode:
+				current_focus.button_pressed = !current_focus.button_pressed
 			pressed = true
 	else:
 		if Input.is_action_just_released("ui_accept"):
-			focused.emit_signal("pressed")
+			current_focus.emit_signal("pressed")
 			activated = false
-			if focused.toggle_mode:
-				focused.button_pressed = !focused.button_pressed
+			if current_focus.toggle_mode:
+				current_focus.button_pressed = !current_focus.button_pressed
 			pressed = true
 			
-	if focused.toggle_mode:
-		if focused.button_pressed != toggle_old:
-			focused.emit_signal("toggled",focused.button_pressed)
+	if current_focus.toggle_mode:
+		if current_focus.button_pressed != toggle_old:
+			current_focus.emit_signal("toggled",current_focus.button_pressed)
 		
 	# If the pressed signal was emitted
 	if pressed:
-		if focused is CheckBox:
-			if focused.button_pressed:
+		if current_focus is CheckBox:
+			if current_focus.button_pressed:
 				_add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.CHECKED])
 			else:
 				_add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.UNCHECKED])
 					
-		elif focused is CheckButton:
-			if focused.button_pressed:
+		elif current_focus is CheckButton:
+			if current_focus.button_pressed:
 				_add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.ON])
 			else:
 				_add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.OFF])
 		else:
-			var alt_text = focused.get("alt_text")
+			var alt_text = current_focus.get("alt_text")
 			if alt_text == null:
 				_add_token(old_text)
 			else:
@@ -903,8 +908,12 @@ static func _process_text_controls():
 			if TextFunctions.unicode_is_capital(char_no):
 				pitch = 2.0
 				
-			_add_token(TextFunctions.get_character_name(character))
-			_tts_speak(pitch)
+			if _last_caret_pos != caret_position:
+				_add_token(TextFunctions.get_character_name(character))
+				_tts_speak(pitch)
+				
+			_last_caret_pos = caret_position
+			
 			return false
 			
 	if focused is TextEdit:
@@ -967,7 +976,6 @@ static func _process_text_controls():
 			var character = "" 
 			if last_lines[_last_caret_line].length() > 0:
 				if lines.size() > _last_caret_line:
-					print(min(caret_position,last_lines.size()-1))
 					character = last_lines[_last_caret_line][min(caret_position,last_lines[_last_caret_line].length()-1)]
 			else:
 				character = TEXTEDIT_STRINGS[TEXTEDIT_STRING.NEWLINE]
@@ -1414,6 +1422,16 @@ static func _find_first_obj(arr: Array):
 	for c in arr:
 		if !(c is Array):
 			return c
+			
+	return null
+	
+# Returns the first object nested in an array
+static func _dig_first_obj(arr: Array):
+	for c in arr:
+		if !(c is Array):
+			return c
+		else:
+			return _dig_first_obj(c)
 			
 	return null
 			
@@ -2057,7 +2075,10 @@ static func _recursive_tree_search(obj:Control, level:int = 0):
 				
 				# if node is not programmic (unless tabbar
 				if !obj.name.contains("@") || obj is TabBar:
-					if _recursive_tree_search(c,level+1):
+					if c is Control:
+						if _recursive_tree_search(c,level+1):
+							break
+					else:
 						break
 	
 	for c in range(0,created):			
@@ -2093,7 +2114,7 @@ static func _tts_speak(pitch:float = 1.0,rate: float = 1.0, volume: float = 50):
 		
 	_tts_speak_direct(text, pitch, rate, volume)
 	
-static func _tts_speak_direct(text: String, pitch:float = 1.0,rate:float= 1.0 ,volume:float = 50):
+static func _tts_speak_direct(text: String, pitch:float = 1.0,rate:float= 1.0 ,volume:int = 50):
 	if !text.is_empty():
 		TTS.stop()
 		TTS.speak(text, false, TTS.default_lang, pitch, rate, volume)
@@ -2163,55 +2184,60 @@ static func _get_object_list(list: Array = _objects):
 # gets the Focus Modes of all child elements
 
 static func _build_focus_mode_list():
-	_object_focus_mode = []
+	_object_focus_mode = {}
 	
 	_get_focus_mode_rec(dom_root, _object_focus_mode)
 	
 # recursive function to get focus mode
-static func _get_focus_mode_rec(obj: Control, arr:Array):
+static func _get_focus_mode_rec(obj: Control, dic:Dictionary):
 	for c in obj.get_children(true):
 		if c is Control:
-			arr.append(c.focus_mode)
+			dic[c] = c.focus_mode
 			
 			if c.get_child_count(true) > 0:
-				var new_arr = []
-				arr.append(new_arr)
-				_get_focus_mode_rec(c, new_arr)
+				_get_focus_mode_rec(c, dic)
 
 # Sets all the focus objects to have no focus mode
 static func _set_focus_off(obj:Control):
 	if obj != null:
 		for c in obj.get_children(true):
 			if c is Control:
-				c.focus_mode = Control.FOCUS_NONE
+				if c.get("enable_mouse") == true:
+					c.focus_mode = Control.FOCUS_CLICK
+				else:
+					c.focus_mode = Control.FOCUS_NONE
 				
 				if c.get_child_count(true) > 0:
 					_set_focus_off(c)
 				
-static func _set_focus_on(obj:Control, arr:Array = _object_focus_mode):
+static func _set_focus_on(obj:Control, dir:Dictionary = _object_focus_mode):
 	if obj != null && !_object_focus_mode.is_empty():
-		var counter = 0
 		for c in obj.get_children(true):
 			if c is Control:
-				c.focus_mode = arr[counter]
-				counter += 1
+				if dir.has(c):
+					c.focus_mode =dir[c]
+					
+				_set_focus_on(c,dir)	
 				
-				if c.get_child_count(true) > 0:
-					_set_focus_on(c,arr[counter])	
-					counter+=1
+	focused = null
+	_focused_old = null
 
 # Highligher Functions
 
 # Updates the draw highlighter
 static func _update_draw_highlight():
-	if focused is MenuBar:
-		_highlight_menubar()
-	elif focused is TabBar:
-		_highlight_tabbar()
-	elif focused is Tree:
-		_highlight_tree()
+
+	if !is_instance_valid(focused):
+		_highlight_box = Rect2(-200,-200,1,1)
 	else:
-		_highlight_normal()
+		if focused is MenuBar:
+			_highlight_menubar()
+		elif focused is TabBar:
+			_highlight_tabbar()
+		elif focused is Tree:
+			_highlight_tree()
+		else:
+			_highlight_normal()
 
 # redraws based on menu position
 static func _highlight_normal():
@@ -2381,15 +2407,18 @@ static func init_DOM():
 	
 	_set_focus_on(dom_root)
 	
+	_clear_DOM()
+	
+	_recursive_tree_search(dom_root)
+	_get_object_list()
+	_build_focus_mode_list()
+	
+static func _clear_DOM():
 	_objects = []
 	_end_node_list = []
 	_end_node_branches = []
 	_data_objects = {}
 	_array_stack = [_objects]
-	
-	_recursive_tree_search(dom_root)
-	_get_object_list()
-	_build_focus_mode_list()
 	
 static func _prdebug(string: String):
 	if debug:
@@ -2414,19 +2443,6 @@ static func _do_ready(obj: Node):
 # This forces reading the contents to override anything else.
 static func _do_input(event: InputEvent):
 	if dom_nav_enabled:
-		if Input.is_action_just_pressed("DOM_read_item"):
-			if focused is CodeEdit:
-				var lines = focused.text.split("\n")
-				
-				_add_token(lines[focused.get_caret_line()])
-			elif (focused is TextEdit
-				|| focused is LineEdit):
-				_add_token(focused.text)
-			else:
-				_add_token(get_accessible_name(focused))
-			_tts_speak()
-			return true
-			
 		if event is InputEventMouseButton:
 			if focused is Tree:
 				if (event.button_index == MOUSE_BUTTON_WHEEL_DOWN
@@ -2468,10 +2484,11 @@ static func _do_notification(what: int):
 		TTS.stop()
 		_OS_focused = false
 		# If MenuBar is access enabled, closes the menu variables
-		if focused is MenuBar:
-			if focused.get("selected_index") != null:
-				focused.selected_index = 0
-				focused.menu_opened = false
+		if is_instance_valid(focused):
+			if focused is MenuBar:
+				if focused.get("selected_index") != null:
+					focused.selected_index = 0
+					focused.menu_opened = false
 				
 		# Clears popup variables
 		_popup_visible = false

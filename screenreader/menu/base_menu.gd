@@ -8,6 +8,7 @@ extends Control
 
 # Whether the control is centered on init
 @export var centered: bool = false
+@export var focus_node: NodePath = NodePath()
 
 # Whether or not the mouse is on the titlebar
 var mouse_titlebar:bool = false
@@ -28,7 +29,7 @@ func screenreader_focus():
 	
 # Closes the menu
 func close():
-	print("Close later")
+	AXMenuManager.pop_menu()
 
 func set_title_gradient():
 	var gradient = HCController.get_gradient()
@@ -56,7 +57,7 @@ func init() -> void:
 		
 	$Panel/VBox/Title/HBoxContainer/ColorRect/Grid/EndButtons/HBox/Close.icon = button_style
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if mouse_titlebar:
 		$Panel.position = get_viewport().get_mouse_position() - click_position
 
@@ -72,3 +73,11 @@ func _on_panel_gui_input(event: InputEvent) -> void:
 				click_position = event.position
 		elif event.is_released():
 			mouse_titlebar = false
+
+
+func _on_tree_entered() -> void:
+	Screenreader._play_sound("menu_open")
+
+
+func _on_tree_exited() -> void:
+	Screenreader._play_sound("menu_close")

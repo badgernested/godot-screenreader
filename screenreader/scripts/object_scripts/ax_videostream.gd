@@ -4,6 +4,7 @@ extends VideoStreamPlayer
 @export var ignore: bool = false
 @export_file("*.txt") var audio_description: String
 @export_file("*.txt") var subtitles: String
+@export var enable_mouse: bool = false
 
 const SUBTITLE_FONT = preload("res://screenreader/fonts/F25_Bank_Printer.ttf")
 
@@ -55,7 +56,7 @@ func _ready() -> void:
 	base_display_position = Vector2(size.x * 0.5 - display_size * 0.5,
 								size.y * 0.93)
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	var old_display_text = display_text
 	var old_read_text = read_text
 	
@@ -86,7 +87,7 @@ func _process(delta: float) -> void:
 							display_size,
 							subtitle_font_size)
 							
-				display_position.x = initial_size.x * 0.5
+				display_position.x = (size.x * 0.5) - (box_size.x + subtitle_font_size)*0.5 + 8
 				
 				display_rect = Rect2((size.x * 0.5) - (box_size.x + subtitle_font_size)*0.5,
 									display_position.y - subtitle_font_size - 4,
@@ -114,7 +115,7 @@ func _process(delta: float) -> void:
 func _draw():
 	if !display_text.is_empty():
 		draw_rect(display_rect, Color.BLACK, true)
-		draw_multiline_string(SUBTITLE_FONT, display_position, display_text, HORIZONTAL_ALIGNMENT_CENTER, display_size, subtitle_font_size)
+		draw_multiline_string(SUBTITLE_FONT, display_position, display_text, HORIZONTAL_ALIGNMENT_LEFT, display_size, subtitle_font_size)
 
 func play_video():
 	read_text = ""

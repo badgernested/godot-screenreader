@@ -60,11 +60,6 @@ static func special_key_combos():
 	
 # Returns the string of certain characters
 static func get_character_name(character: String):
-	if !character.is_empty():
-		character = character[0]
-	else:
-		character = " "
-	
 	for c in CHARACTER_NAMES:
 		if c != " ":
 			character = character.replace(c, " " + CHARACTER_NAMES[c] + " ")

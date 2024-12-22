@@ -9,10 +9,7 @@ func _on_exit_button_pressed() -> void:
 ## Default methods
 
 func _ready() -> void:
-	#AXController.set_high_contrast_light_theme($Panel)
-	#AXController.reset_theme($Panel)
-	
-	AXController.enable_screenreader($Panel)
+	AXController.dom_root = $Panel
 	
 	$Panel/VBoxContainer/Info/HBoxContainer/VersionNO.text += " " + ProjectSettings.get_setting("application/config/version")
 	
@@ -52,8 +49,9 @@ func tree_render(tree, parent, filepath):
 			item.set_text(0, file)
 			tree_render(tree, item, filepath + "/" + file)
 		else:
-			var item = tree.create_item(parent)
-			item.set_text(0, file)
+			if !file.ends_with(".import"):
+				var item = tree.create_item(parent)
+				item.set_text(0, file)
 		file = dir.get_next()
 	
 	dir.list_dir_end()
