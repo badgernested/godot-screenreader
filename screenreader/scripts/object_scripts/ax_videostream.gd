@@ -5,6 +5,7 @@ extends VideoStreamPlayer
 @export_file("*.txt") var audio_description: String
 @export_file("*.txt") var subtitles: String
 @export var enable_mouse: bool = false
+@export var draw_highlight: bool = true
 
 const SUBTITLE_FONT = preload("res://screenreader/fonts/F25_Bank_Printer.ttf")
 

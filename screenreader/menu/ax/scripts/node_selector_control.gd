@@ -2,6 +2,11 @@ extends Control
 
 var end_nodes: Array = []
 
+var select_mode:bool = false
+
+const SELECT_ENTER = "Entered select mode."
+const SELECT_EXIT = "Exited select mode."
+
 func _ready() -> void:
 	populate_node_selectors()
 	

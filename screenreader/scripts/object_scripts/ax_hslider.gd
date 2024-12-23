@@ -7,6 +7,7 @@ extends HSlider
 @export var read_value: bool = false
 @export var cooldown_time: float = 0.0
 @export var enable_mouse: bool = false
+@export var draw_highlight: bool = true
 
 # If this value returns a non-empty value, it will read that
 # string instead of the default string for the screenreader

@@ -343,42 +343,45 @@ static func enable_dom(value: bool = true, obj: Control=null):
 # Processes interacting with inputs
 static func _process_input(_delta: float):
 
-	if focused != null:
+	# This prevents bugs caused by switching controls
+	var current_focus = focused
+
+	if current_focus != null:
 		var default_move = true
 		var do_default_processing = true
 		var do_screenreader_navigation = true
 		
-		if focused.has_method("ax_function_override"):
-			if focused.ax_function_override():
+		if current_focus.has_method("ax_function_override"):
+			if current_focus.ax_function_override():
 				do_default_processing = false
 				
-		if focused.has_method("ax_screenreader_navigation"):
-			if !focused.ax_screenreader_navigation():
+		if current_focus.has_method("ax_screenreader_navigation"):
+			if !current_focus.ax_screenreader_navigation():
 				do_screenreader_navigation = false
 		
 		if do_default_processing:
-			if focused is VideoStreamPlayer:
+			if current_focus is VideoStreamPlayer:
 				default_move = _process_video_controls()
-			elif focused is MenuBar:
+			elif current_focus is MenuBar:
 				default_move = _process_menubar_controls()
-			elif focused is TabBar:
+			elif current_focus is TabBar:
 				default_move = _process_tabbar_controls()
-			elif focused is MenuButton:
+			elif current_focus is MenuButton:
 				default_move = _process_menu_button_controls()
-			elif focused is OptionButton:
+			elif current_focus is OptionButton:
 				default_move = _process_option_button_controls()
-			elif (focused is Button ||
-					focused is LinkButton ||
-					focused is TextureButton):
+			elif (current_focus is Button ||
+					current_focus is LinkButton ||
+					current_focus is TextureButton):
 					default_move = _process_button_controls()
-			elif (focused is HSlider ||
-					focused is VSlider ||
-					focused is SpinBox):
+			elif (current_focus is HSlider ||
+					current_focus is VSlider ||
+					current_focus is SpinBox):
 				default_move = _process_slider_controls()
-			elif (focused is LineEdit ||
-					focused is TextEdit):
+			elif (current_focus is LineEdit ||
+					current_focus is TextEdit):
 				default_move = _process_text_controls()
-			elif focused is Tree:
+			elif current_focus is Tree:
 				default_move = _process_tree_controls()
 		# Processes parent tabbar
 		
@@ -2312,8 +2315,12 @@ static func _set_focus_on(obj:Control, dir:Dictionary = _object_focus_mode):
 static func _update_draw_highlight(obj=focused):
 
 	if !is_instance_valid(obj):
-		_highlight_box = Rect2(-200,-200,1,1)
+		_clear_highlight()
 	else:
+		if obj.get("draw_highlight") != null:
+			if !obj.draw_highlight:
+				return
+		
 		if obj is MenuBar:
 			_highlight_menubar(obj)
 		elif obj is TabBar:
@@ -2322,6 +2329,10 @@ static func _update_draw_highlight(obj=focused):
 			_highlight_tree(obj)
 		else:
 			_highlight_normal(obj)
+
+# clears highlight
+static func _clear_highlight():
+	_highlight_box = Rect2(-200,-200,1,1)
 
 # redraws based on menu position
 static func _highlight_normal(obj):

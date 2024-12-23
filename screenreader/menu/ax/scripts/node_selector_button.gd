@@ -6,8 +6,19 @@ var index: int = 0
 var objects:Array = []
 
 const SELECTED = "%s Selected"
-const SELECT_ENTER = "Entered select mode."
-const SELECT_EXIT = "Exited select mode."
+
+# Note, these correlate to the textbox names.
+# For translating, only change the right side.
+const TYPES = {
+	"Labels": "Labels",
+	"Buttons" : "Buttons",
+	"Textboxes" : "Textboxes",
+	"Sliders" : "Sliders",
+	"Media" : "Media",
+	"Other" : "Other"
+}
+
+@onready var parent = get_parent().get_parent().get_parent()
 
 # If this value returns a non-empty value, it will read that
 # string instead of the default string for the screenreader
@@ -31,8 +42,7 @@ func ax_function_override():
 		redraw_highlighter()
 		read_access_text()
 		Screenreader._play_sound("node_select", 1.2)
-		return true
-		
+
 	elif Input.is_action_just_pressed("DOM_item_increment"):
 		index += 1
 		
@@ -44,15 +54,49 @@ func ax_function_override():
 		redraw_highlighter()
 		read_access_text()
 		Screenreader._play_sound("node_select")
-		return true
 		
+	elif Input.is_action_just_pressed("DOM_prev"):
+		var tab = get_parent().get_parent()
+		var next_tab = tab.current_tab - 1
+		
+		if next_tab < 0:
+			next_tab = 0
+		
+		var new_obj = tab.get_child(next_tab).get_child(0)
+		
+		if new_obj != Screenreader.focused:
+			Screenreader._update_end_node(new_obj)
+		
+	elif Input.is_action_just_pressed("DOM_next"):
+		var tab = get_parent().get_parent()
+		var next_tab = tab.current_tab + 1
+		
+		if next_tab >= tab.get_tab_count():
+			next_tab = tab.get_tab_count()-1
+		
+		var new_obj = tab.get_child(next_tab).get_child(0)
+		
+		if new_obj != Screenreader.focused:
+			Screenreader._update_end_node(new_obj)
+
 	elif Input.is_action_just_pressed("DOM_select"):
 		AXController.add_token(SELECTED % [objects[index].get_class()])
 		AXMenuManager._focused_node = objects[index]
 		AXMenuManager.pop_all()
-		return true
-		
-	return false
+
+	elif Input.is_action_just_pressed("DOM_down"):
+		AXController.add_token(parent.SELECT_EXIT)
+		parent.select_mode = false
+		# Moves to title
+		Screenreader._update_end_node_position(0, 0)
+
+	elif Input.is_action_just_pressed("DOM_up"):
+		AXController.add_token(parent.SELECT_EXIT)
+		parent.select_mode = false
+		# Moves to tabs
+		Screenreader._update_end_node_position(0, 2)
+
+	return true
 	
 # If this method returns true, the default screenreader
 # navigation functionality will still be called.
@@ -60,12 +104,13 @@ func ax_function_override():
 # you don't want to trigger navigation too. So make this
 # return false if you trigger functionality this frame.
 func ax_screenreader_navigation():
-	return true
+	return false
 
 func redraw_highlighter():
-	await get_tree().create_timer(0.001).timeout
-	Screenreader._update_draw_highlight(objects[index])
-	AXController.queue_redraw()
+	if Screenreader.focused == self:
+		await get_tree().create_timer(0.001).timeout
+		Screenreader._update_draw_highlight(objects[index])
+		AXController.queue_redraw()
 
 func read_access_text():
 	Screenreader.get_accessible_name(objects[index])
@@ -97,7 +142,12 @@ func get_tab_parent(obj):
 	return returner
 
 func _on_focus_entered() -> void:
-	AXController.add_token(SELECT_ENTER)
+	if !parent.select_mode:
+		AXController.add_token(parent.SELECT_ENTER)
+		parent.select_mode = true
+	else:
+		AXController.add_token(TYPES[get_parent().name])
+		
 	for c in AXMenuManager._menu_stack:
 		c.modulate = Color(0.0, 0.0, 0.0, 0.0)
 	Screenreader.clear_redraw = true
@@ -106,7 +156,6 @@ func _on_focus_entered() -> void:
 	Screenreader._play_sound("node_select")
 
 func _on_focus_exited() -> void:
-	AXController.add_token(SELECT_EXIT)
 	for c in AXMenuManager._menu_stack:
 		c.modulate = Color(1.0, 1.0, 1.0, 1.0)
 	Screenreader._play_sound("node_select_exit")
