@@ -24,8 +24,8 @@ const TYPES = {
 # string instead of the default string for the screenreader
 # when it reads its name.
 func ax_custom_text() -> String:
-	Screenreader.get_accessible_name(objects[index])
-	return Screenreader._get_tokens()
+	#Screenreader.get_accessible_name(objects[index])
+	return get_access_text()
 
 # When this function returns true, it will override 
 # the regular input function of the control.
@@ -66,6 +66,7 @@ func ax_function_override():
 		
 		if new_obj != Screenreader.focused:
 			Screenreader._update_end_node(new_obj)
+			Screenreader._play_sound("tab_nav")
 		
 	elif Input.is_action_just_pressed("DOM_next"):
 		var tab = get_parent().get_parent()
@@ -78,6 +79,7 @@ func ax_function_override():
 		
 		if new_obj != Screenreader.focused:
 			Screenreader._update_end_node(new_obj)
+			Screenreader._play_sound("tab_nav")
 
 	elif Input.is_action_just_pressed("DOM_select"):
 		AXController.add_token(SELECTED % [objects[index].get_class()])
@@ -113,8 +115,57 @@ func redraw_highlighter():
 		AXController.queue_redraw()
 
 func read_access_text():
-	Screenreader.get_accessible_name(objects[index])
-	Screenreader._tts_speak()
+	Screenreader._tts_speak_direct(get_access_text())
+	
+# To do - build custom reader information
+	
+const SPECIAL_CONTROL_NAMES = {
+	"IMAGE" : "Image",
+	"PROGRESS_BAR" : "Progress Bar",
+	"HSLIDER" : "Horizontal Slider",
+	"VSLIDER" : "Vertical Slider",
+	"SPINBOX" : "Spinbox",
+	"LABEL" : "Label",
+	"BUTTON" : "Button",
+	"MENUBAR" : "Menu Bar",
+	"TABS" : "Tabs",
+	"CHECKBOX" : "Check Box",
+	"SWITCH" : "Switch",
+	"MENUBUTTON" : "Menu Button",
+	"DROPDOWN" : "Dropdown"
+}
+	
+func get_access_text():
+	var obj = objects[index]
+	
+	var returner = ""
+	
+	if obj is TextureRect:
+		if obj.get("alt_text") != null && !obj.alt_text.strip_edges().is_empty():
+			return "%s | %s" % [Screenreader.SPECIAL_CONTROL_NAMES["IMAGE"], obj.alt_text]
+	else:
+		var item_type = get_item_type(obj)
+		var text = obj.get("alt_text")
+		
+		if text == null:
+			if obj is RichTextLabel:
+				text = obj.get_parsed_text()
+			else:
+				text = obj.get("text")
+			
+		if text == null:
+			if obj.get("value") != null:
+				pass
+			
+		if text == null || text.strip_edges().is_empty():
+			returner = item_type
+		else:
+			returner = "%s | %s" % [text, item_type]
+	
+	return returner
+	
+func get_item_type(obj):
+	return obj.get_class()
 	
 func update_parent_tab(obj):
 	var tab_parent = get_tab_parent(obj)

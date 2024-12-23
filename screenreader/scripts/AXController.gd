@@ -31,7 +31,7 @@ static var dom_root: Control = null
 # after the instance loads.
 # This way the screenreader tutorial only appears once
 # when playing a game.
-static var load_file: bool = false
+static var load_file: bool = true
 
 func _ready():
 	AXMenuManager.init(get_tree().get_root())
@@ -82,7 +82,7 @@ func _process(delta: float) -> void:
 			if AXMenuManager._menu_stack.is_empty():
 				AXMenuManager.push_menu("main")
 	
-	Screenreader._do_process(delta, self)
+	Screenreader._do_process(delta)
 	
 	if Screenreader.clear_redraw:
 		Screenreader.clear_redraw = false

@@ -168,101 +168,52 @@ const SFX_LIBRARY = {
 
 # Data Strings
 
-const VIDEO_NAVIGATION_STRINGS = [
-	"Play",
-	"Paused",
-	"Stopped"
-]
-
-enum VIDEO_NAVIGATION {
-	PLAY,
-	PAUSED,
-	STOPPED
+const VIDEO_NAVIGATION_STRINGS = {
+	"PLAY" : "Play",
+	"PAUSED" : "Paused",
+	"STOPPED" : "Stopped"
+}
+const MENUBAR_NAVIGATION_STRINGS = {
+	"OPENED" : "Opened %s",
+	"CLOSED" : "Closed %s"
 }
 
-const MENUBAR_NAVIGATION_STRINGS = [
-	"Opened %s",
-	"Closed %s"
-]
-enum MENUBAR_NAVIGATION {
-	OPENED,
-	CLOSED
+const SPECIAL_CONTROL_NAMES = {
+	"IMAGE" : "Image",
+	"PROGRESS_BAR" : "Progress Bar",
+	"HSLIDER" : "Horizontal Slider",
+	"VSLIDER" : "Vertical Slider",
+	"SPINBOX" : "Spinbox",
+	"LABEL" : "Label",
+	"BUTTON" : "Button",
+	"MENUBAR" : "Menu Bar",
+	"TABS" : "Tabs",
+	"CHECKBOX" : "Check Box",
+	"SWITCH" : "Switch",
+	"MENUBUTTON" : "Menu Button",
+	"DROPDOWN" : "Dropdown"
 }
 
-const SPECIAL_CONTROL_NAMES = [
-	"Image",
-	"Progress Bar",
-	"Horizontal Slider",
-	"Vertical Slider",
-	"Spinbox",
-	"Label",
-	"Button",
-	"Menu Bar",
-	"Tabs",
-	"Check Box",
-	"Switch",
-	"Menu Button",
-	"Dropdown"
-]
-
-enum SPECIAL_CONTROLS {
-	IMAGE,
-	PROGRESS_BAR,
-	HSLIDER,
-	VSLIDER,
-	SPINBOX,
-	LABEL,
-	BUTTON,
-	MENUBAR,
-	TABS,
-	CHECKBOX,
-	SWITCH,
-	MENUBUTTON,
-	DROPDOWN
+const STRING_FORMATS = {
+	"FRACTION" : "%s out of %s",
+	"PERCENT" : "%s percent",
+	"SELECTED" : "%s selected"
 }
 
-const STRING_FORMATS = [
-	"%s out of %s",
-	"%s percent",
-	"%s selected"
-]
-
-enum STRING_FORMAT {
-	FRACTION,
-	PERCENT,
-	SELECTED
+const POPUPMENU_CONTROL_NAMES = {
+	"RADIOBUTTON" : "Radio Button",
+	"CHECKBOX" : "Checkbox",
+	"CHECKED" : "Checked",
+	"UNCHECKED" : "Unchecked",
+	"ON" : "On",
+	"OFF" : "Off"
 }
 
-const POPUPMENU_CONTROL_NAMES = [
-	"Radio Button",
-	"Checkbox",
-	"Checked",
-	"Unchecked",
-	"On",
-	"Off"
-]
-
-enum POPUPMENU_CONTROL {
-	RADIOBUTTON,
-	CHECKBOX,
-	CHECKED,
-	UNCHECKED,
-	ON,
-	OFF
-}
-
-const TREE_CONTROL_NAMES = [
-	"Collapsed",
-	"Uncollapsed",
-	"No children",
-	"%s children"
-]
-
-enum TREE_CONTROL {
-	COLLAPSED,
-	UNCOLLAPSED,
-	NO_CHILDREN,
-	CHILDREN
+const TREE_CONTROL_NAMES = {
+	"COLLAPSED" : "Collapsed",
+	"UNCOLLAPSED" : "Uncollapsed",
+	"NO_CHILDREN" : "No children",
+	"CHILDREN" : "%s children"
 }
 
 # This is used for highlighting UI elements
@@ -274,30 +225,17 @@ enum CONTROL_STATE {
 }
 
 # Strings used in the textedit interfaces
-const TEXTEDIT_STRINGS = [
-	"Space",
-	"Deleted",
-	"Tab",
-	"Enter",
-	"Released",
-	"Pasted",
-	"Copied",
-	"New Line",
-	"Line Number",
-	"None"
-]
-
-enum TEXTEDIT_STRING {
-	SPACE,
-	DELETED,
-	TAB,
-	ENTER,
-	RELEASED,
-	PASTED,
-	COPIED,
-	NEWLINE,
-	LINE,
-	NONE
+const TEXTEDIT_STRINGS = {
+	"SPACE" : "Space",
+	"DELETED" : "Deleted",
+	"TAB" : "Tab",
+	"ENTER" : "Enter",
+	"RELEASED" : "Released",
+	"PASTED" : "Pasted",
+	"COPIED" : "Copied",
+	"NEWLINE" : "New Line",
+	"LINE" : "Line Number",
+	"NONE" : "None"
 }
 
 ## Other Enums
@@ -465,15 +403,15 @@ static func _process_button_controls():
 	if pressed:
 		if current_focus is CheckBox:
 			if current_focus.button_pressed:
-				_add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.CHECKED])
+				_add_token(POPUPMENU_CONTROL_NAMES["CHECKED"])
 			else:
-				_add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.UNCHECKED])
+				_add_token(POPUPMENU_CONTROL_NAMES["UNCHECKED"])
 					
 		elif current_focus is CheckButton:
 			if current_focus.button_pressed:
-				_add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.ON])
+				_add_token(POPUPMENU_CONTROL_NAMES["ON"])
 			else:
-				_add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.OFF])
+				_add_token(POPUPMENU_CONTROL_NAMES["OFF"])
 		else:
 			var alt_text = current_focus.get("alt_text")
 			if alt_text == null:
@@ -505,10 +443,10 @@ static func _process_video_controls():
 		else:
 			if focused.is_playing():
 				focused.paused = !focused.paused
-				read_text = VIDEO_NAVIGATION_STRINGS[VIDEO_NAVIGATION.PAUSED]
+				read_text = VIDEO_NAVIGATION_STRINGS["PAUSED"]
 			else:
 				focused.play()
-				read_text = VIDEO_NAVIGATION_STRINGS[VIDEO_NAVIGATION.PLAY]
+				read_text = VIDEO_NAVIGATION_STRINGS["PLAY"]
 		
 	elif Input.is_action_just_pressed("ax_stop_video"):
 		# Use the ax script, if available.
@@ -516,7 +454,7 @@ static func _process_video_controls():
 			focused.stop_video()
 		else:
 			focused.stop()
-			read_text = VIDEO_NAVIGATION_STRINGS[VIDEO_NAVIGATION.STOPPED]
+			read_text = VIDEO_NAVIGATION_STRINGS["STOPPED"]
 		
 	_tts_speak_direct(read_text)
 	
@@ -545,21 +483,21 @@ static func _process_menubar_controls():
 				if properties["menu_opened"] != null:
 					properties["menu_opened"] = true
 					
-				var text = MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.OPENED] % [focused.get_menu_title(menu_pos)]
+				var text = MENUBAR_NAVIGATION_STRINGS["OPENED"] % [focused.get_menu_title(menu_pos)]
 				_add_token(text)
 				
 				var popup = focused.get_menu_popup(menu_pos)
 				var selected_pos = properties["selected_index"]
 				
 				# Which menu item is selected
-				text = STRING_FORMATS[STRING_FORMAT.SELECTED] % popup.get_item_text(selected_pos)
+				text = STRING_FORMATS["SELECTED"] % popup.get_item_text(selected_pos)
 				_add_token(text)
 				
 				_tts_speak()
 				return false
 			else:
 				# If menu is opened, press the button
-				var text = MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [focused.get_menu_title(menu_pos)]
+				var text = MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [focused.get_menu_title(menu_pos)]
 				_add_token(text)
 				
 				_tts_speak()
@@ -570,7 +508,7 @@ static func _process_menubar_controls():
 		elif Input.is_action_just_pressed("DOM_cancel"):
 			var val = _menubar_close_menu(properties)
 			
-			var text = MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED]
+			var text = MENUBAR_NAVIGATION_STRINGS["CLOSED"]
 			_add_token(text)
 			
 			_tts_speak()
@@ -621,18 +559,18 @@ static func _menubar_read_selected_item(properties: Dictionary):
 		
 		# Checked/unchecked token
 		if popup.is_item_checked(selected_pos):
-			text = POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.CHECKED]
+			text = POPUPMENU_CONTROL_NAMES["CHECKED"]
 		else:
-			text = POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.UNCHECKED]
+			text = POPUPMENU_CONTROL_NAMES["UNCHECKED"]
 		_add_token(text)
 		
 		# Adds if item is checkbox or radio button
 		# verbose mode only
 		if verbose:
 			if popup.is_item_radio_checkable(selected_pos):
-				text = POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.RADIOBUTTON]
+				text = POPUPMENU_CONTROL_NAMES["RADIOBUTTON"]
 			else:
-				text = POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.CHECKBOX]
+				text = POPUPMENU_CONTROL_NAMES["CHECKBOX"]
 				
 			_add_token(text)
 			
@@ -939,7 +877,7 @@ static func _process_text_controls():
 		AXController.pressed_keys.has(KEY_CTRL)
 		&& AXController.pressed_keys.has(KEY_V)):
 		_add_token(DisplayServer.clipboard_get()
-			+ " " + TEXTEDIT_STRINGS[TEXTEDIT_STRING.PASTED])
+			+ " " + TEXTEDIT_STRINGS["PASTED"])
 		_tts_speak()
 		return false
 	
@@ -960,9 +898,9 @@ static func _process_text_controls():
 				char_no = character.unicode_at(0)
 				
 			if character == " ":
-				character = TEXTEDIT_STRINGS[TEXTEDIT_STRING.SPACE]
+				character = TEXTEDIT_STRINGS["SPACE"]
 			elif character == "\t":
-				character = TEXTEDIT_STRINGS[TEXTEDIT_STRING.TAB]
+				character = TEXTEDIT_STRINGS["TAB"]
 				
 			# Higher pitched if capital
 			if TextFunctions.unicode_is_capital(char_no):
@@ -997,7 +935,7 @@ static func _process_text_controls():
 			_add_token(TextFunctions.get_character_name(character))
 				
 			if focused is CodeEdit:
-				_add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS[TEXTEDIT_STRING.LINE])
+				_add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS["LINE"])
 				
 			_tts_speak(pitch)
 			_last_caret_line = lines_count
@@ -1023,7 +961,7 @@ static func _process_text_controls():
 			_add_token(TextFunctions.get_character_name(character))
 			
 			if focused is CodeEdit:
-				_add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS[TEXTEDIT_STRING.LINE])
+				_add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS["LINE"])
 			
 			_tts_speak(pitch)
 			_last_caret_line = lines_count
@@ -1038,25 +976,25 @@ static func _process_text_controls():
 				if lines.size() > _last_caret_line:
 					character = last_lines[_last_caret_line][min(caret_position,last_lines[_last_caret_line].length()-1)]
 			else:
-				character = TEXTEDIT_STRINGS[TEXTEDIT_STRING.NEWLINE]
+				character = TEXTEDIT_STRINGS["NEWLINE"]
 			
 			_add_token(TextFunctions.get_character_name(character))
 				
-			_add_token(TEXTEDIT_STRINGS[TEXTEDIT_STRING.DELETED])
+			_add_token(TEXTEDIT_STRINGS["DELETED"])
 			
 		elif Input.is_key_pressed(KEY_SPACE):
-			_add_token(TEXTEDIT_STRINGS[TEXTEDIT_STRING.SPACE])
+			_add_token(TEXTEDIT_STRINGS["SPACE"])
 		
 		elif Input.is_key_pressed(KEY_TAB):
-			_add_token(TEXTEDIT_STRINGS[TEXTEDIT_STRING.TAB])
+			_add_token(TEXTEDIT_STRINGS["TAB"])
 			
 		elif (Input.is_key_pressed(KEY_ENTER) ||
 				Input.is_key_pressed(KEY_KP_ENTER)):
-			_add_token(TEXTEDIT_STRINGS[TEXTEDIT_STRING.ENTER])
+			_add_token(TEXTEDIT_STRINGS["ENTER"])
 			_play_sound("text_newline")
 			
 			if focused is CodeEdit:
-				_add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS[TEXTEDIT_STRING.LINE])
+				_add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS["LINE"])
 			
 		else:
 			if !TextFunctions.special_key_combos():
@@ -1155,21 +1093,21 @@ static func _process_menu_button_controls():
 		# If not changed, if you leave the button while open, announce its closing
 		if (Input.is_action_just_pressed("DOM_up") ||
 			Input.is_action_just_pressed("DOM_down")):
-				_add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
+				_add_token(MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [text] )
 	
 	if Input.is_action_just_pressed("DOM_select"):
 		_play_sound("button_down")
 		
 		if _popup_visible:
 			popup.visible = false
-			_add_token(STRING_FORMATS[STRING_FORMAT.SELECTED] % [popup.get_item_text(_popup_index)])
+			_add_token(STRING_FORMATS["SELECTED"] % [popup.get_item_text(_popup_index)])
 			_popup_index = 0
-			_add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
+			_add_token(MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [text] )
 		else:
 			focused.emit_signal("about_to_popup")
 			focused.show_popup()
 			_add_token(popup.get_item_text(_popup_index))
-			_add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.OPENED] % [text] )
+			_add_token(MENUBAR_NAVIGATION_STRINGS["OPENED"] % [text] )
 			
 		_popup_visible = !_popup_visible
 		
@@ -1183,7 +1121,7 @@ static func _process_menu_button_controls():
 			_popup_visible = false
 			popup.visible = false
 			_popup_index = 0
-			_add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
+			_add_token(MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [text] )
 		
 		_tts_speak()
 		return false
@@ -1261,21 +1199,21 @@ static func _process_option_button_controls():
 		# If not changed, if you leave the button while open, announce its closing
 		if (Input.is_action_just_pressed("DOM_up") ||
 			Input.is_action_just_pressed("DOM_down")):
-				_add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
+				_add_token(MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [text] )
 	
 	if Input.is_action_just_pressed("DOM_select"):
 		_play_sound("button_down")
 		
 		if _popup_visible:
 			popup.visible = false
-			_add_token(STRING_FORMATS[STRING_FORMAT.SELECTED] % [popup.get_item_text(_popup_index)])
-			_add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
+			_add_token(STRING_FORMATS["SELECTED"] % [popup.get_item_text(_popup_index)])
+			_add_token(MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [text] )
 			focused.emit_signal("item_selected",_popup_index)
 		else:
 			focused.show_popup()
 			_popup_index = max(focused.selected,0)
 			_add_token(popup.get_item_text(_popup_index))
-			_add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.OPENED] % [text] )
+			_add_token(MENUBAR_NAVIGATION_STRINGS["OPENED"] % [text] )
 			
 		_popup_visible = !_popup_visible
 		
@@ -1289,7 +1227,7 @@ static func _process_option_button_controls():
 			_popup_visible = false
 			popup.visible = false
 			_popup_index = 0
-			_add_token(MENUBAR_NAVIGATION_STRINGS[MENUBAR_NAVIGATION.CLOSED] % [text] )
+			_add_token(MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [text] )
 		
 		_tts_speak()
 		return false
@@ -1308,13 +1246,13 @@ static func _process_tree_controls():
 				treeitem.collapsed = !treeitem.collapsed
 				
 				if treeitem.collapsed:
-					_add_token(TREE_CONTROL_NAMES[TREE_CONTROL.COLLAPSED])
+					_add_token(TREE_CONTROL_NAMES["COLLAPSED"])
 					_play_sound("tree_collapse")
 				else:
-					_add_token(TREE_CONTROL_NAMES[TREE_CONTROL.UNCOLLAPSED])
+					_add_token(TREE_CONTROL_NAMES["UNCOLLAPSED"])
 					_play_sound("tree_uncollapse")
 			else:
-				_add_token(TREE_CONTROL_NAMES[TREE_CONTROL.NO_CHILDREN])
+				_add_token(TREE_CONTROL_NAMES["NO_CHILDREN"])
 				_play_sound("tree_no_children")
 		
 			_get_accessible_tree_name(focused, false)
@@ -1818,7 +1756,7 @@ static func _get_accessible_label_name(obj:Control):
 		var lines = focused.text.split("\n")
 		
 		_add_token(TextFunctions.get_character_name(lines[focused.get_caret_line()]))
-		_add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS[TEXTEDIT_STRING.LINE])
+		_add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS["LINE"])
 	
 	else:
 		name_val = obj.text
@@ -1831,7 +1769,7 @@ static func _get_accessible_label_name(obj:Control):
 	if verbose:
 		if obj.get_class() != name_val:
 			if focused is Label:
-				_add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.LABEL])
+				_add_token(SPECIAL_CONTROL_NAMES["LABEL"])
 			else:
 				_add_token(obj.get_class()) 
 			
@@ -1848,7 +1786,7 @@ static func _get_accessible_richtext_label_name(obj:Control):
 			
 	if verbose:
 		if obj.get_class() != name_val:
-			_add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.LABEL])
+			_add_token(SPECIAL_CONTROL_NAMES["LABEL"])
 			
 # Gets the name for buttons
 static func _get_accessible_button_name(obj:Control):
@@ -1856,16 +1794,16 @@ static func _get_accessible_button_name(obj:Control):
 	
 	if obj is CheckBox:
 		if obj.button_pressed:
-			_add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.CHECKED])
+			_add_token(POPUPMENU_CONTROL_NAMES["CHECKED"])
 		else:
 			if verbose:
-				_add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.UNCHECKED])
+				_add_token(POPUPMENU_CONTROL_NAMES["UNCHECKED"])
 				
 	elif obj is CheckButton:
 		if obj.button_pressed:
-			_add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.ON])
+			_add_token(POPUPMENU_CONTROL_NAMES["ON"])
 		else:
-			_add_token(POPUPMENU_CONTROL_NAMES[POPUPMENU_CONTROL.OFF])
+			_add_token(POPUPMENU_CONTROL_NAMES["OFF"])
 				
 	if obj.get("alt_text") != null && !obj.alt_text.is_empty():
 		name_val = obj.alt_text
@@ -1876,15 +1814,15 @@ static func _get_accessible_button_name(obj:Control):
 			
 	if verbose:
 		if obj.get_class() != name_val:
-			var token = SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.BUTTON]
+			var token = SPECIAL_CONTROL_NAMES["BUTTON"]
 			if obj is CheckBox:
-				token = SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.CHECKBOX]
+				token = SPECIAL_CONTROL_NAMES["CHECKBOX"]
 			elif obj is CheckButton:
-				token = SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.SWITCH]
+				token = SPECIAL_CONTROL_NAMES["SWITCH"]
 			elif obj is MenuButton:
-				token = SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.MENUBUTTON]
+				token = SPECIAL_CONTROL_NAMES["MENUBUTTON"]
 			elif obj is OptionButton:
-				token = SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.DROPDOWN]
+				token = SPECIAL_CONTROL_NAMES["DROPDOWN"]
 			_add_token(token)
 		
 # Gets the name for images
@@ -1895,7 +1833,7 @@ static func _get_accessible_image_name(obj:Control):
 			
 	if verbose:
 		if obj.get_class() != name_val:
-			_add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.IMAGE])
+			_add_token(SPECIAL_CONTROL_NAMES["IMAGE"])
 		
 # Gets the name for progress bars
 static func _get_accessible_progress_bar_name(obj:Control):
@@ -1905,22 +1843,22 @@ static func _get_accessible_progress_bar_name(obj:Control):
 	
 	if obj.get("read_fraction") != null:
 		if obj.read_fraction:
-			var text = STRING_FORMATS[STRING_FORMAT.FRACTION] % [str(obj.value), str(obj.max_value)]
+			var text = STRING_FORMATS["FRACTION"] % [str(obj.value), str(obj.max_value)]
 			_add_token(text)
 			
 		if obj.read_percent:
-			var text = STRING_FORMATS[STRING_FORMAT.PERCENT] % [str(floor(100 * obj.value / obj.max_value))]
+			var text = STRING_FORMATS["PERCENT"] % [str(floor(100 * obj.value / obj.max_value))]
 			_add_token(text)
 	else:
 		# default if not accessible script
-		var text = STRING_FORMATS[STRING_FORMAT.FRACTION] % [str(obj.value), str(obj.max_value)]
+		var text = STRING_FORMATS["FRACTION"] % [str(obj.value), str(obj.max_value)]
 		_add_token(text)
 	
 	_add_alt_text(obj)
 	
 	if verbose:
 		if obj.get_class() != name_val:
-			_add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.PROGRESS_BAR])
+			_add_token(SPECIAL_CONTROL_NAMES["PROGRESS_BAR"])
 			
 # Gets the name for spinboxes
 static func _get_accessible_spinbox_name(obj:Control):
@@ -1933,7 +1871,7 @@ static func _get_accessible_spinbox_name(obj:Control):
 	
 	if verbose:
 		if obj.get_class() != name_val:
-			_add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.SPINBOX])
+			_add_token(SPECIAL_CONTROL_NAMES["SPINBOX"])
 		
 # Gets the name for hslider
 static func _get_accessible_hslider_name(obj:Control):
@@ -1943,7 +1881,7 @@ static func _get_accessible_hslider_name(obj:Control):
 			
 	if verbose:
 		if obj.get_class() != name_val:
-			_add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.HSLIDER])
+			_add_token(SPECIAL_CONTROL_NAMES["HSLIDER"])
 			
 # Gets the name for vslider
 static func _get_accessible_vslider_name(obj:Control):
@@ -1953,7 +1891,7 @@ static func _get_accessible_vslider_name(obj:Control):
 			
 	if verbose:
 		if obj.get_class() != name_val:
-			_add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.VSLIDER])
+			_add_token(SPECIAL_CONTROL_NAMES["VSLIDER"])
 		
 static func _get_accessible_slider_name(obj:Control):
 	# reads value
@@ -1963,11 +1901,11 @@ static func _get_accessible_slider_name(obj:Control):
 			_add_token(str(obj.value))
 			
 		if obj.read_fraction:
-			var text = STRING_FORMATS[STRING_FORMAT.FRACTION] % [str(obj.value), str(obj.max_value)]
+			var text = STRING_FORMATS["FRACTION"] % [str(obj.value), str(obj.max_value)]
 			_add_token(text)
 			
 		if obj.read_percent:
-			var text = STRING_FORMATS[STRING_FORMAT.PERCENT] % [str(floor(100 * obj.value / obj.max_value))]
+			var text = STRING_FORMATS["PERCENT"] % [str(floor(100 * obj.value / obj.max_value))]
 			_add_token(text)
 	else:
 		# default if not accessible script
@@ -2003,30 +1941,30 @@ static func _get_accessible_menubar_name(obj:Control):
 		# Announce out of 3
 		if verbose:
 			if selected_menu != null:
-				text = STRING_FORMATS[STRING_FORMAT.FRACTION] % [str(selected_index+1), str(menu_size)]
+				text = STRING_FORMATS["FRACTION"] % [str(selected_index+1), str(menu_size)]
 				_add_token(text)
 		
 		_add_alt_text(obj)
 		
-		text = STRING_FORMATS[STRING_FORMAT.SELECTED] % [popup.name]
+		text = STRING_FORMATS["SELECTED"] % [popup.name]
 		_add_token(text)
 	else:
 		var popup = obj.get_menu_popup(selected_menu)
 
-		text = STRING_FORMATS[STRING_FORMAT.SELECTED] % [popup.name]
+		text = STRING_FORMATS["SELECTED"] % [popup.name]
 		_add_token(text)
 		
 		# Announce out of 3
 		if verbose:
 			if selected_menu != null:
-				text = STRING_FORMATS[STRING_FORMAT.FRACTION] % [str(selected_menu+1), str(sizer)]
+				text = STRING_FORMATS["FRACTION"] % [str(selected_menu+1), str(sizer)]
 				_add_token(text)
 		
 		_add_alt_text(obj)
 	
 	if verbose:
 		if obj.get_class() != text:
-			_add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.MENUBAR])
+			_add_token(SPECIAL_CONTROL_NAMES["MENUBAR"])
 	
 static func _get_accessible_tabbar_name(obj:Control):
 
@@ -2035,28 +1973,28 @@ static func _get_accessible_tabbar_name(obj:Control):
 	
 	var name_val = obj.get_tab_title(selected_menu)
 
-	var text = STRING_FORMATS[STRING_FORMAT.SELECTED] % [name_val]
+	var text = STRING_FORMATS["SELECTED"] % [name_val]
 	_add_token(text)
 	
 	# Announce out of 3
 	if verbose:
-		text = STRING_FORMATS[STRING_FORMAT.FRACTION] % [str(selected_menu+1), str(sizer)]
+		text = STRING_FORMATS["FRACTION"] % [str(selected_menu+1), str(sizer)]
 		_add_token(text)
 	
 	_add_alt_text(obj)
 	
 	if verbose:
 		if obj.get_class() != name_val:
-			_add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.TABS])
+			_add_token(SPECIAL_CONTROL_NAMES["TABS"])
 	
 # Gets the name for optionbuttons
 static func _get_accessible_optionbutton_name(obj:Control):
 	var name_val = ""
 
 	if obj.get_selected_id() > -1:
-		_add_token(STRING_FORMATS[STRING_FORMAT.SELECTED] % [obj.get_item_text(obj.get_selected_id())])
+		_add_token(STRING_FORMATS["SELECTED"] % [obj.get_item_text(obj.get_selected_id())])
 	else:
-		_add_token(STRING_FORMATS[STRING_FORMAT.SELECTED] % [TEXTEDIT_STRINGS[TEXTEDIT_STRING.NONE]])
+		_add_token(STRING_FORMATS["SELECTED"] % [TEXTEDIT_STRINGS["NONE"]])
 		
 	if obj.get("alt_text") != null && !obj.alt_text.is_empty():
 		name_val = obj.alt_text
@@ -2065,7 +2003,7 @@ static func _get_accessible_optionbutton_name(obj:Control):
 	if verbose:
 		if obj.get_class() != name_val:
 			if obj is Label:
-				_add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.LABEL])
+				_add_token(SPECIAL_CONTROL_NAMES["LABEL"])
 			else:
 				_add_token(obj.get_class()) 
 	
@@ -2074,21 +2012,21 @@ static func _get_accessible_tree_name(obj:Control, read_collapse:bool = true):
 	# Read off the currently selected node, if any
 	var selected_item = obj.get_selected()
 	if selected_item != null:
-		_add_token(STRING_FORMATS[STRING_FORMAT.SELECTED] % [selected_item.get_text(0)])
+		_add_token(STRING_FORMATS["SELECTED"] % [selected_item.get_text(0)])
 	else:
-		_add_token(STRING_FORMATS[STRING_FORMAT.SELECTED] % [TEXTEDIT_STRINGS[TEXTEDIT_STRING.NONE]])
+		_add_token(STRING_FORMATS["SELECTED"] % [TEXTEDIT_STRINGS["NONE"]])
 
 	if selected_item != null:
 		if selected_item.collapsed:
 			if read_collapse:
-				_add_token(TREE_CONTROL_NAMES[TREE_CONTROL.COLLAPSED])
+				_add_token(TREE_CONTROL_NAMES["COLLAPSED"])
 		else:
 			var child_count = selected_item.get_child_count()
 				
 			if child_count > 0:
-				_add_token(TREE_CONTROL_NAMES[TREE_CONTROL.CHILDREN] % [str(child_count)])
+				_add_token(TREE_CONTROL_NAMES["CHILDREN"] % [str(child_count)])
 			else:
-				_add_token(TREE_CONTROL_NAMES[TREE_CONTROL.NO_CHILDREN])
+				_add_token(TREE_CONTROL_NAMES["NO_CHILDREN"])
 		
 	var name_val = ""
 	
@@ -2183,7 +2121,7 @@ static func _add_token(token: String):
 		_tokens.append(token)
 		
 # Speaks the current token state
-static func _tts_speak(pitch:float = 1.0,rate: float = 1.0, volume: float = 50):
+static func _tts_speak(pitch:float = 1.0,rate: float = 1.0, volume: int = 50):
 	if _tokens.is_empty():
 		return
 	
@@ -2195,7 +2133,8 @@ static func _tts_speak(pitch:float = 1.0,rate: float = 1.0, volume: float = 50):
 static func _get_tokens():
 	var text = ""
 	for c in _tokens:
-		text += c + " | "
+		if !c.strip_edges().is_empty():
+			text += c + " | "
 		
 	_clear_tokens()
 	
@@ -2549,7 +2488,7 @@ static func _do_input(event: InputEvent):
 	return false
 
 # Processes the inputs for the DOM object
-static func _do_process(delta: float, obj: Node) -> void:
+static func _do_process(delta: float) -> void:
 	_process_input(delta)
 	
 	if focused != null:

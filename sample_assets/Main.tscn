@@ -457,7 +457,7 @@ offset_right = 76.0
 offset_bottom = 72.0
 icon = ExtResource("7_hng67")
 script = ExtResource("8_qg674")
-alt_text = "Play Button"
+alt_text = "Play"
 
 [node name="Pause" type="Button" parent="Panel/VBoxContainer/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Buttons"]
 layout_mode = 2
@@ -466,7 +466,7 @@ offset_right = 152.0
 offset_bottom = 72.0
 icon = ExtResource("9_soqa6")
 script = ExtResource("8_qg674")
-alt_text = "Pause Button"
+alt_text = "Pause"
 
 [node name="Stop" type="Button" parent="Panel/VBoxContainer/Main/Panel/TabContainer/Media/VBoxContainer/HBoxContainer/Buttons"]
 layout_mode = 2
@@ -475,7 +475,7 @@ offset_right = 228.0
 offset_bottom = 72.0
 icon = ExtResource("10_7330b")
 script = ExtResource("8_qg674")
-alt_text = "Stop Button"
+alt_text = "Stop"
 
 [node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="Panel/VBoxContainer/Main/Panel/TabContainer/Media/VBoxContainer"]
 custom_minimum_size = Vector2(500, 315)
