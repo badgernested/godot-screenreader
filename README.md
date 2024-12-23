@@ -8,32 +8,37 @@ For now, it is something that can be used to attach to your game to make menus a
 
 ## Feature List
 
-- Godot Screenreader with support for the following controls:
-    - Label
-    - RichTextLabel
-    - MenuBar
-    - Button
-    - LinkButton
-    - CheckBox
-    - CheckButton
-    - LineEdit
-    - TextEdit
-    - CodeEdit
-    - ProgressBar
-    - SpinBox
-    - HSlider
-    - VSlider
-    - TextureRect (Only with script attached for alt text)
-    - VideoStreamPlayer
-    - OptionButton
-    - MenuButton
-    - Tree
-        - Note: Tree Buttons are not supported.
-- Ability to ignore nodes if you so wish
-- Screenreader designed as standalone script
-- Additional scripts you can attach/extend to Control nodes to expand optional accessibility functionality, such as alt text
-- Video Streams support subtitles and audio captions in ``VTT`` format (saved as ``.TXT`` files) 
-- High contrast mode theme switcher
+- Godot Screenreader
+    - Support for the following controls:
+        - Label
+        - RichTextLabel
+        - MenuBar
+        - Button
+        - LinkButton
+        - CheckBox
+        - CheckButton
+        - LineEdit
+        - TextEdit
+        - CodeEdit
+        - ProgressBar
+        - SpinBox
+        - HSlider
+        - VSlider
+        - TextureRect (Only with script attached for alt text)
+        - VideoStreamPlayer
+        - OptionButton
+        - MenuButton
+        - Tree
+            - Note: Tree Buttons are not supported.
+    - Ability to ignore nodes if you so wish
+    - Screenreader designed as standalone script
+    - Additional scripts you can attach/extend to Control nodes to expand optional accessibility functionality, such as alt text
+    - Tutorial
+    - Control Type Navigator
+- Subtitles and Audio Description
+    - Video Streams support subtitles and audio description in ``VTT`` format (saved as ``.TXT`` files) 
+- Themes
+    - High contrast mode theme switcher
 
 ## Extra Information
 

@@ -7,6 +7,14 @@ func _on_tree_ready() -> void:
 	root.set_text(0,"res://")
 	tree_render(trees, root, "res://")
 	
+func _process(delta: float) -> void:
+	var prog = $Tab/Sliders/HBox/SampleArea/HBox/VBox/Progress
+	
+	prog.value += delta * 10
+	
+	if prog.value >= prog.max_value:
+		prog.value = prog.min_value
+	
 func tree_render(tree, parent, filepath):
 	var dir = DirAccess.open(filepath)
 	

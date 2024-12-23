@@ -81,4 +81,6 @@ size_flags_vertical = 4
 theme_override_font_sizes/font_size = 20
 text = "OK"
 
+[connection signal="pressed" from="Panel/VBox/BottomControls/Center/Panel/Grid/EndButtons/HBox/Button" to="." method="_on_button_pressed"]
+
 [editable path="Panel/VBox/Content/Center/Panel/Contents/AxMenuControl"]

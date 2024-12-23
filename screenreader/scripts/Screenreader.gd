@@ -79,6 +79,12 @@ static var _state_updated: bool = false
 # The last scroll value recorded for a tree.
 static var _scroll_old: Vector2 = Vector2.ZERO
 
+# When set to true, will redraw next frame
+static var redraw: bool = false
+
+# When set to true, resets redraw before it can occur
+static var clear_redraw: bool = false
+
 # This stores all data objects in the DOM with a dictionary
 # that represents certain values.
 static var _data_objects: Dictionary = {}
@@ -156,27 +162,49 @@ const SFX_LIBRARY = {
 	"list_nav" : preload("res://screenreader/sfx/list_nav.wav"),
 	"menu_open" : preload("res://screenreader/sfx/menu_open.wav"),
 	"menu_close" : preload("res://screenreader/sfx/menu_close.wav"),
+	"node_select" : preload("res://screenreader/sfx/node_selector.wav"),
+	"node_select_exit" : preload("res://screenreader/sfx/node_select_exit.wav")
 }
 
 # Data Strings
 
-const VIDEO_NAVIGATION_STRINGS = ["Play", "Paused", "Stopped"]
+const VIDEO_NAVIGATION_STRINGS = [
+	"Play",
+	"Paused",
+	"Stopped"
+]
+
 enum VIDEO_NAVIGATION {
 	PLAY,
 	PAUSED,
 	STOPPED
 }
 
-const MENUBAR_NAVIGATION_STRINGS = ["Opened %s", "Closed %s"]
+const MENUBAR_NAVIGATION_STRINGS = [
+	"Opened %s",
+	"Closed %s"
+]
 enum MENUBAR_NAVIGATION {
 	OPENED,
 	CLOSED
 }
 
-const SPECIAL_CONTROL_NAMES = ["Image", "Progress Bar", "Horizontal Slider",
-								"Vertical Slider", "Spinbox", "Label", "Button",
-								"Menu Bar", "Tabs", "Check Box", "Switch",
-								"Menu Button", "Dropdown"]
+const SPECIAL_CONTROL_NAMES = [
+	"Image",
+	"Progress Bar",
+	"Horizontal Slider",
+	"Vertical Slider",
+	"Spinbox",
+	"Label",
+	"Button",
+	"Menu Bar",
+	"Tabs",
+	"Check Box",
+	"Switch",
+	"Menu Button",
+	"Dropdown"
+]
+
 enum SPECIAL_CONTROLS {
 	IMAGE,
 	PROGRESS_BAR,
@@ -193,15 +221,27 @@ enum SPECIAL_CONTROLS {
 	DROPDOWN
 }
 
-const STRING_FORMATS = ["%s out of %s", "%s percent", "%s selected"]
+const STRING_FORMATS = [
+	"%s out of %s",
+	"%s percent",
+	"%s selected"
+]
+
 enum STRING_FORMAT {
 	FRACTION,
 	PERCENT,
 	SELECTED
 }
 
-const POPUPMENU_CONTROL_NAMES = ["Radio Button", "Checkbox", "Checked",
-								"Unchecked", "On", "Off"]
+const POPUPMENU_CONTROL_NAMES = [
+	"Radio Button",
+	"Checkbox",
+	"Checked",
+	"Unchecked",
+	"On",
+	"Off"
+]
+
 enum POPUPMENU_CONTROL {
 	RADIOBUTTON,
 	CHECKBOX,
@@ -211,7 +251,13 @@ enum POPUPMENU_CONTROL {
 	OFF
 }
 
-const TREE_CONTROL_NAMES = ["Collapsed", "Uncollapsed", "No children", "%s children"]
+const TREE_CONTROL_NAMES = [
+	"Collapsed",
+	"Uncollapsed",
+	"No children",
+	"%s children"
+]
+
 enum TREE_CONTROL {
 	COLLAPSED,
 	UNCOLLAPSED,
@@ -228,8 +274,19 @@ enum CONTROL_STATE {
 }
 
 # Strings used in the textedit interfaces
-const TEXTEDIT_STRINGS = ["Space", "Deleted", "Tab", "Enter", "Released", "Pasted",
-							"Copied", "New Line", "Line Number", "None"]
+const TEXTEDIT_STRINGS = [
+	"Space",
+	"Deleted",
+	"Tab",
+	"Enter",
+	"Released",
+	"Pasted",
+	"Copied",
+	"New Line",
+	"Line Number",
+	"None"
+]
+
 enum TEXTEDIT_STRING {
 	SPACE,
 	DELETED,
@@ -1273,7 +1330,7 @@ static func _process_tree_controls():
 				focused.scroll_to_item(next)
 				focused.focus_mode = Control.FOCUS_NONE
 				_play_sound("list_nav")
-				_highlight_tree()
+				_highlight_tree(focused)
 				
 			get_accessible_name(focused)
 		
@@ -1291,7 +1348,7 @@ static func _process_tree_controls():
 				focused.scroll_to_item(next)
 				focused.focus_mode = Control.FOCUS_NONE
 				_play_sound("list_nav",LIST_PITCH_SHIFT)
-				_highlight_tree()
+				_highlight_tree(focused)
 					
 			get_accessible_name(focused)
 		
@@ -1623,6 +1680,10 @@ static func _grab_obj_focus(obj: Control):
 			if focused is Tree:
 				_stop_sound()
 				_play_sound("tree_exit")
+				
+			# If it is a progress bar, stop the sound
+			if focused is ProgressBar:
+				_stop_sound()
 			
 			# resets state
 			_update_draw_state(CONTROL_STATE.FOCUSED)
@@ -1664,6 +1725,11 @@ static func _grab_obj_focus(obj: Control):
 					_play_sound("tree_enter")
 					if focused.get_selected() == null:
 						focused.set_selected(focused.get_root(),0) 
+						
+				# If it is a progress bar, play the slider sound
+				if focused is ProgressBar:
+					_stop_sound()
+					_play_sound("slider")
 						
 			if old_focus != focused:
 				# Read the name
@@ -1909,7 +1975,10 @@ static func _get_accessible_slider_name(obj:Control):
 static func _get_accessible_menubar_name(obj:Control):
 	var properties = _get_object_data(obj)
 	
-	var selected_menu = properties["selected_menu"]
+	var selected_menu = null
+	if properties.has("selected_menu"):
+		selected_menu = properties["selected_menu"]
+		
 	var sizer = obj.get_menu_count()
 	var text = ""
 	
@@ -1930,7 +1999,7 @@ static func _get_accessible_menubar_name(obj:Control):
 		
 		# Announce out of 3
 		if verbose:
-			if properties["selected_menu"] != null:
+			if selected_menu != null:
 				text = STRING_FORMATS[STRING_FORMAT.FRACTION] % [str(selected_index+1), str(menu_size)]
 				_add_token(text)
 		
@@ -1946,7 +2015,7 @@ static func _get_accessible_menubar_name(obj:Control):
 		
 		# Announce out of 3
 		if verbose:
-			if properties["selected_menu"] != null:
+			if selected_menu != null:
 				text = STRING_FORMATS[STRING_FORMAT.FRACTION] % [str(selected_menu+1), str(sizer)]
 				_add_token(text)
 		
@@ -1981,8 +2050,8 @@ static func _get_accessible_tabbar_name(obj:Control):
 static func _get_accessible_optionbutton_name(obj:Control):
 	var name_val = ""
 
-	if focused.get_selected_id() > -1:
-		_add_token(STRING_FORMATS[STRING_FORMAT.SELECTED] % [focused.get_item_text(focused.get_selected_id())])
+	if obj.get_selected_id() > -1:
+		_add_token(STRING_FORMATS[STRING_FORMAT.SELECTED] % [obj.get_item_text(obj.get_selected_id())])
 	else:
 		_add_token(STRING_FORMATS[STRING_FORMAT.SELECTED] % [TEXTEDIT_STRINGS[TEXTEDIT_STRING.NONE]])
 		
@@ -1992,7 +2061,7 @@ static func _get_accessible_optionbutton_name(obj:Control):
 		
 	if verbose:
 		if obj.get_class() != name_val:
-			if focused is Label:
+			if obj is Label:
 				_add_token(SPECIAL_CONTROL_NAMES[SPECIAL_CONTROLS.LABEL])
 			else:
 				_add_token(obj.get_class()) 
@@ -2006,17 +2075,18 @@ static func _get_accessible_tree_name(obj:Control, read_collapse:bool = true):
 	else:
 		_add_token(STRING_FORMATS[STRING_FORMAT.SELECTED] % [TEXTEDIT_STRINGS[TEXTEDIT_STRING.NONE]])
 
-	if selected_item.collapsed:
-		if read_collapse:
-			_add_token(TREE_CONTROL_NAMES[TREE_CONTROL.COLLAPSED])
-	else:
-		var child_count = selected_item.get_child_count()
-			
-		if child_count > 0:
-			_add_token(TREE_CONTROL_NAMES[TREE_CONTROL.CHILDREN] % [str(child_count)])
+	if selected_item != null:
+		if selected_item.collapsed:
+			if read_collapse:
+				_add_token(TREE_CONTROL_NAMES[TREE_CONTROL.COLLAPSED])
 		else:
-			_add_token(TREE_CONTROL_NAMES[TREE_CONTROL.NO_CHILDREN])
-	
+			var child_count = selected_item.get_child_count()
+				
+			if child_count > 0:
+				_add_token(TREE_CONTROL_NAMES[TREE_CONTROL.CHILDREN] % [str(child_count)])
+			else:
+				_add_token(TREE_CONTROL_NAMES[TREE_CONTROL.NO_CHILDREN])
+		
 	var name_val = ""
 	
 	if obj.get("alt_text") != null && !obj.alt_text.is_empty():
@@ -2114,13 +2184,19 @@ static func _tts_speak(pitch:float = 1.0,rate: float = 1.0, volume: float = 50):
 	if _tokens.is_empty():
 		return
 	
+	var text = _get_tokens()
+		
+	_tts_speak_direct(text, pitch, rate, volume)
+	
+# Speaks the current token state
+static func _get_tokens():
 	var text = ""
 	for c in _tokens:
 		text += c + " | "
 		
 	_clear_tokens()
-		
-	_tts_speak_direct(text, pitch, rate, volume)
+	
+	return text
 	
 static func _tts_speak_direct(text: String, pitch:float = 1.0,rate:float= 1.0 ,volume:int = 50):
 	if !text.is_empty():
@@ -2233,33 +2309,35 @@ static func _set_focus_on(obj:Control, dir:Dictionary = _object_focus_mode):
 # Highligher Functions
 
 # Updates the draw highlighter
-static func _update_draw_highlight():
+static func _update_draw_highlight(obj=focused):
 
-	if !is_instance_valid(focused):
+	if !is_instance_valid(obj):
 		_highlight_box = Rect2(-200,-200,1,1)
 	else:
-		if focused is MenuBar:
-			_highlight_menubar()
-		elif focused is TabBar:
-			_highlight_tabbar()
-		elif focused is Tree:
-			_highlight_tree()
+		if obj is MenuBar:
+			_highlight_menubar(obj)
+		elif obj is TabBar:
+			_highlight_tabbar(obj)
+		elif obj is Tree:
+			_highlight_tree(obj)
 		else:
-			_highlight_normal()
+			_highlight_normal(obj)
 
 # redraws based on menu position
-static func _highlight_normal():
-	_highlight_box = Rect2(focused.get_global_rect())
+static func _highlight_normal(obj):
+	_highlight_box = Rect2(obj.get_global_rect())
 	
 # redraws based on menubar
-static func _highlight_menubar():
-	var properties = _get_object_data(focused)
+static func _highlight_menubar(obj):
+	var properties = _get_object_data(obj)
 	
-	var box = focused.get_global_rect()
+	var box = obj.get_global_rect()
 	
-	var selected = properties["selected_menu"]
+	var selected = null
+	if properties.has("selected_menu"):
+		selected = properties["selected_menu"]
 	
-	var menu_count = focused.get_menu_count()
+	var menu_count = obj.get_menu_count()
 	
 	# This will indicate that accessibility is not configued properly.
 	# make sure you add the script
@@ -2267,8 +2345,8 @@ static func _highlight_menubar():
 		_highlight_box = Rect2(box)
 	else:
 
-		var h_sep = focused.get_theme_constant("h_separation")
-		var stylebox = focused.get_theme_stylebox("normal")
+		var h_sep = obj.get_theme_constant("h_separation")
+		var stylebox = obj.get_theme_stylebox("normal")
 		
 		var perm1 = Vector2.ZERO
 		var perm2 = Vector2.ZERO
@@ -2280,49 +2358,49 @@ static func _highlight_menubar():
 			perm2.y += stylebox.border_width_bottom
 
 		var length = 0
-		var font_size = focused.get_theme_font_size("font_size")
+		var font_size = obj.get_theme_font_size("font_size")
 		for c in range(0, selected):
-			length += focused.get_theme_font("font").get_string_size(
-							focused.get_menu_title(c) + " ",
+			length += obj.get_theme_font("font").get_string_size(
+							obj.get_menu_title(c) + " ",
 							HORIZONTAL_ALIGNMENT_LEFT,
 							-1,
 							font_size).x
 			
 			length += (h_sep + floor((perm1.x+perm1.y)*0.5))*2
 
-		var sizer = focused.get_theme_font("font").get_string_size(
-						focused.get_menu_title(selected) + " ",
+		var sizer = obj.get_theme_font("font").get_string_size(
+						obj.get_menu_title(selected) + " ",
 						HORIZONTAL_ALIGNMENT_LEFT,
 						-1,
 						font_size)
 		
-		_highlight_box = Rect2(focused.global_position.x + float(length) * (box.size.x / focused.size.x),
-								focused.global_position.y,
+		_highlight_box = Rect2(obj.global_position.x + float(length) * (box.size.x / focused.size.x),
+								obj.global_position.y,
 								(sizer.x + h_sep + (perm1.x + perm1.y)) * (box.size.x / focused.size.x),
 								(sizer.y + font_size*0.5 + perm1.y + perm2.y)  * (box.size.y / focused.size.y))
 	
 # redraws based on tabbar
-static func _highlight_tabbar():
+static func _highlight_tabbar(obj):
 		
-	var box = focused.get_global_rect()
+	var box = obj.get_global_rect()
 		
-	var tab_rect = focused.get_tab_rect(focused.current_tab)
+	var tab_rect = obj.get_tab_rect(obj.current_tab)
 		
 	_highlight_box = Rect2(
-		focused.global_position.x + tab_rect.position.x  * (box.size.x / focused.size.x),
-		focused.global_position.y + tab_rect.position.y  * (box.size.y / focused.size.y),
-		tab_rect.size.x * (box.size.x / focused.size.x),
-		tab_rect.size.y * (box.size.y / focused.size.y)
+		obj.global_position.x + tab_rect.position.x  * (box.size.x / obj.size.x),
+		obj.global_position.y + tab_rect.position.y  * (box.size.y / obj.size.y),
+		tab_rect.size.x * (box.size.x / obj.size.x),
+		tab_rect.size.y * (box.size.y / obj.size.y)
 	)
 	
-static func _highlight_tree():
+static func _highlight_tree(obj):
 	
 	
-	var v = focused.get_theme_constant("v_separation")
+	var v = obj.get_theme_constant("v_separation")
 	
-	var item = focused.get_selected()
+	var item = obj.get_selected()
 	
-	var stylebox = focused.get_theme_stylebox("normal")
+	var stylebox = obj.get_theme_stylebox("normal")
 	
 	var perm1 = Vector2.ZERO
 	var perm2 = Vector2.ZERO
@@ -2334,29 +2412,29 @@ static func _highlight_tree():
 		perm2.y += stylebox.content_margin_bottom
 	
 	if item == null:
-		_highlight_normal()
+		_highlight_normal(obj)
 	else:
-		var box = focused.get_global_rect()
-		var y_multi = (box.size.y / focused.size.y)
+		var box = obj.get_global_rect()
+		var y_multi = (box.size.y / obj.size.y)
 		
-		_highlight_box = focused.get_item_area_rect(item)
+		_highlight_box = obj.get_item_area_rect(item)
 
 		_highlight_box.position.y = _highlight_box.position.y * y_multi + perm1.y
 		
-		_highlight_box.size.x = _highlight_box.size.x * (box.size.x / focused.size.x)
+		_highlight_box.size.x = _highlight_box.size.x * (box.size.x / obj.size.x)
 		_highlight_box.size.y = _highlight_box.size.y * y_multi
 
 
-		_highlight_box.position += focused.global_position
-		_highlight_box.position.y -= focused.get_scroll().y  * y_multi
+		_highlight_box.position += obj.global_position
+		_highlight_box.position.y -= obj.get_scroll().y  * y_multi
 		_highlight_box.size.y += v*2 * y_multi
 		
-		if focused.global_position.y > _highlight_box.position.y:
-			_highlight_box.position.y = focused.global_position.y
+		if obj.global_position.y > _highlight_box.position.y:
+			_highlight_box.position.y = obj.global_position.y
 			_highlight_box.size.y = 6
 			
-		if focused.global_position.y + box.size.y < _highlight_box.position.y:
-			_highlight_box.position.y = focused.global_position.y + box.size.y
+		if obj.global_position.y + box.size.y < _highlight_box.position.y:
+			_highlight_box.position.y = obj.global_position.y + box.size.y
 			_highlight_box.size.y = 6
 	
 # Sound functions
@@ -2465,20 +2543,22 @@ static func _do_process(delta: float, obj: Node) -> void:
 	
 	if focused != null:
 		if (_focused_old != focused):
-			_update_draw_highlight()
-			obj.queue_redraw()
+			redraw = true
 		elif (_focused_rect_old != focused.get_global_rect()):
-			_update_draw_highlight()
-			obj.queue_redraw()
+			redraw = true
 		elif _state_updated:
-			_update_draw_highlight()
-			obj.queue_redraw()
+			redraw = true
 		elif focused is Tree:
 			if focused.get_scroll() != _scroll_old:
 				_scroll_old = focused.get_scroll()
-				_update_draw_highlight()
-				obj.queue_redraw()
+				redraw = true
 	
+	if is_instance_valid(focused):
+		if focused is ProgressBar:
+			var perc = (focused.value - focused.min_value) / (focused.max_value - focused.min_value);
+			
+			_sfx.pitch_scale = 0.75 + perc * 0.5
+		
 	_state_updated = false
 	
 	if focused != null:

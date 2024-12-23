@@ -156,13 +156,13 @@ corner_radius_bottom_left = 5
 expand_margin_top = 3.0
 expand_margin_bottom = 3.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g451a"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hpqhv"]
 bg_color = Color(0, 0, 0.4, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0, 0, 0.2, 1)
+border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a532q"]
 bg_color = Color(0, 0, 0.6, 1)
@@ -180,8 +180,12 @@ border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0, 0, 0.6, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5oikk"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i007s"]
 bg_color = Color(0, 0, 0.2, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
 border_color = Color(0, 0, 0.0666667, 1)
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_71hr2"]
@@ -669,7 +673,7 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0, 0, 0.2, 1)
+border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dlu4w"]
 bg_color = Color(0, 0, 0.6, 1)
@@ -689,6 +693,10 @@ border_color = Color(0, 0, 0.6, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yo2cp"]
 bg_color = Color(0, 0, 0.2, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
 border_color = Color(0, 0, 0.0666667, 1)
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_gbvr3"]
@@ -775,10 +783,10 @@ HScrollBar/icons/decrement_pressed = ExtResource("16_j0w05")
 HScrollBar/icons/increment = ExtResource("17_25jmr")
 HScrollBar/icons/increment_highlight = ExtResource("18_1qpui")
 HScrollBar/icons/increment_pressed = ExtResource("18_1qpui")
-HScrollBar/styles/grabber = SubResource("StyleBoxFlat_g451a")
+HScrollBar/styles/grabber = SubResource("StyleBoxFlat_hpqhv")
 HScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_a532q")
 HScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_qdtof")
-HScrollBar/styles/scroll = SubResource("StyleBoxFlat_5oikk")
+HScrollBar/styles/scroll = SubResource("StyleBoxFlat_i007s")
 HSeparator/constants/separation = 8
 HSeparator/styles/separator = SubResource("StyleBoxLine_71hr2")
 HSlider/icons/grabber = ExtResource("19_ymg02")
@@ -859,6 +867,10 @@ TabContainer/colors/font_hovered_color = Color(1, 1, 1, 1)
 TabContainer/colors/font_selected_color = Color(1, 1, 1, 1)
 TabContainer/colors/font_unselected_color = Color(1, 1, 1, 0.501961)
 TabContainer/constants/outline_size = 0
+TabContainer/icons/decrement = ExtResource("15_bktqt")
+TabContainer/icons/decrement_highlight = ExtResource("16_j0w05")
+TabContainer/icons/increment = ExtResource("17_25jmr")
+TabContainer/icons/increment_highlight = ExtResource("18_1qpui")
 TabContainer/styles/panel = SubResource("StyleBoxFlat_iyr7q")
 TabContainer/styles/tab_disabled = SubResource("StyleBoxFlat_il4sa")
 TabContainer/styles/tab_focus = SubResource("StyleBoxFlat_68ry7")

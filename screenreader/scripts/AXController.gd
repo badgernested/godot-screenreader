@@ -84,6 +84,18 @@ func _process(delta: float) -> void:
 	
 	Screenreader._do_process(delta, self)
 	
+	if Screenreader.clear_redraw:
+		Screenreader.clear_redraw = false
+		Screenreader.redraw = false
+	
+	if Screenreader.redraw:
+		await get_tree().create_timer(0.001).timeout
+		
+		if Screenreader.redraw:
+			Screenreader._update_draw_highlight()
+			queue_redraw()
+			Screenreader.redraw = false
+	
 # Draws additional stuff on top of the normal draw function
 func _draw():
 	# Draws the focused item if there is no focus stylebox
@@ -169,7 +181,8 @@ func _get_focus_node(obj:Node):
 	var focus = obj.get("focus_node")
 
 	if focus is NodePath:
-		focus_node = obj.get_node(focus)
+		if obj.has_node(focus):
+			focus_node = obj.get_node(focus)
 	
 	return focus_node
 
