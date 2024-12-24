@@ -10,6 +10,7 @@ func _on_exit_button_pressed() -> void:
 
 func _ready() -> void:
 	AXController.dom_root = $Panel
+	AXController.set_high_contrast_theme($Panel)
 	
 	$Panel/VBoxContainer/Info/HBoxContainer/VersionNO.text += " " + ProjectSettings.get_setting("application/config/version")
 	

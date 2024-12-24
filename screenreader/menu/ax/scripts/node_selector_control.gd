@@ -46,7 +46,7 @@ func populate_node_selectors():
 					if (d is VideoStreamPlayer ||
 						(d is TextureRect &&
 							d.get("alt_text") != null &&
-							d.get("alt_text").lstrip(" ").rstrip(" ").length() > 0)):
+							d.get("alt_text").strip_edges().length() > 0)):
 							content_array.append(d)
 				else:
 					if (d is Tree ||

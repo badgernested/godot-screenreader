@@ -16,6 +16,7 @@ const STRINGS = {
 }
 
 const EVENT_FILE = "events.sav"
+const OPTIONS_FILE = "options.sav"
 const AX_PATH = "ax/"
 
 # An array of events, to prevent repeat events.
@@ -40,6 +41,7 @@ func _ready():
 	
 	await get_tree().create_timer(0.001).timeout
 	_load_events_from_file()
+	_load_options_from_file()
 
 # This forces reading the contents to override anything else.
 func _input(event: InputEvent) -> void:
@@ -113,6 +115,7 @@ func _notification(what: int):
 		
 	if what == Control.NOTIFICATION_EXIT_TREE:
 		_save_events_to_file()
+		_save_options_to_file()
 
 # Returns if a key is pressed
 func key_pressed():
@@ -188,6 +191,10 @@ func _get_focus_node(obj:Node):
 
 ## Accessibility themes
 
+# Sets the theme to the currently selected accessibility theme
+func set_high_contrast_theme(root: Control):
+	HCController.set_theme(root)
+
 # Pass an element to make all its children 
 # the dark high contrast theme
 func set_high_contrast_dark_theme(root: Control):
@@ -258,5 +265,43 @@ func _load_events_from_file():
 			
 			while !file.eof_reached():
 				events.append(file.get_line())
+			
+			file.close()
+
+# Creates an options dictionary with the current state
+func _create_options_dictionary():
+	return {
+		"sfx_enabled" : Screenreader.sfx_enabled,
+		"wrap_nav" : Screenreader.navigation_wrap,
+		"verbose" : Screenreader.verbose,
+		"theme" : HCController.theme_style,
+	}
+
+# Saves events to a file
+func _save_options_to_file():
+	if load_file:
+		var dir = DirAccess.open("user://")
+		
+		if !dir.dir_exists(AX_PATH):
+			dir.make_dir_recursive(AX_PATH)
+			
+		var path = "user://" + AX_PATH + OPTIONS_FILE
+			
+		var file = FileAccess.open(path,FileAccess.WRITE)
+		
+		file.store_line(JSON.stringify(_create_options_dictionary()))
+		
+		file.close()
+
+# Loads data from the file
+func _load_options_from_file():
+	if load_file:
+		var path = "user://" + AX_PATH + OPTIONS_FILE
+		
+		if FileAccess.file_exists(path):
+			events = []
+			var file = FileAccess.open(path, FileAccess.READ)
+			
+			var contents = JSON.parse_string(file.get_line())
 			
 			file.close()

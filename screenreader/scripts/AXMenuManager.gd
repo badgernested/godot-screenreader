@@ -15,7 +15,8 @@ extends Node
 const MENUS = {
 	"tutorial" : preload("res://screenreader/menu/ax/Tutorial.tscn"),
 	"main" : preload("res://screenreader/menu/ax/AxMenu.tscn"),
-	"node_select" : preload("res://screenreader/menu/ax/NodeSelector.tscn")
+	"node_select" : preload("res://screenreader/menu/ax/NodeSelector.tscn"),
+	"screenreader_options" : preload("res://screenreader/menu/ax/ScreenreaderOptions.tscn")
 }
 
 # The original DOM node before switching to menu mode
@@ -35,6 +36,7 @@ var _focused_node = null
 func init(root: Node):
 	_root_node = root
 	
+	
 # Focuses the menu on the top of the stack
 func focus_top_menu():
 	if !_menu_stack.is_empty():
@@ -49,10 +51,15 @@ func focus_top_menu():
 			focus_node = focus_node.get_child(0,true)
 			
 		AXController._set_screenreader_subject(menu, AXController._screenreader_enabled, focus_node)
+		HCController.set_theme(menu)
+		
+		if menu.has_method("init"):
+			menu.init()
 	else:
 		if _DOM_node != null:
 			
 			AXController._set_screenreader_subject(_DOM_node, AXController._screenreader_enabled, _focused_node)
+			HCController.set_theme(_DOM_node)
 			
 			_focused_node = null
 	

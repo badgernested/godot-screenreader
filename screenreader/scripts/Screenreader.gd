@@ -1020,7 +1020,7 @@ static func _process_text_controls():
 		_clear_tokens()
 		
 		for c in AXController.pressed_keys:
-			_add_token(OS.get_keycode_string(c).replace("Kp","").lstrip(" ").rstrip(" "))
+			_add_token(OS.get_keycode_string(c).replace("Kp","").strip_edges())
 		
 		_tts_speak()
 			
@@ -2113,7 +2113,7 @@ static func _clear_tokens():
 	
 # adds token
 static func _add_token(token: String):
-	token = token.rstrip(" ").lstrip(" ").rstrip("\n").lstrip("\n")
+	token = token.strip_edges()
 	if token == ")":
 		pass
 	

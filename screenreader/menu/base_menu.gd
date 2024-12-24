@@ -35,8 +35,10 @@ func close():
 
 func set_title_gradient():
 	var gradient = HCController.get_gradient()
-	if gradient != null:
-		$Panel/VBox/Title/HBoxContainer/ColorRect/Center/TitleGradient.texture = gradient
+	if gradient == null:
+		gradient = HCController.GRADIENT_STYLES["default"]
+		
+	$Panel/VBox/Title/HBoxContainer/ColorRect/Center/TitleGradient.texture = gradient
 
 ## Signals
 

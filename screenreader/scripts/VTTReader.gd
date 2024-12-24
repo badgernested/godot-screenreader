@@ -19,24 +19,24 @@ static func read(file_loc):
 		var file = FileAccess.open(file_loc,FileAccess.READ)
 		
 		# validates it is in VTT format
-		if file.get_line().lstrip(" ").rstrip(" ") == "WEBVTT":
+		if file.get_line().strip_edges() == "WEBVTT":
 		
 			while !file.eof_reached():
-				var line = file.get_line().lstrip(" ").rstrip(" ")
+				var line = file.get_line().strip_edges()
 				# if not an empty line
 				if line.length() > 0:
 					var entry = [0,0,0]
 					var times = line.split("-->",true,2)
 					var text = ""
 					
-					line = file.get_line().lstrip(" ").rstrip(" ")
+					line = file.get_line().strip_edges()
 					
 					# keep adding to the text until an empty line is reached
 					while !file.eof_reached() && line.length() > 0:
 						
 						text += line + "\n"
 						
-						line = file.get_line().lstrip(" ").rstrip(" ")
+						line = file.get_line().strip_edges()
 						
 					entry[0] = string_to_time(times[0])
 					entry[1] = string_to_time(times[1])
@@ -47,7 +47,7 @@ static func read(file_loc):
 	return data
 
 static func string_to_time(string):
-	string = string.lstrip(" ").rstrip(" ")
+	string = string.strip_edges()
 	
 	# Assumes no hour position
 	if string.count(":") == 1:

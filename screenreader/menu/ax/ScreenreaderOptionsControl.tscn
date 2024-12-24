@@ -1,0 +1,139 @@
+[gd_scene load_steps=5 format=3 uid="uid://dgnj6ej5wuvke"]
+
+[ext_resource type="Script" path="res://screenreader/menu/ax/scripts/screenreader_options_control.gd" id="1_7cghb"]
+[ext_resource type="Script" path="res://screenreader/scripts/object_scripts/ax_label.gd" id="1_ypume"]
+[ext_resource type="Script" path="res://screenreader/scripts/object_scripts/ax_checkbutton.gd" id="2_lomcq"]
+[ext_resource type="Script" path="res://screenreader/scripts/object_scripts/ax_optionbutton.gd" id="3_7l0nk"]
+
+[node name="OptionsControl" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_7cghb")
+
+[node name="Screenreader" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = 56.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Screenreader"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SFX_ENABLED" type="Control" parent="Screenreader/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="VBoxContainer" type="HBoxContainer" parent="Screenreader/VBoxContainer/SFX_ENABLED"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Screenreader/VBoxContainer/SFX_ENABLED/VBoxContainer"]
+layout_mode = 2
+text = "Sounds Enabled"
+script = ExtResource("1_ypume")
+ignore = true
+
+[node name="SFX_ENABLED" type="CheckButton" parent="Screenreader/VBoxContainer/SFX_ENABLED/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+script = ExtResource("2_lomcq")
+alt_text = "Sounds Enabled"
+
+[node name="WRAP_NAVIGATION" type="Control" parent="Screenreader/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="VBoxContainer" type="HBoxContainer" parent="Screenreader/VBoxContainer/WRAP_NAVIGATION"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Screenreader/VBoxContainer/WRAP_NAVIGATION/VBoxContainer"]
+layout_mode = 2
+text = "Wrap Navigation"
+script = ExtResource("1_ypume")
+ignore = true
+
+[node name="WRAP_NAVIGATION" type="CheckButton" parent="Screenreader/VBoxContainer/WRAP_NAVIGATION/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+script = ExtResource("2_lomcq")
+alt_text = "Wrap Navigation"
+
+[node name="VERBOSE" type="Control" parent="Screenreader/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="VBoxContainer" type="HBoxContainer" parent="Screenreader/VBoxContainer/VERBOSE"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Screenreader/VBoxContainer/VERBOSE/VBoxContainer"]
+layout_mode = 2
+text = "Verbose Strings"
+script = ExtResource("1_ypume")
+ignore = true
+
+[node name="VERBOSE" type="CheckButton" parent="Screenreader/VBoxContainer/VERBOSE/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+script = ExtResource("2_lomcq")
+alt_text = "Verbose Strings"
+
+[node name="THEME" type="Control" parent="Screenreader/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="VBoxContainer" type="HBoxContainer" parent="Screenreader/VBoxContainer/THEME"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Screenreader/VBoxContainer/THEME/VBoxContainer"]
+layout_mode = 2
+text = "Contrast Theme"
+script = ExtResource("1_ypume")
+ignore = true
+
+[node name="THEME" type="OptionButton" parent="Screenreader/VBoxContainer/THEME/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+item_count = 3
+popup/item_0/text = "None"
+popup/item_1/text = "High Contrast (Dark)"
+popup/item_1/id = 1
+popup/item_2/text = "High Contrast (Light)"
+popup/item_2/id = 2
+script = ExtResource("3_7l0nk")
+alt_text = "High Contrast Theme"
+
+[connection signal="toggled" from="Screenreader/VBoxContainer/SFX_ENABLED/VBoxContainer/SFX_ENABLED" to="." method="_on_SFX_ENABLED_toggled"]
+[connection signal="toggled" from="Screenreader/VBoxContainer/WRAP_NAVIGATION/VBoxContainer/WRAP_NAVIGATION" to="." method="_on_wrap_navigation_toggled"]
+[connection signal="toggled" from="Screenreader/VBoxContainer/VERBOSE/VBoxContainer/VERBOSE" to="." method="_on_verbose_toggled"]
+[connection signal="item_selected" from="Screenreader/VBoxContainer/THEME/VBoxContainer/THEME" to="." method="_on_theme_item_selected"]

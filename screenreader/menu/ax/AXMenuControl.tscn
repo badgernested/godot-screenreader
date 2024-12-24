@@ -49,9 +49,14 @@ size_flags_horizontal = 3
 layout_mode = 2
 text = "Control Selector"
 
+[node name="Options" type="Button" parent="PanelContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+text = "Options"
+
 [node name="TutorialButton" type="Button" parent="PanelContainer/VBoxContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 text = "View Tutorial"
 
 [connection signal="pressed" from="PanelContainer/VBoxContainer/ScrollContainer/VBoxContainer/NodeSelectButton" to="." method="_on_node_select_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/ScrollContainer/VBoxContainer/Options" to="." method="_on_options_pressed"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/ScrollContainer/VBoxContainer/TutorialButton" to="." method="_on_tutorial_button_pressed"]

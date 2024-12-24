@@ -22,7 +22,8 @@ const STYLES = {
 # This is the gradient for the top borders of accessibility menus
 const GRADIENT_STYLES = {
 	"hc_dark" : preload("res://screenreader/ui/gradient/DarkMode.tres"),
-	"hc_light" : preload("res://screenreader/ui/gradient/LightMode.tres")
+	"hc_light" : preload("res://screenreader/ui/gradient/LightMode.tres"),
+	"default" : preload("res://screenreader/ui/gradient/AccessDefault.tres")
 }
 
 
@@ -54,11 +55,17 @@ static func get_gradient():
 	return null
 
 # Sets the theme to a new theme
-static func set_theme(root: Control, theme: String):
-	reset_theme()
-	_theme_data[root] = root.theme
-	theme_style = theme
-	_set_theme_rec(root, get_style())
+static func set_theme(root: Control = Screenreader.dom_root, theme: String = theme_style):
+	if root != null:
+		reset_theme()
+		_theme_data[root] = root.theme
+		if !theme.is_empty():
+			theme_style = theme
+			
+		if STYLES.has(theme_style):
+			_set_theme_rec(root, get_style())
+		else:
+			reset_theme()
 	
 static func _set_theme_rec(root: Control, theme: Theme):
 	for c in root.get_children():
