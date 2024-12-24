@@ -61,7 +61,7 @@ popup/item_1/id = 1
 popup/item_2/text = "High Contrast (Light)"
 popup/item_2/id = 2
 script = ExtResource("4_sikc4")
-alt_text = "High Contrast Theme"
+alt_text = "Contrast Theme"
 
 [node name="Label2" type="Label" parent="Screenreader/VBoxContainer"]
 layout_mode = 2
