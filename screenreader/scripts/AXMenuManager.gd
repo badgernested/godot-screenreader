@@ -16,7 +16,8 @@ const MENUS = {
 	"tutorial" : preload("res://screenreader/menu/ax/Tutorial.tscn"),
 	"main" : preload("res://screenreader/menu/ax/AxMenu.tscn"),
 	"node_select" : preload("res://screenreader/menu/ax/NodeSelector.tscn"),
-	"screenreader_options" : preload("res://screenreader/menu/ax/ScreenreaderOptions.tscn")
+	"screenreader_options" : preload("res://screenreader/menu/ax/ScreenreaderOptions.tscn"),
+	"options" : preload("res://screenreader/menu/ax/Options.tscn"),
 }
 
 # The original DOM node before switching to menu mode
@@ -69,7 +70,6 @@ func push_menu(menu_name: String):
 	if MENUS.has(menu_name):
 		if _menu_stack.is_empty():
 			if Screenreader.dom_root != null && is_instance_valid(Screenreader.dom_root):
-				_DOM_node = Screenreader.dom_root
 				# Turns off the dom node
 				Screenreader._set_focus_off(_DOM_node)
 		else:

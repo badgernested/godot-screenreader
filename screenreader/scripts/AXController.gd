@@ -34,14 +34,26 @@ static var dom_root: Control = null
 # when playing a game.
 static var load_file: bool = true
 
+# If screenreader is enabled at start of game
+static var start_screenreader: bool = false
+
+# Set to true if fully initialized
+static var fully_initialized: bool = false
+
 func _ready():
 	AXMenuManager.init(get_tree().get_root())
 	Screenreader._do_ready(self)
 	TextFunctions.update_keyboard_action_names()
 	
+	_load_options_from_file()
+	
 	await get_tree().create_timer(0.001).timeout
 	_load_events_from_file()
-	_load_options_from_file()
+	
+	if is_instance_valid(dom_root) && start_screenreader:
+		enable_screenreader(dom_root, start_screenreader)
+		
+	fully_initialized = true
 
 # This forces reading the contents to override anything else.
 func _input(event: InputEvent) -> void:
@@ -83,7 +95,11 @@ func _process(delta: float) -> void:
 		if Screenreader.dom_nav_enabled:
 			if AXMenuManager._menu_stack.is_empty():
 				AXMenuManager.push_menu("main")
-	
+				
+		else:
+			if AXMenuManager._menu_stack.is_empty():
+				AXMenuManager.push_menu("options")
+				
 	Screenreader._do_process(delta)
 	
 	if Screenreader.clear_redraw:
@@ -135,22 +151,31 @@ func key_changed():
 
 ## Screenreader Control
 
+# Sets the DOM root.
+func set_dom_root(obj: Control, focus_node:Control = null):
+	dom_root = obj
+	AXController.set_high_contrast_theme(dom_root)
+	enable_screenreader(dom_root, _screenreader_enabled, focus_node)
+
 # Enables the screenreader
 func enable_screenreader(root: Control, enabled:bool = true, focus_obj: Control = null):
 	
 	var tutorial_pushed = false
+	Screenreader.set_dom_root(root)
 	
 	if enabled:
 		add_token(STRINGS["enabled"])
-		Screenreader.set_dom_root(root)
 		
 		if !_event_exists("TUTORIAL"):
 			AXMenuManager.push_menu("tutorial")
 			_add_event("TUTORIAL")
 			tutorial_pushed = true
 	else:
-		add_token(STRINGS["disabled"])
-		read_tokens()
+		if fully_initialized:
+			add_token(STRINGS["disabled"])
+			read_tokens()
+		else:
+			Screenreader._clear_tokens()
 	
 	# If tutorial is pushed, dom is already enabled
 	if !tutorial_pushed:
@@ -275,6 +300,9 @@ func _create_options_dictionary():
 		"wrap_nav" : Screenreader.navigation_wrap,
 		"verbose" : Screenreader.verbose,
 		"theme" : HCController.theme_style,
+		"screenreader" : Screenreader.dom_nav_enabled,
+		"subtitles" : Screenreader.subtitles_enabled,
+		"adtts" : Screenreader.audio_description_enabled,
 	}
 
 # Saves events to a file
@@ -299,9 +327,27 @@ func _load_options_from_file():
 		var path = "user://" + AX_PATH + OPTIONS_FILE
 		
 		if FileAccess.file_exists(path):
-			events = []
 			var file = FileAccess.open(path, FileAccess.READ)
 			
 			var contents = JSON.parse_string(file.get_line())
 			
+			if contents.has("sfx_enabled"):
+				Screenreader.sfx_enabled = bool(contents["sfx_enabled"])
+			if contents.has("wrap_nav"):
+				Screenreader.sfx_enabled = bool(contents["wrap_nav"])
+			if contents.has("verbose"):
+				Screenreader.sfx_enabled = bool(contents["verbose"])
+			if contents.has("subtitles"):
+				Screenreader.subtitles_enabled = bool(contents["subtitles"])
+			if contents.has("adtts"):
+				Screenreader.audio_description_enabled = bool(contents["adtts"])
+			if contents.has("theme"):
+				var str = contents["theme"]
+				
+				if str is String:
+					HCController.theme_style = str.substr(0,min(10, str.length()))
+			
+			if contents.has("screenreader"):
+				start_screenreader = bool(contents["screenreader"])
+				
 			file.close()

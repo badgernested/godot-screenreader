@@ -27,6 +27,11 @@ grow_vertical = 2
 layout_mode = 2
 theme_override_constants/separation = 8
 
+[node name="Label" type="Label" parent="Screenreader/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Screenreader Options"
+
 [node name="SFX_ENABLED" type="Control" parent="Screenreader/VBoxContainer"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
@@ -133,7 +138,57 @@ popup/item_2/id = 2
 script = ExtResource("3_7l0nk")
 alt_text = "High Contrast Theme"
 
-[connection signal="toggled" from="Screenreader/VBoxContainer/SFX_ENABLED/VBoxContainer/SFX_ENABLED" to="." method="_on_SFX_ENABLED_toggled"]
-[connection signal="toggled" from="Screenreader/VBoxContainer/WRAP_NAVIGATION/VBoxContainer/WRAP_NAVIGATION" to="." method="_on_wrap_navigation_toggled"]
-[connection signal="toggled" from="Screenreader/VBoxContainer/VERBOSE/VBoxContainer/VERBOSE" to="." method="_on_verbose_toggled"]
-[connection signal="item_selected" from="Screenreader/VBoxContainer/THEME/VBoxContainer/THEME" to="." method="_on_theme_item_selected"]
+[node name="Label2" type="Label" parent="Screenreader/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Video Options"
+
+[node name="SUBTITLES" type="Control" parent="Screenreader/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="VBoxContainer" type="HBoxContainer" parent="Screenreader/VBoxContainer/SUBTITLES"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Screenreader/VBoxContainer/SUBTITLES/VBoxContainer"]
+layout_mode = 2
+text = "Subtitles"
+script = ExtResource("1_ypume")
+ignore = true
+
+[node name="SUBTITLES" type="CheckButton" parent="Screenreader/VBoxContainer/SUBTITLES/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+script = ExtResource("2_lomcq")
+alt_text = "Subtitles"
+
+[node name="ADTTS" type="Control" parent="Screenreader/VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="VBoxContainer" type="HBoxContainer" parent="Screenreader/VBoxContainer/ADTTS"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Screenreader/VBoxContainer/ADTTS/VBoxContainer"]
+layout_mode = 2
+text = "Audio Description (TTS)"
+script = ExtResource("1_ypume")
+ignore = true
+
+[node name="ADTTS" type="CheckButton" parent="Screenreader/VBoxContainer/ADTTS/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+flat = true
+script = ExtResource("2_lomcq")
+alt_text = "Audio Description (Text-to-Speech)"
