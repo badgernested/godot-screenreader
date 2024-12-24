@@ -37,21 +37,38 @@ Copy all of the files in ``/screenreader`` into the root directory of your Godot
 
 godot-screenreader uses unique input names to distinguish itself from normal UI control. You must add the following inputs to your game so that the godot-screenreader can use them properly.
 
+In Project Settings -> Input Map, add the following inputs:
+
 | Input        | Default           | Summary  |
 |:-------------:|:-------------:|:-----:|
-| ``DOM_screenreader_enable`` | F2 | enables the screenreader. |
-| ``DOM_screenreader_menu`` | F5 | opens the screenreader menu. |
-| ``DOM_read_item`` | F3 | reads the description text of the currently selected control. |
-| ``DOM_stop_talk`` | F4 | stops the TTS voice talking. |
-| ``DOM_prev`` | Shift + Tab | navigates to the previous tabable control or area. |
-| ``DOM_next`` | Tab | navigates to the next tabable control or area. |
-| ``DOM_up`` | Up | navigates to the next visible selectable control. |
-| ``DOM_down`` | Down | navigates to the previous visible selectable control. |
-| ``DOM_item_decrement`` | Left | navigates to the previous item within a selected control. |
-| ``DOM_item_increment`` | Right | navigates to the next item within a selected control. |
-| ``DOM_select`` | Enter | selects an item within a selected control. |
-| ``DOM_cancel`` | Escape | cancels a selection within a selected control. |
-| ``ax_stop_video`` | Shift + S | stops video for ``VideoStreamPlayer`` instances attached with the accessibility script |
-| ``ax_start_video`` | Shift + A | plays video for ``VideoStreamPlayer`` instances attached with the accessibility script |
+| ``DOM_screenreader_enable`` | F2 | Enables the screenreader. |
+| ``DOM_screenreader_menu`` | F5 | Opens the screenreader menu. |
+| ``DOM_read_item`` | F3 | Reads the description text of the currently selected control. |
+| ``DOM_stop_talk`` | F4 | Stops the TTS voice talking. |
+| ``DOM_prev`` | Shift + Tab | Navigates to the previous tabable control or area. |
+| ``DOM_next`` | Tab | Navigates to the next tabable control or area. |
+| ``DOM_up`` | Up | Navigates to the next visible selectable control. |
+| ``DOM_down`` | Down | Navigates to the previous visible selectable control. |
+| ``DOM_item_decrement`` | Left | Navigates to the previous item within a selected control. |
+| ``DOM_item_increment`` | Right | Navigates to the next item within a selected control. |
+| ``DOM_select`` | Enter | Selects an item within a selected control. |
+| ``DOM_cancel`` | Escape | Cancels a selection within a selected control. |
+| ``ax_stop_video`` | Shift + S | Stops video for ``VideoStreamPlayer`` instances attached with the accessibility script |
+| ``ax_start_video`` | Shift + A | Plays video for ``VideoStreamPlayer`` instances attached with the accessibility script |
+
+> [!IMPORTANT]  
+> All of these inputs should be added in order for the screenreader to be fully functional with all controls.
+
+### Globals
+
+Two scripts need to be loaded as globals:
+
+| Global        | Script           | Summary  |
+|:-------------:|:-------------:|:-----:|
+| AXController | res://screenreader/scripts/AXController.gd | The main accessibility controller. |
+| AXMenuManager | res://screenreader/scripts/AXMenuManager.gd | The menu manager for the screenreader. |
+
+> [!IMPORTANT]  
+> Global names must be **exactly** what is written in the table, or else there will be errors.
 
 [Back to README](../../README.md)
