@@ -98,7 +98,3 @@ func _on_subtitles_toggled(toggled_on: bool) -> void:
 func _on_adtts_toggled(toggled_on: bool) -> void:
 	options_set["adtts"] = $Screenreader/VBoxContainer/ADTTS/VBoxContainer/ADTTS.is_pressed()
 	set_option(options_set)
-
-
-func _on_theme_toggled(toggled_on: bool) -> void:
-	pass # Replace with function body.
