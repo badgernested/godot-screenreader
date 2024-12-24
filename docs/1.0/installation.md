@@ -56,9 +56,6 @@ In Project Settings -> Input Map, add the following inputs:
 | ``ax_stop_video`` | Shift + S | Stops video for ``VideoStreamPlayer`` instances attached with the accessibility script |
 | ``ax_start_video`` | Shift + A | Plays video for ``VideoStreamPlayer`` instances attached with the accessibility script |
 
-> [!IMPORTANT]  
-> All of these inputs should be added in order for the screenreader to be fully functional with all controls.
-
 ### Globals
 
 Two scripts need to be loaded as globals:
@@ -70,5 +67,7 @@ Two scripts need to be loaded as globals:
 
 > [!IMPORTANT]  
 > Global names must be **exactly** what is written in the table, or else there will be errors.
+
+[Next (General Usage) ->](generaluse.md)
 
 [Back to README](../../README.md)
