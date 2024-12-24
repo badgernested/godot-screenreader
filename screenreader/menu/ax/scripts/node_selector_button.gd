@@ -202,6 +202,7 @@ func _on_focus_entered() -> void:
 	for c in AXMenuManager._menu_stack:
 		c.modulate = Color(0.0, 0.0, 0.0, 0.0)
 	Screenreader.clear_redraw = true
+	HCController.set_theme()
 	update_parent_tab(objects[index])
 	redraw_highlighter()
 	Screenreader._play_sound("node_select")
@@ -209,4 +210,6 @@ func _on_focus_entered() -> void:
 func _on_focus_exited() -> void:
 	for c in AXMenuManager._menu_stack:
 		c.modulate = Color(1.0, 1.0, 1.0, 1.0)
+		
+	HCController.set_theme(AXMenuManager.peek_menu())
 	Screenreader._play_sound("node_select_exit")

@@ -54,24 +54,36 @@ static func get_gradient():
 		
 	return null
 
-# Sets the theme to a new theme
-static func set_theme(root: Control = Screenreader.dom_root, theme: String = theme_style):
-	if root != null:
-		reset_theme()
-		_theme_data[root] = root.theme
-		if !theme.is_empty():
-			theme_style = theme
-			
-		if STYLES.has(theme_style):
-			_set_theme_rec(root, get_style())
-		else:
-			reset_theme()
+# Saves the current theme data for the control
+static func save_theme(root: Node=null):
+	if root == null:
+		root = AXController.get_tree().get_root()
 	
-static func _set_theme_rec(root: Control, theme: Theme):
-	for c in root.get_children():
-		_theme_data[c] = c.theme
-		root.theme = theme
+	if root is Control:
+		if !_theme_data.has(root):
+			_theme_data[root] = root.theme
 		
+	for c in root.get_children():
+		save_theme(c)
+
+# Sets the theme to a new theme
+static func set_theme(root: Node=null, theme: String = theme_style):
+	if root == null:
+		root = AXController.get_tree().get_root()
+
+	save_theme(root)
+
+	if STYLES.has(theme):
+		theme_style = theme
+		_set_theme_rec(root, get_style())
+	else:
+		reset_theme()
+	
+static func _set_theme_rec(root: Node, theme: Theme):
+	if root is Control:
+		root.theme = theme
+	
+	for c in root.get_children():
 		if c.get_child_count() > 0:
 			_set_theme_rec(c,theme)
 	
@@ -80,6 +92,17 @@ static func reset_theme():
 	_reset_theme_rec()
 	theme_style = ""
 	_theme_data = {}
+	
+# Clears invalid themes
+static func clean_theme():
+	var remove = []
+	
+	for c in _theme_data:
+		if !is_instance_valid(c) || c.is_queued_for_deletion():
+			remove.append(c)
+			
+	for c in remove:
+		_theme_data.erase(c)
 	
 static func _reset_theme_rec():
 	for c in _theme_data:

@@ -154,7 +154,7 @@ func key_changed():
 # Sets the DOM root.
 func set_dom_root(obj: Control, focus_node:Control = null):
 	dom_root = obj
-	AXController.set_high_contrast_theme(dom_root)
+	AXController.set_high_contrast_theme(obj)
 	enable_screenreader(dom_root, _screenreader_enabled, focus_node)
 
 # Enables the screenreader
@@ -217,18 +217,18 @@ func _get_focus_node(obj:Node):
 ## Accessibility themes
 
 # Sets the theme to the currently selected accessibility theme
-func set_high_contrast_theme(root: Control):
-	HCController.set_theme(root)
+func set_high_contrast_theme(obj:Node=null):
+	HCController.set_theme(obj)
 
 # Pass an element to make all its children 
 # the dark high contrast theme
-func set_high_contrast_dark_theme(root: Control):
-	HCController.set_theme(root, "hc_dark")
+func set_high_contrast_dark_theme(obj:Node=null):
+	HCController.set_theme(obj, "hc_dark")
 	
 # Pass an element to make all its children 
 # the light high contrast theme
-func set_high_contrast_light_theme(root: Control):
-	HCController.set_theme(root, "hc_light")
+func set_high_contrast_light_theme(obj:Node=null):
+	HCController.set_theme(obj, "hc_light")
 	
 # Passes an element to remove all special themes
 func reset_theme(root: Control):

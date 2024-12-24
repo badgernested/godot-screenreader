@@ -60,7 +60,7 @@ func focus_top_menu():
 		if _DOM_node != null:
 			
 			AXController._set_screenreader_subject(_DOM_node, AXController._screenreader_enabled, _focused_node)
-			HCController.set_theme(_DOM_node)
+			HCController.set_theme()
 			
 			_focused_node = null
 	
