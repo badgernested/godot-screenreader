@@ -192,3 +192,10 @@ size_flags_horizontal = 3
 flat = true
 script = ExtResource("2_lomcq")
 alt_text = "Audio Description (Text-to-Speech)"
+
+[connection signal="toggled" from="Screenreader/VBoxContainer/SFX_ENABLED/VBoxContainer/SFX_ENABLED" to="." method="_on_SFX_ENABLED_toggled"]
+[connection signal="toggled" from="Screenreader/VBoxContainer/WRAP_NAVIGATION/VBoxContainer/WRAP_NAVIGATION" to="." method="_on_wrap_navigation_toggled"]
+[connection signal="toggled" from="Screenreader/VBoxContainer/VERBOSE/VBoxContainer/VERBOSE" to="." method="_on_verbose_toggled"]
+[connection signal="toggled" from="Screenreader/VBoxContainer/THEME/VBoxContainer/THEME" to="." method="_on_theme_toggled"]
+[connection signal="toggled" from="Screenreader/VBoxContainer/SUBTITLES/VBoxContainer/SUBTITLES" to="." method="_on_subtitles_toggled"]
+[connection signal="toggled" from="Screenreader/VBoxContainer/ADTTS/VBoxContainer/ADTTS" to="." method="_on_adtts_toggled"]
