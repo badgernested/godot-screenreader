@@ -51,7 +51,7 @@ func _ready():
 	_load_events_from_file()
 	
 	if is_instance_valid(dom_root) && start_screenreader:
-		enable_screenreader(dom_root, start_screenreader)
+		_enable_screenreader(dom_root, start_screenreader)
 		
 	fully_initialized = true
 
@@ -89,9 +89,9 @@ func _process(delta: float) -> void:
 		if changer != null:
 			var focus_node = _get_focus_node(changer)
 			
-			enable_screenreader(changer, _screenreader_enabled, focus_node)
+			_enable_screenreader(changer, _screenreader_enabled, focus_node)
 		else:
-			enable_screenreader(changer, _screenreader_enabled)
+			_enable_screenreader(changer, _screenreader_enabled)
 			
 	elif Input.is_action_just_pressed("DOM_screenreader_menu"):
 		if Screenreader.dom_nav_enabled:
@@ -157,10 +157,10 @@ func key_changed():
 func set_dom_root(obj: Control, focus_node:Control = null):
 	dom_root = obj
 	AXController.set_high_contrast_theme(obj)
-	enable_screenreader(dom_root, _screenreader_enabled, focus_node)
+	_enable_screenreader(dom_root, _screenreader_enabled, focus_node)
 
 # Enables the screenreader
-func enable_screenreader(root: Control, enabled:bool = true, focus_obj: Control = null):
+func _enable_screenreader(root: Control, enabled:bool = true, focus_obj: Control = null):
 	
 	var tutorial_pushed = false
 	Screenreader.set_dom_root(root)
@@ -194,10 +194,6 @@ func _set_screenreader_subject(root, enabled:bool = true, focus_obj: Control = n
 	await get_tree().create_timer(0.001).timeout
 	Screenreader.set_dom_root(root)
 	Screenreader.enable_dom(enabled, focus_obj)
-	
-# Clears the screenreader binding
-func reset_screenreader():
-	Screenreader.enable_dom(false)
 	
 # Updates the position of the screenreader highlighter
 func update_screenreader_highlight():
@@ -238,7 +234,7 @@ func set_high_contrast_light_theme(obj:Node=null):
 	HCController.set_theme(obj, "hc_light")
 	
 # Passes an element to remove all special themes
-func reset_theme(root: Control):
+func reset_high_contrast_theme(root: Control):
 	HCController.reset_theme()
 	
 ## Text to Speech manager
