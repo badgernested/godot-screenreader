@@ -1,5 +1,5 @@
 # A Player's Guide
 
-[Next (Installation) ->](installation.md)
+[Next (Introduction) ->](intro.md)
 
 [Back to README](../../README.md)
