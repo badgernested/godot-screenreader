@@ -69,6 +69,6 @@ Two scripts need to be loaded as globals:
 > Global names must be **exactly** what is written in the table, or else there will be errors.
 
 [<- Previous (Introduction)](intro.md)
-[Next (General Usage) ->](generaluse.md)
+ | [Next (General Usage) ->](generaluse.md)
 
 [Back to README](../../README.md)

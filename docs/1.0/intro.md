@@ -30,6 +30,10 @@ For example, reviewing [web accessibility guidelines](https://www.w3.org/TR/WCAG
 
 Having the ability to change themes to be more readable, have important items highlighted on the screen or to have buttons more easy to find or control are all things that in an overwhelming number of games can be improved in simple ways to make the experience more open to those with disabilities, those playing with incomplete or nonfunctioning hardware or other needs.
 
+There are some rare cases where an accessibility solution might conflict with game design. For example, a game may require finding hidden items, but the ability to select items on a screen removes the challenge. This kind of situation should be seen not as a threat, but as a design challenge. What other ways could you communicate to different kinds of users ways to find hidden items in your interface?
+
+Ultimately, it is okay if some problems can't be solved - especially as small, independent game developers - but fixing problems that have been largely solved, such as navigating basic interfaces, or improving visibility, is still incredibly important. After all, some users may need some help with navigating menus or seeing bigger text, but can enjoy the challenge of these segments.
+
 > [!IMPORTANT]  
 > Making your game more accessible not only improves usability for highly visible groups such as blind or deaf users, but also users with less pronounced disabilities or complex situations that you could not otherwise predict. Remember: Bad UI usability is not the flex you think it is!
 
