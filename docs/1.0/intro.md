@@ -12,7 +12,9 @@ godot-screenreader has not yet been tested with braille displays.
 
 ## Why Accessibility?
 
-Accessibility is a design philosophy that emphasizes many different kinds of users for your product. This includes disabled users, such as people with sensory, motor or mental disabilities; but this also includes 
+Accessibility is a design philosophy that emphasizes many different kinds of users for your product. This includes disabled users, such as people with sensory, motor or mental disabilities; but this also includes users in environments where some hardware functionality may not be available, such as in loud settings, settings with high glare, poor quality hardware or disfunctional hardware. The idea is that there should be many ways to be able to achieve the same goal, with all the tools and information you need readily available to do it, so that interference with completing a task is put to a minimum.
+
+For a video game, this may include improving sound design in your gameplay, adding keybinding capabilities, incorporating notes, guides and tutorials into your game loop, and designing multiple input/output modes. This screenreader improves accessibility by providing a consistent way to navigate UI Controls in the SceneTree.
 
 > [!IMPORTANT]  
 > Simply installing a screenreader does not mean that your game is instantly usable for blind or visually impaired players. The screenreader only provides the ability to navigate Control elements reliably in a game. Other elements will need to be developed independently. In some circumstances, a screenreader is not an appopriate solution. Think carefully about how different kinds of users will interact with your game. Always remember to make sure you test with disabled players before claiming any game is accessible. For liability purposes, do not ever claim your software can prevent or mitigate certain medical interactions, such as those relating with epilepsy.
@@ -62,7 +64,9 @@ This is an early release of this accessibility asset, so not all desired feature
 - Support for audio stream audio descriptions (as opposed to just TTS)
 - Magnifier
 - Improved support for high contrast theming (some bugs in current release)
+- Keybinding
 
-[Next (Installation) ->](installation.md)
+[<- Previous (A Player's Guide)](playerguide.md)
+ | [Next (Installation) ->](installation.md)
 
 [Back to README](../../README.md)
