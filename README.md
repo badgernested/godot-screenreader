@@ -7,5 +7,7 @@ For now, it is something that can be used to attach to your game to make menus a
 ## Extra Information
 
 If you want to know more about the screenreader, you can view the following:
+- [Player's Guide](/main/docs/1.0/playerguide.md)
+- [Documentation](/main/docs/1.0/index.md)
 - [Credits](CREDITS.md)
 - [License - MIT](LICENSE)
