@@ -1497,7 +1497,8 @@ static func _get_node_from_pos(arr: Array):
 	
 # The selected end node grabs focus.		
 static func _end_node_grab_focus():
-	_grab_obj_focus(_end_node_list[_end_node_position])
+	if _end_node_position < _end_node_list.size():
+		_grab_obj_focus(_end_node_list[_end_node_position])
 	
 # This will take the current object and make its tab visible
 static func _open_selected_tab(obj: Node):
@@ -2257,7 +2258,7 @@ static func _set_focus_on(obj:Control, dir:Dictionary = _object_focus_mode):
 # Updates the draw highlighter
 static func _update_draw_highlight(obj=focused):
 
-	if !is_instance_valid(obj):
+	if dom_root == null || !is_instance_valid(obj):
 		_clear_highlight()
 	else:
 		if obj.get("draw_highlight") != null:
@@ -2449,9 +2450,10 @@ static func init_DOM():
 	
 	_clear_DOM()
 	
-	_recursive_tree_search(dom_root)
-	_get_object_list()
-	_build_focus_mode_list()
+	if dom_root != null:
+		_recursive_tree_search(dom_root)
+		_get_object_list()
+		_build_focus_mode_list()
 	
 static func _clear_DOM():
 	_objects = []

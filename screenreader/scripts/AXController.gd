@@ -84,12 +84,14 @@ func _process(delta: float) -> void:
 		changer = dom_root
 		
 	if Input.is_action_just_pressed("DOM_screenreader_enable"):
+		_screenreader_enabled = !_screenreader_enabled
+		
 		if changer != null:
-			_screenreader_enabled = !_screenreader_enabled
-			
 			var focus_node = _get_focus_node(changer)
 			
 			enable_screenreader(changer, _screenreader_enabled, focus_node)
+		else:
+			enable_screenreader(changer, _screenreader_enabled)
 			
 	elif Input.is_action_just_pressed("DOM_screenreader_menu"):
 		if Screenreader.dom_nav_enabled:
@@ -170,6 +172,11 @@ func enable_screenreader(root: Control, enabled:bool = true, focus_obj: Control 
 			AXMenuManager.push_menu("tutorial")
 			_add_event("TUTORIAL")
 			tutorial_pushed = true
+		
+		# Tokens are normally only read if a control is selected
+		# so for null you gotta do it manually
+		if root == null:
+			read_tokens()
 	else:
 		if fully_initialized:
 			add_token(STRINGS["disabled"])
