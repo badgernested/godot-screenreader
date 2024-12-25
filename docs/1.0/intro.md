@@ -4,7 +4,7 @@ godot-screenreader is an asset/tool that you can add on to your Godot projects t
 
 ## Technical Details
 
-godot-screenreader is designed to work on versions of Godot 4.3+. If you need a screenreader or Text-to-Speech (TTS) functionality for Godot 3.x, consider using [godot-tts by LightsOutGames](https://github.com/lightsoutgames/godot-tts) instead.
+godot-screenreader is designed to work on versions of Godot 4.3+. If you need a screenreader or Text-to-Speech (TTS) functionality for Godot 3.x, consider using [godot-tts](https://github.com/lightsoutgames/godot-tts) by [LightsOutGames](https://www.lightsout.games/) instead.
 
 Currently, godot-screenreader is confirmed to work on Windows and Linux platforms.
 
@@ -69,6 +69,8 @@ This is an early release of this accessibility asset, so not all desired feature
 - Magnifier
 - Improved support for high contrast theming (some bugs in current release)
 - Keybinding
+
+Additionally, it would be amazing to get the screenreader running in the Editor, to make Godot 4.3+ more accessible to blind and visually impaired users.
 
 [<- Previous (A Player's Guide)](playerguide.md)
  | [Next (Installation) ->](installation.md)

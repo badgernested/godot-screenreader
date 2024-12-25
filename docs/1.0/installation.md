@@ -12,7 +12,7 @@ git clone git@github.com:badgernested/godot-screenreader.git
 
 Then, open Godot 4.3+ and import the project's ``project.godot' file. Open the project.
 
-You will notice that there is several import errors. This is not a problem with the project itself but is caused by how Godot loads resources. Immediately close the project without interacting with anything and re-open it again. The errors will be gone, and you can fix other import warnings by simply opening the .tscn files in the error messages.
+You will notice that there are several import errors. This is not a problem with the project itself but is caused by how Godot loads resources. Immediately close the project without interacting with anything and re-open it again. The errors will be gone, and you can fix other import warnings by simply opening the .tscn files in the error messages.
 
 > [!CAUTION]
 > It is very important that you do not interact with anything before closing the project in this step, or else certain theme assets will not load properly and you will need to re-create the template.
