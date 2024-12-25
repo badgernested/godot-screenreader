@@ -17,7 +17,10 @@ Accessibility is a design philosophy that emphasizes many different kinds of use
 For a video game, this may include improving sound design in your gameplay, adding keybinding capabilities, incorporating notes, guides and tutorials into your game loop, and designing multiple input/output modes. This screenreader improves accessibility by providing a consistent way to navigate UI Controls in the SceneTree.
 
 > [!IMPORTANT]  
-> Simply installing a screenreader does not mean that your game is instantly usable for blind or visually impaired players. The screenreader only provides the ability to navigate Control elements reliably in a game. Other elements will need to be developed independently. In some circumstances, a screenreader is not an appopriate solution. Think carefully about how different kinds of users will interact with your game. Always remember to make sure you test with disabled players before claiming any game is accessible. For liability purposes, do not ever claim your software can prevent or mitigate certain medical interactions, such as those relating with epilepsy.
+> Simply installing a screenreader does not mean that your game is instantly usable for blind or visually impaired players. The screenreader only provides the ability to navigate Control elements reliably in a game. Other elements will need to be developed independently. In some circumstances, a screenreader is not an appopriate solution. Think carefully about how different kinds of users will interact with your game. Always remember to make sure you test with disabled players before claiming any game is accessible.
+
+> [!WARNING]  
+> For liability purposes, do not ever claim your software can prevent or mitigate certain medical interactions, such as those relating with epilepsy, or that it has any ability to treat or cure any medical condition.
 
 ### Doesn't Accessibility Hurt My Game Design?
 
