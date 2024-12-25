@@ -4,7 +4,7 @@ Hey there! You seem to be a confused player. Perhaps a developer sent you this w
 
 ## Demo Quick Start
 
-The following guide will allow you to easily navigate the demo ([Windows](https://github.com/badgernested/godot-screenreader/raw/refs/heads/main/exports/windows/demo.zip)/[Linux](https://github.com/badgernested/godot-screenreader/raw/refs/heads/main/exports/linux/demo.tar.gz).
+The following guide will allow you to easily navigate the demo ([Windows](https://github.com/badgernested/godot-screenreader/raw/refs/heads/main/exports/windows/demo.zip)/[Linux](https://github.com/badgernested/godot-screenreader/raw/refs/heads/main/exports/linux/demo.tar.gz)).
 
 Once you open the demo, you can press the F2 key to open the screenreader. You should hear the screenreader announce that it is enabled, and it will display a tutorial. It's recommended you navigate this tutorial if its the first time you've ever used godot-screenreader. Afterward, you can navigate the user interface's visible elements using the Up and Down keys, or Tab and Shift + Tab. If you want to see more elements, you can navigate the tabs to view different kinds of items, like sliders, media elements and a tree navigator.
 
