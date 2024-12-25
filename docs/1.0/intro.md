@@ -26,7 +26,7 @@ Outside of rare edge cases, accessibility in video games does not harm your game
 For example, reviewing [web accessibility guidelines](https://www.w3.org/TR/WCAG22/), which are designed more for businesses rather than gaming or storytelling, shows us that most of the requirements can be organized into a few simple categories:
 - Design choices that encourage a sane design that can be accessed in multiple ways
 - Edge case scenarios that should be avoided for difficulty of use/danger to users
-- Additional modes of interaction
+- In some rare cases, additional modes of specialized interaction to improve user experience, such as sign-language interpreters
 
 Having the ability to change themes to be more readable, have important items highlighted on the screen or to have buttons more easy to find or control are all things that in an overwhelming number of games can be improved in simple ways to make the experience more open to those with disabilities, those playing with incomplete or nonfunctioning hardware or other needs.
 
