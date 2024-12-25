@@ -68,6 +68,7 @@ There are a few extra accessibility features that are bundled in with this asset
 This is an early release of this accessibility asset, so not all desired features are supported yet. Some goals down the line:
 
 - Better mouse support (reading TTS strings when hovering over objects, "snapping" controls
+- Text Sizer
 - Support for audio stream audio descriptions (as opposed to just TTS)
 - Magnifier
 - Improved support for high contrast theming (some bugs in current release)
