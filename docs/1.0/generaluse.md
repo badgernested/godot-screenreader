@@ -89,8 +89,15 @@ Then, when you are ready to have the TTS read the tokens, you can call this:
 AXController.read_tokens()
 ```
 
+If you ever need to clear the tokens, you can call this:
+
+```
+# this clears all the tokens
+AXController.clear_tokens()
+```
+
 > [!NOTE]  
-> Tokens will not be cleared until they are read off, so make sure you call ``AXController.read_tokens()``.
+> Tokens will not be cleared until they are read off or cleared manually, so make sure you call ``AXController.read_tokens() or AXController.clear_tokens()``.
 
 ## Direct Reading
 

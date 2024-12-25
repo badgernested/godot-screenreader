@@ -247,6 +247,10 @@ func add_token(token: String):
 func read_tokens():
 	Screenreader._tts_speak()
 	
+# clears tokens
+func clear_tokens():
+	Screenreader._clear_tokens()
+	
 # Reads a tts string directly
 func tts_speak(text: String, pitch:float = 1.0, rate:float= 1.0 , volume:int = 50):
 	Screenreader._tts_speak_direct(text, pitch, rate, volume)
