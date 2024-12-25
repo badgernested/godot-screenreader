@@ -68,11 +68,10 @@ It might seem odd to web developers or other kinds of application developers why
     - HUD elements, such as labels or power bars, on a real time game
     - Hidden button elements representing hidden items to select
     - Custom created UI elements, or UI elements built of composite elements
-- Integrating the screenreader's design into the game's development cycle early on encourages more accessible design through encouraging design choices that are compatible with the screenreader.
 - Many game developers, especially indie game developers, would be opposed to being forced to build their user interfaces in a HTML compatible or DOM-element format. Games should be a place where new kinds of user interfaces can be safely explored without being forced into the confines of a markup language.
 -  This asset was developed to satisfy a few needs outside of accessibility:
     - This asset needs to be easy to install, so the base asset should try to use as much native Godot 4.x functionality as possible. 
-    - This asset needs to be built in such a way where all its functionality can be self contianed so its easier to distribute as a potential future editor plugin.
+    - This asset needs to be built in such a way where all its functionality can be self contained so its easier to distribute as a potential future editor plugin.
     - This asset needs to work within the confines of the expectations of Godot 4.x users and the way they typically use and interact with UI elements when building games.
 - The immediate value of being able to have a tool that provides some basic accessibility to Godot game user interfaces outweighs the time it would take to solve these problems in screenreaders natively.
 
