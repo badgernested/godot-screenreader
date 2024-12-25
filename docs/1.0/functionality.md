@@ -59,6 +59,6 @@ VTT-formated files are files that are used for displaying subtitles. For example
 > VTT files are stored as ``.txt`` files, not as ``.vtt`` files, because of Godot's restrictive allowed file types in projects.
 
 [<- Previous (General Use)](generaluse.md)
- | [Next (STUB) ->](stub.md)
+ | [Next (Usage Summary) ->](usage_summary.md)
 
 [Back to README](../../README.md)

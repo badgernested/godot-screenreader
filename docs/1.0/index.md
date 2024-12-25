@@ -9,9 +9,9 @@ This is a comprehensive guide on how to install, use and develop with godot-scre
     3. [General Usage](generaluse.md)
     4. [Features](functionality.md)
 3. Usage Guide
-    1. Summary
+    1. [Summary](usage_summary.md)
     2. Custom Scripts
-        1. Script Functionality
+        1. Using Scripts
         2. Extending Scripts 
     3. Best Practices
 4. Developer Documentation
