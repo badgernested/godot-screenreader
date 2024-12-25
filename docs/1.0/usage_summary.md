@@ -16,7 +16,7 @@ To load a new UI into the screenreader, call ``AXController.set_dom_root(root_no
 AXController.set_dom_root(root_node)
 ```
 
-To release screenreader control while the screenreader is enabled, pass ``null`` as the argument instead: ``AXController.set_dom_root(null)``. This way, you can write your own routines for parts of the game that do not use Control inputs.\
+To release screenreader control while the screenreader is enabled, pass ``null`` as the argument instead: ``AXController.set_dom_root(null)``. This way, you can write your own routines for parts of the game that do not use Control inputs.
 
 ```
 # root_node is set to null
