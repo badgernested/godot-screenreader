@@ -12,7 +12,7 @@ This is a comprehensive guide on how to install, use and develop with godot-scre
     1. [Summary](usage_summary.md)
     2. Scripts
         1. [Using Scripts](using_scripts.md)
-        2. Extending Scripts 
+        2. [Extending Scripts](extending_scripts.md) 
     3. Best Practices
 4. Developer Documentation
     1. Classes

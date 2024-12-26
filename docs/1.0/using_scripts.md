@@ -78,7 +78,7 @@ How frequently the Control updates when the decrement/increment keys are held. I
 This leads to the path of the VTT formatted ``.txt`` file that contains the subtitles track to be displayed over the video, if subtitles are enabled.
 
 [<- Previous (Usage Summary)](usage_summary.md)
- | [Next (Extending Scripts) ->](stub.md)
+ | [Next (Extending Scripts) ->](extending_scripts.md)
 
 [Back to Index](index.md)
 
