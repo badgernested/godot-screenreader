@@ -1762,10 +1762,11 @@ static func _get_accessible_label_name(obj:Control):
 		
 		_add_token(TextFunctions.get_character_name(lines[focused.get_caret_line()]))
 		_add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS["LINE"])
-	
 	else:
-		name_val = obj.text
-		_add_token(name_val)
+		if ((focused is LineEdit || focused is TextEdit) ||
+			!(obj.get("alt_text") != null && !obj.alt_text.is_empty())):
+			name_val = obj.text
+			_add_token(name_val)
 		
 	if obj.get("alt_text") != null && !obj.alt_text.is_empty():
 		name_val = obj.alt_text

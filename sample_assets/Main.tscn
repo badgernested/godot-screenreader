@@ -216,9 +216,10 @@ offset_bottom = 500.0
 
 [node name="TabContainer" type="TabContainer" parent="Panel/VBoxContainer/Main/Panel"]
 layout_mode = 2
-current_tab = 0
+current_tab = 1
 
 [node name="Buttons and Text" type="PanelContainer" parent="Panel/VBoxContainer/Main/Panel/TabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -347,7 +348,6 @@ gutters_zero_pad_line_numbers = true
 gutters_draw_fold_gutter = true
 
 [node name="Sliders" type="PanelContainer" parent="Panel/VBoxContainer/Main/Panel/TabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -377,6 +377,7 @@ ticks_on_borders = true
 script = ExtResource("5_t4av2")
 read_percent = true
 read_value = true
+cooldown_time = 0.5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer/Main/Panel/TabContainer/Sliders/VBoxContainer"]
 layout_mode = 2
