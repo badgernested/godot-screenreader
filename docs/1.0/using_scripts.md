@@ -14,7 +14,7 @@ Once you attach the script, new options will be available to you in the editor, 
 If Alt Text is populated, when a screenreader user navigates to this Control, additional or replacement text will be read. The way Alt Text is read to the player is different for each Control type:
 
 | Control        | Alt Text Function  |
-|:-------------:|:-------------:|:-----:|
+|:-------------:|:-------------:|
 | Label | Reads alt text instead of original text. |
 | RichTextLabel | Reads alt text instead of original text. |
 | MenuBar | Reads alt text after menu selected number. |
