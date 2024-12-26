@@ -39,4 +39,6 @@ Here is a summary listing the default inputs of the screenreader:
 
 [Next (Introduction) ->](intro.md)
 
+[Back to Index](index.md)
+
 [Back to README](../../README.md)

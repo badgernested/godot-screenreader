@@ -114,4 +114,6 @@ AXController.tts_speak(text, pitch, rate, volume)
 [<- Previous (Installation)](installation.md)
  | [Next (Features) ->](functionality.md)
 
+[Back to Index](index.md)
+
 [Back to README](../../README.md)

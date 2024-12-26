@@ -61,4 +61,6 @@ VTT-formated files are files that are used for displaying subtitles. For example
 [<- Previous (General Use)](generaluse.md)
  | [Next (Usage Summary) ->](usage_summary.md)
 
+[Back to Index](index.md)
+
 [Back to README](../../README.md)

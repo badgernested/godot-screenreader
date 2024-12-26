@@ -105,4 +105,6 @@ Additionally, it would be amazing to get the screenreader running in the Editor,
 [<- Previous (A Player's Guide)](playerguide.md)
  | [Next (Installation) ->](installation.md)
 
+[Back to Index](index.md)
+
 [Back to README](../../README.md)

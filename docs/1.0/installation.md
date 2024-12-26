@@ -71,4 +71,6 @@ Two scripts need to be loaded as globals:
 [<- Previous (Introduction)](intro.md)
  | [Next (General Usage) ->](generaluse.md)
 
+[Back to Index](index.md)
+
 [Back to README](../../README.md)
