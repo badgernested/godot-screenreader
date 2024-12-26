@@ -1,4 +1,9 @@
 extends Label
+## Script for adding additional accessibility function to Label Controls.
+##
+## This script is designed to extend functionality for the Label Control
+## to godot-screenreader. Extend this script to add additional functionality
+## such as custom screenreader text and input.
 
 @export var alt_text: String = ""
 @export var ignore: bool = false

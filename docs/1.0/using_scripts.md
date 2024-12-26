@@ -65,13 +65,13 @@ If checked, Read Percent reads the value of this Control as a percent of the cur
 
 If checked, Read Value reads the value of this Control as pure values.
 
-## Audio Description
-
-This leads to the path of the VTT formatted ``.txt`` file that contains the audio description for the TTS to read when the Control is selected, if audio description is enabled.
-
 ## Cooldown
 
 How frequently the Control updates when the decrement/increment keys are held. If set to 0.0, it will update every frame.
+
+## Audio Description
+
+This leads to the path of the VTT formatted ``.txt`` file that contains the audio description for the TTS to read when the Control is selected, if audio description is enabled.
 
 ## Subtitles
 

@@ -1,4 +1,9 @@
 extends Panel
+## Script for adding additional accessibility function to Panel Controls.
+##
+## This script is designed to extend functionality for the Panel Control
+## to godot-screenreader. Extend this script to add additional functionality
+## such as custom screenreader text and input.
 
 @export var focus_marked_container: bool = false
 @export var ignore: bool = false

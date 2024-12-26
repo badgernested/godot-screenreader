@@ -1,10 +1,8 @@
-###############################################
-# AXController
-#
-# This class controls all the other accessibility
-# classes in one nice place.
-###############################################
 extends Control
+## This class controls all the other accessibility classes in one nice place.
+##
+## This is the main Node to interact with to control the screenreader and other
+## accessibility functions in godot-screenreader.
 
 static var pressed_keys = []
 static var last_pressed_keys = []
