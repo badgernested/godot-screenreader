@@ -60,8 +60,29 @@ AXController.tts_speak(text, pitch, rate, volume)
 
 ### High Contrast Theme
 
+You can update the state of the high contrast theme by calling ``AXController.set_high_contrast_theme(root_node)``, where ``root_node`` is the top root node of all the controls you want to update the state of.
+
+Passing no argument to ``AXController.set_high_contrast_theme()`` will use the SceneTree as the root. However, this might be a costly function depending on how many nodes are in your SceneTree.
+
+You can force high contrast modes, either light or dark mode, with ``AXController.set_high_contrast_light_theme()`` and ``AXController.set_high_contrast_dark_theme()`` respectively. Like ``AXController.set_high_contrast_theme()``, you can pass no argument to reset the theme from the SceneTree root.
+
+Finally, if you need to reset to the original developer-designated theme, you can call ``AXController.reset_high_contrast_theme()``.
 
 ## Using Scripts
+
+Scripts allow for extended functionality to nodes, such as adding alt text, ignoring nodes, or alternative functions for reading the contents of a Control. They are also required to be used to support videos with subtitles or audio description.
+
+To use a script, simply drag the appropriate script onto the Control. These scripts are located in ``res://screenreader/scripts/object_scripts/``.
+
+> [!IMPORTANT]  
+> Make sure you use the script that extends the Control type that you are attaching your script to, or else you will have errors.
+
+Scripts will allow you to have extended functionality, such as:
+- Alt Text - This is additional text that describes what a control is, represents or doing.
+- Ignore - Ignore this Control when building the navigation tree.
+- Enable Mouse - This causes a Control to use ``FOCUS_MODE_CLICK`` instead of ``FOCUS_MODE_NODE`` to control inputs. (Focus mode is changed for Controls to prevent interference with the normal UI control)
+- Draw Highlight - Whether or not the screenreader highlighter should draw around the selected element.
+- Focus Marked Container - Only used on Control and a few container nodes. This marks this Control as creating a separate navigation group for child elements. 
 
 [<- Previous (Features)](functionality.md)
  | [Next (Using Scripts) ->](stub.md)
