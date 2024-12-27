@@ -376,8 +376,6 @@ layout_mode = 2
 tick_count = 10
 ticks_on_borders = true
 script = ExtResource("5_t4av2")
-read_percent = true
-read_value = true
 cooldown_time = 0.05
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer/Main/Panel/TabContainer/Sliders/VBoxContainer"]
@@ -390,7 +388,6 @@ tick_count = 6
 ticks_on_borders = true
 script = ExtResource("6_yyflb")
 read_fraction = true
-read_value = true
 
 [node name="Media" type="PanelContainer" parent="Panel/VBoxContainer/Main/Panel/TabContainer"]
 visible = false

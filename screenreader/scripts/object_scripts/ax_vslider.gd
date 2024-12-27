@@ -19,7 +19,7 @@ extends VSlider
 ## If true, this Control will be read as a percent.
 @export var read_percent: bool = false
 ## If true, this Control will be read as a value.
-@export var read_value: bool = false
+@export var read_value: bool = true
 ## The amount of time it waits before incrementing/decrementing a value when
 ## holding down a key.
 @export var cooldown_time: float = 0.0
