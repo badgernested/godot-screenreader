@@ -1,5 +1,14 @@
 # Features
 
+- [Features](#features)
+  * [Screenreader](#screenreader)
+    + [Supported Base Controls](#supported-base-controls)
+    + [Sound Effects](#sound-effects)
+    + [Verbose Mode](#verbose-mode)
+    + [Customization Scripts](#customization-scripts)
+  * [High Contrast Themes](#high-contrast-themes)
+  * [VTT Encoder](#vtt-encoder)
+
 ## Screenreader
 
 The screenreader is a tool that, when enabled, allows users to navigate a tree of controls. Users can navigate either one control at a time, navigate by groups of controls, or use tools to navigate through all buttons, labels or other control types.

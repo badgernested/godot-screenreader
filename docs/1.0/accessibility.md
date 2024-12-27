@@ -1,11 +1,11 @@
 # Accessibility FAQ
 
 - [Accessibility FAQ](#accessibility-faq)
-  * [Why Accessibility?](#why-accessibility-)
-    + [Doesn't Accessibility Hurt My Game Design?](#doesn-t-accessibility-hurt-my-game-design-)
+  * [Why Accessibility?](#why-accessibility)
+    + [Doesn't Accessibility Hurt My Game Design?](#doesn-t-accessibility-hurt-my-game-design)
   * [What is a Screenreader?](#what-is-a-screenreader-)
-    + [When Might a Screenreader Not Be Appropriate for My Game?](#when-might-a-screenreader-not-be-appropriate-for-my-game-)
-  * [Why is Native Screenreader Support Not Included?](#why-is-native-screenreader-support-not-included-)
+    + [When Might a Screenreader Not Be Appropriate for My Game?](#when-might-a-screenreader-not-be-appropriate-for-my-game)
+  * [Why is Native Screenreader Support Not Included?](#why-is-native-screenreader-support-not-included)
 
 ## Why Accessibility?
 

@@ -1,5 +1,12 @@
 # Extending Scripts
 
+- [Extending Scripts](#extending-scripts)
+  * [Function Overrides](#function-overrides)
+    + [Custom Input](#custom-input)
+    + [Custom Selection Text](#custom-selection-text)
+    + [Override Screenreader Navigation](#override-screenreader-navigation)
+  * [Custom Controls](#custom-controls)
+
 Extending the screenreader scripts will allow your Controls to be even more customized when interacting with the screenreader. Extending scripts also allows you to add custom functionality to your Controls like you normally would, while allowing you to use the extended screenreader functionality.
 
 > [!IMPORTANT]  

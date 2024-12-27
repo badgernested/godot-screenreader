@@ -1,5 +1,14 @@
 # Usage Summary
 
+- [Usage Summary](#usage-summary)
+  * [General Use](#general-use)
+    + [Screenreader](#screenreader)
+      - [Custom TTS](#custom-tts)
+        * [Tokens](#tokens)
+        * [Direct Reading](#direct-reading)
+    + [High Contrast Theme](#high-contrast-theme)
+  * [Using Scripts](#using-scripts)
+
 ## General Use
 
 All of the accessibility features provided in godot-screenreader either happen automatically, or can be controlled through the ``AXController`` global node. 

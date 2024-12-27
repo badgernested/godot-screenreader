@@ -1,5 +1,9 @@
 # A Player's Guide
 
+- [A Player's Guide](#a-player-s-guide)
+  * [Demo Quick Start](#demo-quick-start)
+  * [Default Inputs](#default-inputs)
+
 Hey there! You seem to be a confused player. Perhaps a developer sent you this way to help explain how to interact with a screenreader that their game is using. This guide will help you get started.
 
 ## Demo Quick Start

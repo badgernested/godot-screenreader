@@ -1,5 +1,12 @@
 # General Use
 
+- [General Use](#general-use)
+  * [Changing Default Focus](#changing-default-focus)
+  * [High Contrast Theming](#high-contrast-theming)
+  * [Screenreader Direct Text-to-Speech (TTS)](#screenreader-direct-text-to-speech-tts)
+    + [Using Tokens](#using-tokens)
+  * [Direct Reading](#direct-reading)
+
 Whenever control would be given to a user interface, you can set up the screenreader by calling the following:
 
 ```

@@ -1,5 +1,20 @@
 # Using Scripts
 
+- [Using Scripts](#using-scripts)
+  * [Extended Properties](#extended-properties)
+    + [Alt Text](#alt-text)
+    + [Ignoring Nodes](#ignoring-nodes)
+    + [Enable Mouse](#enable-mouse)
+    + [Draw Highlight](#draw-highlight)
+    + [Node Grouping](#node-grouping)
+    + [Custom Controls](#custom-controls)
+    + [Read Fraction](#read-fraction)
+    + [Read Percent](#read-percent)
+    + [Read Value](#read-value)
+    + [Cooldown](#cooldown)
+    + [Audio Description](#audio-description)
+    + [Subtitles](#subtitles)
+
 You can use godot-screenreader without using scripts, but attaching scripts to certain nodes can greatly enhance the usability of your user experience.
 
 To attach a script, simply drag the script associated with the type of Control you're attaching it to from the ``res://addons/godot-screenreader/scripts/object_scripts/`` directory.
@@ -71,7 +86,7 @@ If checked, Read Percent reads the value of this Control as a percent of the cur
 
 If checked, Read Value reads the value of this Control as pure values.
 
-## Cooldown
+### Cooldown
 
 How frequently the Control updates when the decrement/increment keys are held. If set to 0.0, it will update every frame.
 

@@ -1,5 +1,12 @@
 # Installation
 
+- [Installation](#installation)
+  * [Start with Template](#start-with-template)
+  * [Add to Your Project](#add-to-your-project)
+    + [Copy the Files](#copy-the-files)
+    + [Set Up the Inputs](#set-up-the-inputs)
+    + [Globals](#globals)
+
 There are two ways to install ``godot-screenreader`` to your project, and it depends on if you have started working on your project yet. If you are starting with a fresh new project, it is recommended to use the template provided in this repository. However, if you have already started development on your project, you can make modifications to your project to support ``godot-screenreader.``
 
 ## Start with Template

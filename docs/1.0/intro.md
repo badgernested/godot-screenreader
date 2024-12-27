@@ -1,5 +1,10 @@
 # Introduction
 
+- [Introduction](#introduction)
+  * [Technical Details](#technical-details)
+  * [What are the Other Features Provided by This Asset?](#what-are-the-other-features-provided-by-this-asset)
+  * [What are Upcoming (Hopefully) Features for This Asset?](#what-are-upcoming-hopefully-features-for-this-asset)
+
 godot-screenreader is an asset/tool that you can add on to your Godot projects to install a screenreader for navigating Control nodes. A screenreader allows for improved accessibility of menu controls so that blind or visually impaired users, among others, can better tell what is on the screen.
 
 ## Technical Details

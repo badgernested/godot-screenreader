@@ -1,5 +1,15 @@
 # Best Practices
 
+- [Best Practices](#best-practices)
+  * [Use AXController for Screenreader Control](#use-axcontroller-for-screenreader-control)
+  * [Group Relevant Controls Together](#group-relevant-controls-together)
+  * [Minimize Inputs](#minimize-inputs)
+  * [Use Custom Controls](#use-custom-controls)
+  * [Overriding Custom Control Functions](#overriding-custom-control-functions)
+    + [Function Override](#function-override)
+    + [Custom Text](#custom-text)
+    + [Ignoring Screenreader Navigation](#ignoring-screenreader-navigation)
+
 ## Use AXController for Screenreader Control
 
 Try to use only ``AXController`` functions for controlling the screenreader. All of the functions that you need to control the screenreader, high contrast mode and other accessibility features is interfaced in this class, so that a developer doesn't accidentally disrupt internal states of the screenreader.
