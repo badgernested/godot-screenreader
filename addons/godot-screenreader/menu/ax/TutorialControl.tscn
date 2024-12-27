@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://c6fh35rs1xet6"]
+[gd_scene load_steps=18 format=3 uid="uid://c6fh35rs1xet6"]
 
 [ext_resource type="Theme" uid="uid://cs1vqepidtt1a" path="res://addons/godot-screenreader/ui/style/Access.tres" id="1_838m0"]
 [ext_resource type="Script" path="res://addons/godot-screenreader/menu/ax/scripts/ax_tutorial_label.gd" id="2_f4yqm"]
@@ -17,7 +17,6 @@
 [ext_resource type="Texture2D" uid="uid://b6aiqdbvhout8" path="res://addons/godot-screenreader/ui/img/tutorial/character5.png" id="11_pqsl8"]
 [ext_resource type="Texture2D" uid="uid://lviaar41cvs7" path="res://addons/godot-screenreader/ui/img/tutorial/character6.png" id="12_qqtdp"]
 [ext_resource type="Texture2D" uid="uid://b60762lav13mf" path="res://addons/godot-screenreader/ui/img/tutorial/background_title.png" id="14_hoags"]
-[ext_resource type="Texture2D" uid="uid://cacxnpkmf566d" path="res://addons/godot-screenreader/ui/img/tutorial/character7.png" id="15_wantx"]
 
 [node name="TutorialControl" type="Control"]
 custom_minimum_size = Vector2(974, 504)
@@ -463,7 +462,6 @@ layout_mode = 2
 tick_count = 10
 ticks_on_borders = true
 script = ExtResource("5_u3uw8")
-read_value = true
 
 [node name="Space" type="Control" parent="Tab/Sliders/HBox/SampleArea/HBox/VBox"]
 custom_minimum_size = Vector2(0, 20)
@@ -517,7 +515,6 @@ size_flags_horizontal = 4
 tick_count = 10
 ticks_on_borders = true
 script = ExtResource("7_gxjd0")
-read_value = true
 
 [node name="Media" type="PanelContainer" parent="Tab"]
 visible = false
@@ -966,9 +963,9 @@ offset_left = 48.0
 offset_top = 117.0
 offset_right = 176.0
 offset_bottom = 245.0
-texture = ExtResource("15_wantx")
+texture = ExtResource("6_vfla3")
 script = ExtResource("5_ae1xm")
-alt_text = "An oppossum carrying a lantern."
+alt_text = "A blue raccoon."
 
 [node name="Label" type="Label" parent="Tab/Conclusion/HBoxContainer/Control"]
 layout_mode = 0
