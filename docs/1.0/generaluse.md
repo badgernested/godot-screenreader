@@ -96,6 +96,16 @@ If you ever need to clear the tokens, you can call this:
 AXController.clear_tokens()
 ```
 
+If you want to get all the tokens as a string, you can call this function. If you pass "false", it won't clear the token list, either.
+
+```
+# this gets all the tokens and doesn't clear the list
+AXController.get_token_text(false)
+
+# this gets all the tokens and clears the list
+AXController.get_token_text()
+```
+
 > [!NOTE]  
 > Tokens will not be cleared until they are read off or cleared manually, so make sure you call ``AXController.read_tokens() or AXController.clear_tokens()``.
 

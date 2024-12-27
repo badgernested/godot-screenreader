@@ -287,6 +287,11 @@ func add_token(token: String) -> void:
 func read_tokens() -> void:
 	Screenreader._tts_speak()
 	
+## Gets the token text. If [param clear] is true,
+## also clears the token array.
+func get_token_text(clear:bool = true) -> String:
+	return Screenreader._get_tokens(clear)
+	
 ## Clears the tokens stored.
 func clear_tokens() -> void:
 	Screenreader._clear_tokens()

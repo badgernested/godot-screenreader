@@ -2204,11 +2204,11 @@ static func _recursive_tree_search(obj:Control, level:int = 0):
 ## TTS management methods
 
 # Clear tokens
-static func _clear_tokens():
+static func _clear_tokens() -> void:
 	_tokens = []
 	
 # adds token
-static func _add_token(token: String):
+static func _add_token(token: String) -> void:
 	token = token.strip_edges()
 	if token == ")":
 		pass
@@ -2217,7 +2217,7 @@ static func _add_token(token: String):
 		_tokens.append(token)
 		
 # Speaks the current token state
-static func _tts_speak(pitch:float = 1.0,rate: float = 1.0, volume: int = 50):
+static func _tts_speak(pitch:float = 1.0,rate: float = 1.0, volume: int = 50) -> void:
 	if _tokens.is_empty():
 		return
 	
@@ -2226,17 +2226,18 @@ static func _tts_speak(pitch:float = 1.0,rate: float = 1.0, volume: int = 50):
 	_tts_speak_direct(text, pitch, rate, volume)
 	
 # Speaks the current token state
-static func _get_tokens():
+static func _get_tokens(clear:bool=true) -> String:
 	var text = ""
 	for c in _tokens:
 		if !c.strip_edges().is_empty():
 			text += c + " | "
-		
-	_clear_tokens()
+	
+	if clear:
+		_clear_tokens()
 	
 	return text
 	
-static func _tts_speak_direct(text: String, pitch:float = 1.0,rate:float= 1.0 ,volume:int = 50):
+static func _tts_speak_direct(text: String, pitch:float = 1.0,rate:float= 1.0 ,volume:int = 50) -> void:
 	if !text.is_empty():
 		TTS.stop()
 		TTS.speak(text, false, TTS.default_lang, pitch, rate, volume)
@@ -2245,11 +2246,11 @@ static func _tts_speak_direct(text: String, pitch:float = 1.0,rate:float= 1.0 ,v
 		
 		_timer.start(_TIMER_COOLDOWN)
 		
-static func _is_cooled_down():
+static func _is_cooled_down() -> bool:
 	return _timer.is_stopped()
 
 # Function to check if parent is tab container
-static func _if_parent_is_TabContainer(obj:Control):
+static func _if_parent_is_TabContainer(obj:Control) -> bool:
 	if obj.get_parent() is TabContainer && obj.get_parent().get_children().has(obj):
 		return true
 	else:
@@ -2258,7 +2259,7 @@ static func _if_parent_is_TabContainer(obj:Control):
 # Returns if the container is marked to be used as
 # a container in the list.
 # Returns 1 = true, 0 = false, -1 no property found
-static func _is_marked_container(obj:Control):
+static func _is_marked_container(obj:Control) -> int:
 	if obj.get("focus_marked_container") != null:
 		if obj.focus_marked_container && _get_node_type(obj) == _NODE_TYPE.CONTAINER:
 			return 1
@@ -2267,7 +2268,7 @@ static func _is_marked_container(obj:Control):
 	return -1
 
 # Function to determine if list item is category or end item
-static func _get_node_type(obj:Control):
+static func _get_node_type(obj:Control) -> int:
 	
 	# Returns if the node is an end node
 	if (obj is Button 
@@ -2295,7 +2296,7 @@ static func _get_node_type(obj:Control):
 
 # Gets the object list but with no tree structure
 
-static func _get_object_list(list: Array = _objects):
+static func _get_object_list(list: Array = _objects) -> void:
 	for c in list:
 		if c is Array:
 			_get_object_list(c)
@@ -2308,13 +2309,13 @@ static func _get_object_list(list: Array = _objects):
 
 # gets the Focus Modes of all child elements
 
-static func _build_focus_mode_list():
+static func _build_focus_mode_list() -> void:
 	_object_focus_mode = {}
 	
 	_get_focus_mode_rec(dom_root, _object_focus_mode)
 	
 # recursive function to get focus mode
-static func _get_focus_mode_rec(obj: Control, dic:Dictionary):
+static func _get_focus_mode_rec(obj: Control, dic:Dictionary) -> void:
 	for c in obj.get_children(true):
 		if c is Control:
 			dic[c] = c.focus_mode
@@ -2323,7 +2324,7 @@ static func _get_focus_mode_rec(obj: Control, dic:Dictionary):
 				_get_focus_mode_rec(c, dic)
 
 # Sets all the focus objects to have no focus mode
-static func _set_focus_off(obj:Control):
+static func _set_focus_off(obj:Control) -> void:
 	if obj != null:
 		for c in obj.get_children(true):
 			if c is Control:
@@ -2335,7 +2336,7 @@ static func _set_focus_off(obj:Control):
 				if c.get_child_count(true) > 0:
 					_set_focus_off(c)
 				
-static func _set_focus_on(obj:Control, dir:Dictionary = _object_focus_mode):
+static func _set_focus_on(obj:Control, dir:Dictionary = _object_focus_mode) -> void:
 	if obj != null && !_object_focus_mode.is_empty():
 		for c in obj.get_children(true):
 			if c is Control:
@@ -2350,7 +2351,7 @@ static func _set_focus_on(obj:Control, dir:Dictionary = _object_focus_mode):
 # Highligher Functions
 
 # Updates the draw highlighter
-static func _update_draw_highlight(obj=focused):
+static func _update_draw_highlight(obj=focused) -> void:
 
 	if dom_root == null || !is_instance_valid(obj):
 		_clear_highlight()
@@ -2369,15 +2370,15 @@ static func _update_draw_highlight(obj=focused):
 			_highlight_normal(obj)
 
 # clears highlight
-static func _clear_highlight():
+static func _clear_highlight() -> void:
 	_highlight_box = Rect2(-200,-200,1,1)
 
 # redraws based on menu position
-static func _highlight_normal(obj):
+static func _highlight_normal(obj) -> void:
 	_highlight_box = Rect2(obj.get_global_rect())
 	
 # redraws based on menubar
-static func _highlight_menubar(obj):
+static func _highlight_menubar(obj) -> void:
 	var properties = _get_object_data(obj)
 	
 	var box = obj.get_global_rect()
@@ -2429,7 +2430,7 @@ static func _highlight_menubar(obj):
 								(sizer.y + font_size*0.5 + perm1.y + perm2.y)  * (box.size.y / focused.size.y))
 	
 # redraws based on tabbar
-static func _highlight_tabbar(obj):
+static func _highlight_tabbar(obj) -> void:
 		
 	var box = obj.get_global_rect()
 		
@@ -2442,7 +2443,7 @@ static func _highlight_tabbar(obj):
 		tab_rect.size.y * (box.size.y / obj.size.y)
 	)
 	
-static func _highlight_tree(obj):
+static func _highlight_tree(obj) -> void:
 	
 	
 	var v = obj.get_theme_constant("v_separation")
@@ -2491,12 +2492,12 @@ static func _highlight_tree(obj):
 # Note, this sound object only 
 
 # Init functions here, stuff like audio bank can be set.
-static func _sound_init(obj: Control):
+static func _sound_init(obj: Control) -> void:
 	obj.add_child(_sfx)
 
 # plays a sound effect
 # only from preloaded assets in _SFX_LIBRARY
-static func _play_sound(name_val: String, pitch: float = 1.0):
+static func _play_sound(name_val: String, pitch: float = 1.0) -> void:
 	if sfx_enabled:
 		if _SFX_LIBRARY.has(name_val):
 			_sfx.stream = _SFX_LIBRARY[name_val]
@@ -2504,27 +2505,27 @@ static func _play_sound(name_val: String, pitch: float = 1.0):
 			_sfx.play()
 		
 # stops a sound effect
-static func _stop_sound():
+static func _stop_sound() -> void:
 	_sfx.stop()
 	
 # Starts playing the sound for the slider
-static func _timer_slider_timeout():
+static func _timer_slider_timeout() -> void:
 	_play_sound("slider")
 	
 # Menubar Object Tracker functions
 
 # Gets the object from object data reference
-static func _get_object_data(obj: Control):
+static func _get_object_data(obj: Control) -> Dictionary:
 	if _data_objects.has(obj):
 		return _data_objects[obj]
 	return {}
 
 # Inserts menubar data into the dictionary
-static func _insert_menubar(obj: MenuBar):
+static func _insert_menubar(obj: MenuBar) -> void:
 	_data_objects[obj] = _create_menubar_object()
 
 # This creates a new initialized menubar info object
-static func _create_menubar_object():
+static func _create_menubar_object() -> Dictionary:
 	return {
 		"selected_menu" : 0,
 		"selected_index" : 0,
@@ -2532,13 +2533,13 @@ static func _create_menubar_object():
 	}
 	
 # Updates what state to draw the current control in
-static func _update_draw_state(state: _CONTROL_STATE):
+static func _update_draw_state(state: _CONTROL_STATE) -> void:
 	_control_state = state
 	
 # Initializer Functions
 
 # Gets the DOM state populated
-static func _init_DOM():
+static func _init_DOM() -> void:
 	
 	_set_focus_on(dom_root)
 	
@@ -2549,21 +2550,21 @@ static func _init_DOM():
 		_get_object_list()
 		_build_focus_mode_list()
 	
-static func _clear_DOM():
+static func _clear_DOM() -> void:
 	_objects = []
 	_end_node_list = []
 	_end_node_branches = []
 	_data_objects = {}
 	_array_stack = [_objects]
 	
-static func _prdebug(string: String):
+static func _prdebug(string: String) -> void:
 	if debug:
 		print(string)
 		
 # Inherited functions
 
 # Runs when intialized
-static func _do_ready(obj: Node):
+static func _do_ready(obj: Node) -> void:
 	# Makes it so that the selector always is drawn over the UI elements
 	obj.z_index = 100
 	_timer.one_shot = true
@@ -2577,7 +2578,7 @@ static func _do_ready(obj: Node):
 	_sound_init(obj)
 
 # This forces reading the contents to override anything else.
-static func _do_input(event: InputEvent):
+static func _do_input(event: InputEvent) -> bool:
 	if dom_nav_enabled:
 		if event is InputEventMouseButton:
 			if focused is Tree:
@@ -2617,7 +2618,7 @@ static func _do_process(delta: float) -> void:
 	
 ## Notification
 
-static func _do_notification(what: int):
+static func _do_notification(what: int) -> void:
 	if what == Control.NOTIFICATION_APPLICATION_FOCUS_OUT:
 		TTS.stop()
 		_OS_focused = false
