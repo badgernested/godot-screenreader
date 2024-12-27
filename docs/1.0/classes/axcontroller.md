@@ -82,7 +82,7 @@ Adds a token to the screen reader to be read.
 
 Clears the tokens stored.
 
-### get_token_text
+### get_token_text()
 
 ``String get_token_text(clear: bool = true)``
 
