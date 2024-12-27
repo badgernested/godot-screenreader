@@ -38,7 +38,7 @@ func ax_function_override() -> bool:
         AXController.read_tokens()
         button_input = true
         
-	return true
+    return true
 ```
 
 > [!TIP]
@@ -59,7 +59,7 @@ func ax_custom_text() -> String:
     if Screenreader.verbose:
         AXController.add_token("Custom Control")
         
-	return AXController.get_token_text()
+    return AXController.get_token_text()
 ```
 
 This will output a string separated by pipe symbols (``|``) that announces the "Important Status", the element selected and, if Verbose mode is active, "Custom Control".
@@ -85,7 +85,7 @@ func ax_screenreader_navigation() -> bool:
         button_input = false
         return false
         
-	return true
+    return true
 ```
 
 [<- Previous (Extending Scripts)](extending_scripts.md)
