@@ -137,7 +137,7 @@ static var audio_description_enabled: bool = true
 static var verbose: bool = true
 
 ## When enabled, displays debug information in the console.
-static var debug: bool = true
+static var debug: bool = false
 
 # Objects
 
@@ -258,8 +258,8 @@ static func _enable_dom(value: bool = true, obj: Control=null):
 	dom_nav_enabled = value
 	AXController._screenreader_enabled = value
 	
-	if AXMenuManager._menu_stack.is_empty():
-		AXMenuManager._DOM_node = dom_root
+	if AXController._menu_manager._menu_stack.is_empty():
+		AXController._menu_manager._DOM_node = dom_root
 	
 	# disables godot focus, uses custom UI built
 	# in this class

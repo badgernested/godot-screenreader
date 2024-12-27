@@ -23,7 +23,6 @@ general/text_to_speech=true
 [autoload]
 
 AXController="*res://addons/godot-screenreader/scripts/AXController.gd"
-AXMenuManager="*res://addons/godot-screenreader/scripts/AXMenuManager.gd"
 
 [display]
 

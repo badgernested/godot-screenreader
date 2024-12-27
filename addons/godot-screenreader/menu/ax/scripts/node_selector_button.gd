@@ -83,8 +83,8 @@ func ax_function_override():
 
 	elif Input.is_action_just_pressed("DOM_select"):
 		AXController.add_token(SELECTED % [objects[index].get_class()])
-		AXMenuManager._focused_node = objects[index]
-		AXMenuManager._pop_all()
+		AXController._menu_manager._focused_node = objects[index]
+		AXController._menu_manager._pop_all()
 
 	elif Input.is_action_just_pressed("DOM_down"):
 		AXController.add_token(parent.SELECT_EXIT)
@@ -199,7 +199,7 @@ func _on_focus_entered() -> void:
 	else:
 		AXController.add_token(TYPES[get_parent().name])
 		
-	for c in AXMenuManager._menu_stack:
+	for c in AXController._menu_manager._menu_stack:
 		c.modulate = Color(0.0, 0.0, 0.0, 0.0)
 	Screenreader._clear_redraw = true
 	HCController.set_theme()
@@ -208,8 +208,8 @@ func _on_focus_entered() -> void:
 	Screenreader._play_sound("node_select")
 
 func _on_focus_exited() -> void:
-	for c in AXMenuManager._menu_stack:
+	for c in AXController._menu_manager._menu_stack:
 		c.modulate = Color(1.0, 1.0, 1.0, 1.0)
 		
-	HCController.set_theme(AXMenuManager._peek_menu())
+	HCController.set_theme(AXController._menu_manager._peek_menu())
 	Screenreader._play_sound("node_select_exit")

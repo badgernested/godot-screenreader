@@ -14,7 +14,7 @@ func _process(delta: float) -> void:
 	pass
 
 func populate_node_selectors():
-	AXController.set_dom_root(AXMenuManager._DOM_node)
+	AXController.set_dom_root(AXController._menu_manager._DOM_node)
 	
 	end_nodes = Screenreader._end_node_list.duplicate()
 	
@@ -59,5 +59,5 @@ func populate_node_selectors():
 
 
 func _on_tree_exited() -> void:
-	for c in AXMenuManager._menu_stack:
+	for c in AXController._menu_manager._menu_stack:
 		c.modulate = Color(1.0, 1.0, 1.0, 1.0)

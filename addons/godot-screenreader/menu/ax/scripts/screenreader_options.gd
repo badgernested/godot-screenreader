@@ -17,12 +17,12 @@ func init():
 
 func _on_ok_pressed() -> void:
 	$Panel/VBox/Content/Center/Panel/Contents/OptionsControl.do_ok()
-	AXMenuManager._pop_menu()
+	AXController._menu_manager._pop_menu()
 
 
 func _on_cancel_pressed() -> void:
 	$Panel/VBox/Content/Center/Panel/Contents/OptionsControl.do_cancel()
-	AXMenuManager._pop_menu()
+	AXController._menu_manager._pop_menu()
 
 
 func _on_close_2_pressed() -> void:

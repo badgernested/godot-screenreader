@@ -31,7 +31,7 @@ func screenreader_focus():
 	
 # Closes the menu
 func close():
-	AXMenuManager._pop_menu()
+	AXController._menu_manager._pop_menu()
 
 func set_title_gradient():
 	var gradient = HCController.get_gradient()

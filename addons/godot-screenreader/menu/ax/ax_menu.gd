@@ -5,4 +5,4 @@ func _ready() -> void:
 	init()
 	
 func _on_button_pressed() -> void:
-	AXMenuManager._pop_menu()
+	AXController._menu_manager._pop_menu()

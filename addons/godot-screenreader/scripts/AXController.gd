@@ -49,8 +49,14 @@ static var _fully_initialized: bool = false
 ## associated with that action.
 static var keyboard_action_names:Dictionary = {}
 
+# The menu manager
+
+@onready var _menu_manager: Object = Node.new()
+
 func _ready():
-	AXMenuManager._init_menu_manager(get_tree().get_root())
+	_menu_manager.set_script(preload("res://addons/godot-screenreader/scripts/AXMenuManager.gd"))
+	
+	_menu_manager._init_menu_manager(get_tree().get_root())
 	Screenreader._do_ready(self)
 	update_keyboard_action_names()
 	
@@ -104,12 +110,12 @@ func _process(delta: float) -> void:
 			
 	elif Input.is_action_just_pressed("DOM_screenreader_menu"):
 		if Screenreader.dom_nav_enabled:
-			if AXMenuManager._menu_stack.is_empty():
-				AXMenuManager._push_menu("main")
+			if _menu_manager._menu_stack.is_empty():
+				_menu_manager._push_menu("main")
 				
 		else:
-			if AXMenuManager._menu_stack.is_empty():
-				AXMenuManager._push_menu("options")
+			if _menu_manager._menu_stack.is_empty():
+				_menu_manager._push_menu("options")
 				
 	Screenreader._do_process(delta)
 	
@@ -208,7 +214,7 @@ func _enable_screenreader(root: Control, enabled:bool = true, focus_obj: Control
 		add_token(_STRINGS["enabled"])
 		
 		if !_event_exists("TUTORIAL"):
-			AXMenuManager._push_menu("tutorial")
+			_menu_manager._push_menu("tutorial")
 			_add_event("TUTORIAL")
 			tutorial_pushed = true
 		
