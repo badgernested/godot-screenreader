@@ -9,5 +9,7 @@ For now, it is something that can be used to attach to your game to make menus a
 If you want to know more about the screenreader, you can view the following:
 - [Player's Guide](/docs/1.0/playerguide.md)
 - [Documentation](/docs/1.0/index.md)
+- [Class Reference](/docs/1.0/classes.md)
+- [Script Reference](/docs/1.0/scripts_info.md)
 - [Credits](CREDITS.md)
 - [License - MIT](LICENSE)
