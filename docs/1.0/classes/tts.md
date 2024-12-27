@@ -42,3 +42,9 @@ Reads the current sentence with TTS. If interrupt is true, currently speaking te
 ``void stop() static``
 
 Stops the TTS speaking.
+
+[Back to Class Index](../classes.md)
+
+[Back to Index](../index.md)
+
+[Back to README](../../../README.md)

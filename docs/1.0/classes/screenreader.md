@@ -81,4 +81,9 @@ Whether or not subtitles are enabled on VideoStreamPlayer Controls.
 
 If this is set to true, the screenreader reads more information about each Control.
 
+[Back to Class Index](../classes.md)
+
+[Back to Index](../index.md)
+
+[Back to README](../../../README.md)
 
