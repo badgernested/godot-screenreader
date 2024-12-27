@@ -82,67 +82,86 @@ Adds a token to the screen reader to be read.
 
 Clears the tokens stored.
 
+### get_token_text
+
+``String get_token_text(clear: bool = true)``
+
+Gets the token text. If clear is true, also clears the token array.
+
 ### key_changed()
+
 ``bool key_changed()``
 
 Returns true if the state of key presses has changed this frame.
 
 ### key_pressed()
+
 ``bool key_pressed()``
 
 Returns true if a key has been pressed this frame.
 
 ### read_tokens()
+
 ``void read_tokens()``
 
 Reads the current tokens.
 
 ### reset_high_contrast_theme()
+
 ``void reset_high_contrast_theme(root: Control)``
 
 Passes an element to remove all special themes
 
 ### screenreader_focus()
+
 ``void screenreader_focus(node: Control)``
 
 Focuses on a specific end node. Must be an end node.
 
 ### set_dom_root()
+
 ``void set_dom_root(obj: Control, focus_node: Control = null)``
 
 Sets the DOM root.
 
 ### set_high_contrast_dark_theme()
+
 ``void set_high_contrast_dark_theme(obj: Node = null)``
 
 Pass an element to make all its children the dark high contrast theme
 
 ### set_high_contrast_light_theme()
+
 ``void set_high_contrast_light_theme(obj: Node = null)``
 
 Pass an element to make all its children the light high contrast theme
 
 ### set_high_contrast_theme()
+
 ``void set_high_contrast_theme(obj: Node = null)``
 
 Sets the theme to the currently selected accessibility theme
 
 ### special_key_combos()
+
 ``bool special_key_combos() static``
 
 Returns if a special key combo is being pressed.
 
 ### tts_speak()
+
 ``void tts_speak(text: String, pitch: float = 1.0, rate: float = 1.0, volume: int = 50)``
 
 Reads a TTS string directly.
 
 ### update_keyboard_action_names()
+
 ``void update_keyboard_action_names()``
 
 Updates the keyboard action names stored in keyboard_action_names.
 
 ### update_screenreader_highlight()
+
 ``void update_screenreader_highlight()``
 
 Updates the position of the screenreader highlighter.
