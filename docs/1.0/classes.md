@@ -2,6 +2,8 @@
 
 This is the list of classes used in the screenreader.
 
+They are contained in ``res://screenreader/scripts/``.
+
 - [AXController](classes/axcontroller.md)
 - [AXMenuManager](classes/axmenumanager.md)
 - [HCController](classes/hccontroller.md)

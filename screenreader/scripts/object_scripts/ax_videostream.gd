@@ -36,7 +36,7 @@ var _display_position: Vector2 = Vector2(0,0)
 var _display_rect: Rect2 = Rect2(0,0,0,0)
 @onready var _display_size: float = size.x * 0.75
 
-## Text to be read as audio description.
+# Text to be read as audio description.
 var _read_text: String = ""
 
 
