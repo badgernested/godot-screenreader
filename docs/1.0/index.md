@@ -5,9 +5,10 @@ This is a comprehensive guide on how to install, use and develop with godot-scre
 1. [A Player's Guide](playerguide.md)
 2. Getting started for Developers
     1. [Introduction](intro.md)
-    2. [Installation](installation.md)
-    3. [General Usage](generaluse.md)
-    4. [Features](functionality.md)
+    2. [Accessibility FAQ](accessibility.md)
+    3. [Installation](installation.md)
+    4. [General Usage](generaluse.md)
+    5. [Features](functionality.md)
 3. Usage Guide
     1. [Summary](usage_summary.md)
     2. Scripts
