@@ -4,23 +4,28 @@ This is a summary of the file structure of the repository.
 
 ```
 .
+├── addons
+│   └── godot-screenreader
+│       ├── fonts
+│       ├── menu
+│       │   └── ax
+│       │       └── scripts
+│       ├── scripts
+│       │   └── object_scripts
+│       ├── sfx
+│       └── ui
+│           ├── gradient
+│           ├── img
+│           │   ├── dark
+│           │   ├── default
+│           │   ├── light
+│           │   └── tutorial
+│           └── style
 ├── docs
-│ 
-│   This directory contains documentation for the project.
-│ 
 │   └── 1.0
-│ 
-├── exports
-│ 
-│   This directory contains demo files.
-│ 
-│   ├── linux
-│   └── windows
-│ 
-├── sample_assets
-│ 
-│   This directory contains assets used in producing the demo.
-│ 
+│       ├── classes
+│       └── scripts
+├── examples
 │   ├── img
 │   │   ├── button
 │   │   ├── icon
@@ -28,47 +33,9 @@ This is a summary of the file structure of the repository.
 │   ├── theme
 │   ├── ui
 │   └── video
-│ 
-└── screenreader
-    │
-    │   This directory contains the screenreader code and assets.
-    │   You only need this directory to run the screenreader.
-    │
-    ├── fonts
-    │
-    │   This directory contains font assets.
-    │
-    ├── menu
-    │
-    │   This directory menus used within the screenreader.
-    │
-    │   └── ax
-    │       └── scripts
-    │
-    ├── scripts
-    │
-    │   This directory contains scripts used for the screenreader.
-    │
-    │   └── object_scripts
-    │ 
-    │       This directory contains scripts to attach to Controls
-    │       to extend screenreader functionality.
-    │ 
-    ├── sfx
-    │
-    │   This directory contains sound assets.
-    │
-    └── ui
-        │ 
-        │ This directory contains theme assets.
-        │ 
-        ├── gradient
-        ├── img
-        │   ├── dark
-        │   ├── default
-        │   ├── light
-        │   └── tutorial
-        └── style
+└── exports
+    ├── linux
+    └── windows
 ```
 
 [<- Previous (Best Practices)](best_practices.md)
