@@ -31,12 +31,12 @@ func screenreader_focus():
 	
 # Closes the menu
 func close():
-	AXMenuManager.pop_menu()
+	AXMenuManager._pop_menu()
 
 func set_title_gradient():
 	var gradient = HCController.get_gradient()
 	if gradient == null:
-		gradient = HCController.GRADIENT_STYLES["default"]
+		gradient = HCController._GRADIENT_STYLES["default"]
 		
 	$Panel/VBox/Title/HBoxContainer/ColorRect/Center/TitleGradient.texture = gradient
 

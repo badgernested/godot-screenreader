@@ -34,7 +34,7 @@ If you create a custom control in your own scene file or within the SceneTree, y
 Additionally, since the Control acts as its own end node, you will have to override ``ax_function_override()``, ``ax_custom_text()`` and ``ax_screenreader_navigation()`` to add screenreader input interactivity with the Control, or else it won't do anything.
 
 [<- Previous (Using Scripts)](using_scripts.md)
- | [Next (Best Practices) ->](stub.md)
+ | [Next (Best Practices) ->](best_practices.md)
 
 [Back to Index](index.md)
 

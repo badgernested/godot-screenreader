@@ -71,8 +71,8 @@ This is a summary of the file structure of the repository.
         └── style
 ```
 
-[<- Previous (STUB)](stub.md)
- | [Next (STUB) ->](stub.md)
+[<- Previous (Best Practices)](best_practices.md)
+ | [Next (Classes) ->](stub.md)
 
 [Back to Index](index.md)
 

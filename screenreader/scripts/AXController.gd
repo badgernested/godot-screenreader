@@ -45,7 +45,7 @@ static var start_screenreader: bool = false
 static var _fully_initialized: bool = false
 
 func _ready():
-	AXMenuManager.init(get_tree().get_root())
+	AXMenuManager._init_menu_manager(get_tree().get_root())
 	Screenreader._do_ready(self)
 	TextFunctions.update_keyboard_action_names()
 	
@@ -100,11 +100,11 @@ func _process(delta: float) -> void:
 	elif Input.is_action_just_pressed("DOM_screenreader_menu"):
 		if Screenreader.dom_nav_enabled:
 			if AXMenuManager._menu_stack.is_empty():
-				AXMenuManager.push_menu("main")
+				AXMenuManager._push_menu("main")
 				
 		else:
 			if AXMenuManager._menu_stack.is_empty():
-				AXMenuManager.push_menu("options")
+				AXMenuManager._push_menu("options")
 				
 	Screenreader._do_process(delta)
 	
@@ -175,7 +175,7 @@ func _enable_screenreader(root: Control, enabled:bool = true, focus_obj: Control
 		add_token(STRINGS["enabled"])
 		
 		if !_event_exists("TUTORIAL"):
-			AXMenuManager.push_menu("tutorial")
+			AXMenuManager._push_menu("tutorial")
 			_add_event("TUTORIAL")
 			tutorial_pushed = true
 		
