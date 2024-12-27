@@ -14,7 +14,7 @@ func _process(delta: float) -> void:
 	pass
 
 func populate_node_selectors():
-	Screenreader.set_dom_root(AXMenuManager._DOM_node)
+	AXController.set_dom_root(AXMenuManager._DOM_node)
 	
 	end_nodes = Screenreader._end_node_list.duplicate()
 	

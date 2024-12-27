@@ -139,19 +139,19 @@ func play_video() -> void:
 	if !is_playing():
 		play()
 		
-	Screenreader._tts_speak_direct(Screenreader.VIDEO_NAVIGATION_STRINGS["PLAY"])
+	Screenreader._tts_speak_direct(Screenreader._VIDEO_NAVIGATION_STRINGS["PLAY"])
 	
 ## Stops the video.
 func stop_video() -> void:
 	TTS.stop()
 	stop()
 	
-	Screenreader._tts_speak_direct(Screenreader.VIDEO_NAVIGATION_STRINGS["STOPPED"])
+	Screenreader._tts_speak_direct(Screenreader._VIDEO_NAVIGATION_STRINGS["STOPPED"])
 	
 ## Pauses the video.
 func pause_video() -> void:
 	TTS.stop()
 	paused = true
 	
-	Screenreader._tts_speak_direct(Screenreader.VIDEO_NAVIGATION_STRINGS["PAUSED"])
+	Screenreader._tts_speak_direct(Screenreader._VIDEO_NAVIGATION_STRINGS["PAUSED"])
 	

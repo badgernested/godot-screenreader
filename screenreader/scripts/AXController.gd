@@ -5,12 +5,12 @@ extends Control
 ## accessibility functions in godot-screenreader.
 
 ## The keys pressed this frame.
-static var pressed_keys = []
+static var pressed_keys: Array = []
 ## The keys pressed last frame.
-static var last_pressed_keys = []
+static var last_pressed_keys: Array = []
 
-## Strings read out loud for screenreader functionality.
-const STRINGS = {
+# Strings read out loud for screenreader functionality.
+const _STRINGS = {
 	"enabled" : "Screenreader enabled.",
 	"disabled" : "Screenreader disabled."
 }
@@ -44,10 +44,15 @@ static var start_screenreader: bool = false
 # Set to true if fully initialized
 static var _fully_initialized: bool = false
 
+## This contains a dictionary where all the keys are action names and
+## the values are an array of all keyboard inputs
+## associated with that action.
+static var keyboard_action_names:Dictionary = {}
+
 func _ready():
 	AXMenuManager._init_menu_manager(get_tree().get_root())
 	Screenreader._do_ready(self)
-	TextFunctions.update_keyboard_action_names()
+	update_keyboard_action_names()
 	
 	_load_options_from_file()
 	
@@ -108,17 +113,17 @@ func _process(delta: float) -> void:
 				
 	Screenreader._do_process(delta)
 	
-	if Screenreader.clear_redraw:
-		Screenreader.clear_redraw = false
-		Screenreader.redraw = false
+	if Screenreader._clear_redraw:
+		Screenreader._clear_redraw = false
+		Screenreader._redraw = false
 	
-	if Screenreader.redraw:
+	if Screenreader._redraw:
 		await get_tree().create_timer(0.001).timeout
 		
-		if Screenreader.redraw:
+		if Screenreader._redraw:
 			Screenreader._update_draw_highlight()
 			queue_redraw()
-			Screenreader.redraw = false
+			Screenreader._redraw = false
 	
 # Draws additional stuff on top of the normal draw function
 func _draw() -> void:
@@ -157,6 +162,34 @@ func key_changed() -> bool:
 	
 	return false
 
+## Updates the keyboard action names stored in [param keyboard_action_names].
+static func update_keyboard_action_names():
+	keyboard_action_names = {}
+	
+	var actions = InputMap.get_actions()
+	
+	for c in actions:
+		var events = InputMap.action_get_events(c)
+		var keys = []
+		for d in events:
+			if d is InputEventKey:
+				if d.keycode > 0:
+					keys.append( OS.get_keycode_string(d.get_keycode_with_modifiers()))
+				elif d.physical_keycode > 0:
+					keys.append( OS.get_keycode_string(d.get_physical_keycode_with_modifiers()))
+					
+		if !keys.is_empty():
+			keyboard_action_names[c] = keys
+
+## Returns if a special key combo is being pressed.
+static func special_key_combos() -> bool:
+	# paste
+	if (pressed_keys.has(KEY_CTRL)
+		&& pressed_keys.has(KEY_V)):
+		return true
+	
+	return false
+
 ## Screenreader Control
 
 ## Sets the DOM root.
@@ -169,10 +202,10 @@ func set_dom_root(obj: Control, focus_node:Control = null) -> void:
 func _enable_screenreader(root: Control, enabled:bool = true, focus_obj: Control = null) -> void:
 	
 	var tutorial_pushed = false
-	Screenreader.set_dom_root(root)
+	Screenreader._set_dom_root(root)
 	
 	if enabled:
-		add_token(STRINGS["enabled"])
+		add_token(_STRINGS["enabled"])
 		
 		if !_event_exists("TUTORIAL"):
 			AXMenuManager._push_menu("tutorial")
@@ -185,22 +218,22 @@ func _enable_screenreader(root: Control, enabled:bool = true, focus_obj: Control
 			read_tokens()
 	else:
 		if _fully_initialized:
-			add_token(STRINGS["disabled"])
+			add_token(_STRINGS["disabled"])
 			read_tokens()
 		else:
 			Screenreader._clear_tokens()
 	
 	# If tutorial is pushed, dom is already enabled
 	if !tutorial_pushed:
-		Screenreader.enable_dom(enabled, focus_obj)
+		Screenreader._enable_dom(enabled, focus_obj)
 		
 	update_screenreader_highlight()
 	
 
 func _set_screenreader_subject(root, enabled:bool = true, focus_obj: Control = null) -> void:
 	await get_tree().create_timer(0.001).timeout
-	Screenreader.set_dom_root(root)
-	Screenreader.enable_dom(enabled, focus_obj)
+	Screenreader._set_dom_root(root)
+	Screenreader._enable_dom(enabled, focus_obj)
 	
 ## Updates the position of the screenreader highlighter
 func update_screenreader_highlight() -> void:

@@ -1,17 +1,15 @@
-###############################################
-# VTTReader
-#
-# Class that converts VTT-formated .TXT files
-# into [start_time, end_time, content] arrays.
-# This way they can be easily displayed as 
-# subtitles or audio description.
-###############################################
-extends Node
+extends Object
 class_name VTTReader
+## A class that converts VTT formatted files into dictionary objects.
+##
+## Class that converts VTT-formated .TXT files
+## into [start_time, end_time, content] arrays.
+## This way they can be easily displayed as 
+## subtitles or audio description.
 
-# Reads a VTT file and returns a list of entries
-
-static func read(file_loc):
+## Reads a VTT formatted file from a specific location and 
+## returns the formatted data as an array of entries.
+static func read(file_loc: String) -> Array:
 	var data = []
 	
 	if FileAccess.file_exists(file_loc):
@@ -38,15 +36,15 @@ static func read(file_loc):
 						
 						line = file.get_line().strip_edges()
 						
-					entry[0] = string_to_time(times[0])
-					entry[1] = string_to_time(times[1])
+					entry[0] = _string_to_time(times[0])
+					entry[1] = _string_to_time(times[1])
 					entry[2] = text
 					
 					data.append(entry)
 				
 	return data
 
-static func string_to_time(string):
+static func _string_to_time(string):
 	string = string.strip_edges()
 	
 	# Assumes no hour position

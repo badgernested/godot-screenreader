@@ -1,17 +1,14 @@
-###############################################
-# Screenreader
-#
-# The screenreader class.
-###############################################
 class_name Screenreader
 extends Object
+## This is the class responsible for managing the screenreader.
+##
+## This class manages the screenreader. You can set some options
+## here if you would like to configure the screenreader's functionality.
 
-## Variables
-
-# Whether or not DOM navigation is enabled
+## Whether or not DOM navigation is enabled.
 static var dom_nav_enabled: bool = false
 
-# The object that is referred to as the root of the Dom.
+## The object that is referred to as the root of the DOM.
 static var dom_root: Node = null
 
 # This stores the list of objects itself. 
@@ -31,7 +28,7 @@ static var _array_stack: Array = []
 # to the focus mode built by the developer
 static var _object_focus_mode: Dictionary = {}
 
-# This is the current object in focus
+## This is the current [Control] in focus.
 static var focused: Node = null
 
 # The window is currently in focus in the OS
@@ -80,10 +77,10 @@ static var _state_updated: bool = false
 static var _scroll_old: Vector2 = Vector2.ZERO
 
 # When set to true, will redraw next frame
-static var redraw: bool = false
+static var _redraw: bool = false
 
 # When set to true, resets redraw before it can occur
-static var clear_redraw: bool = false
+static var _clear_redraw: bool = false
 
 # This stores all data objects in the DOM with a dictionary
 # that represents certain values.
@@ -108,35 +105,38 @@ static var _timer_slider: Timer = Timer.new()
 static var _timer_slider_increment: Timer = Timer.new()
 
 # How much time to cooldown
-const TIMER_COOLDOWN = 0.3
+const _TIMER_COOLDOWN = 0.3
 
 # How much time to wait before doing slider scrolling
-const TIMER_SLIDER_SCROLL = 0.2
+const _TIMER_SLIDER_SCROLL = 0.2
 
 # How much the movement time is modified for the slider
-const MOVEMENT_TIME = 0.000025
+const _MOVEMENT_TIME = 0.000025
 
 # How much pitch shift for list items decrementing
-const LIST_PITCH_SHIFT = 1.2
+const _LIST_PITCH_SHIFT = 1.2
 
 # Options
 
-# Whether or not sound effects are enabled
+## Whether or not sound effects are enabled.
 static var sfx_enabled: bool = true
 
-# whether or not navigation wraps around
+## Whether or not navigation wraps around.
 static var navigation_wrap: bool = true
 
-# whether or not subtitles are enabled
+## Whether or not subtitles are enabled
+## on [VideoStreamPlayer] Controls.
 static var subtitles_enabled: bool = true
 
-# whether or not audio description is enabled
+## Whether or not audio description is enabled
+## on [VideoStreamPlayer] Controls.
 static var audio_description_enabled: bool = true
 
-# if true, reads more detailed strings
+## If this is set to true, the screenreader reads more information
+## about each Control.
 static var verbose: bool = true
 
-# This shows useful debug messages if enabled
+## When enabled, displays debug information in the console.
 static var debug: bool = false
 
 # Objects
@@ -146,7 +146,7 @@ static var debug: bool = false
 static var _sfx : AudioStreamPlayer = AudioStreamPlayer.new()
 
 # Preloaded library of sfx
-const SFX_LIBRARY = {
+const _SFX_LIBRARY: Dictionary = {
 	"button_down" : preload("res://screenreader/sfx/button_down.wav"),
 	"button_up" : preload("res://screenreader/sfx/button_up.wav"),
 	"text_enter" : preload("res://screenreader/sfx/text_enter.wav"),
@@ -168,17 +168,17 @@ const SFX_LIBRARY = {
 
 # Data Strings
 
-const VIDEO_NAVIGATION_STRINGS = {
+const _VIDEO_NAVIGATION_STRINGS = {
 	"PLAY" : "Play",
 	"PAUSED" : "Paused",
 	"STOPPED" : "Stopped"
 }
-const MENUBAR_NAVIGATION_STRINGS = {
+const _MENUBAR_NAVIGATION_STRINGS = {
 	"OPENED" : "Opened %s",
 	"CLOSED" : "Closed %s"
 }
 
-const SPECIAL_CONTROL_NAMES = {
+const _SPECIAL_CONTROL_NAMES = {
 	"IMAGE" : "Image",
 	"PROGRESS_BAR" : "Progress Bar",
 	"HSLIDER" : "Horizontal Slider",
@@ -194,13 +194,13 @@ const SPECIAL_CONTROL_NAMES = {
 	"DROPDOWN" : "Dropdown"
 }
 
-const STRING_FORMATS = {
+const _STRING_FORMATS = {
 	"FRACTION" : "%s out of %s",
 	"PERCENT" : "%s percent",
 	"SELECTED" : "%s selected"
 }
 
-const POPUPMENU_CONTROL_NAMES = {
+const _POPUPMENU_CONTROL_NAMES = {
 	"RADIOBUTTON" : "Radio Button",
 	"CHECKBOX" : "Checkbox",
 	"CHECKED" : "Checked",
@@ -209,7 +209,7 @@ const POPUPMENU_CONTROL_NAMES = {
 	"OFF" : "Off"
 }
 
-const TREE_CONTROL_NAMES = {
+const _TREE_CONTROL_NAMES = {
 	"COLLAPSED" : "Collapsed",
 	"UNCOLLAPSED" : "Uncollapsed",
 	"NO_CHILDREN" : "No children",
@@ -217,15 +217,15 @@ const TREE_CONTROL_NAMES = {
 }
 
 # This is used for highlighting UI elements
-static var _control_state: int = CONTROL_STATE.FOCUSED
+static var _control_state: int = _CONTROL_STATE.FOCUSED
 
-enum CONTROL_STATE {
+enum _CONTROL_STATE {
 	FOCUSED,
 	PRESSED
 }
 
 # Strings used in the textedit interfaces
-const TEXTEDIT_STRINGS = {
+const _TEXTEDIT_STRINGS = {
 	"SPACE" : "Space",
 	"DELETED" : "Deleted",
 	"TAB" : "Tab",
@@ -241,7 +241,7 @@ const TEXTEDIT_STRINGS = {
 ## Other Enums
 
 # this determines how nodes will be treated and assigned
-enum NODE_TYPE {
+enum _NODE_TYPE {
 	CONTAINER,
 	INTERACT_NODE,
 	IGNORE
@@ -250,11 +250,11 @@ enum NODE_TYPE {
 ## Control methods
 
 # Sets the dom root node.
-static func set_dom_root(obj: Control):
+static func _set_dom_root(obj: Control):
 	dom_root = obj
-	init_DOM()
+	_init_DOM()
 
-static func enable_dom(value: bool = true, obj: Control=null):
+static func _enable_dom(value: bool = true, obj: Control=null):
 	dom_nav_enabled = value
 	AXController._screenreader_enabled = value
 	
@@ -353,7 +353,7 @@ static func _process_input(_delta: float):
 # like rereading the current element
 static func _process_info_keys():
 	if Input.is_action_just_pressed("DOM_read_item"):
-		get_accessible_name(focused)
+		_get_accessible_name(focused)
 		_tts_speak()
 		return false
 	
@@ -390,13 +390,13 @@ static func _process_button_controls():
 		|| special_press):
 		current_focus.emit_signal("button_down")
 		_play_sound("button_down")
-		_update_draw_state(CONTROL_STATE.PRESSED)
+		_update_draw_state(_CONTROL_STATE.PRESSED)
 		activated = false
 	elif (Input.is_action_just_released("ui_accept")
 		|| special_release):
 		current_focus.emit_signal("button_up")
 		_play_sound("button_up")
-		_update_draw_state(CONTROL_STATE.FOCUSED)
+		_update_draw_state(_CONTROL_STATE.FOCUSED)
 		activated = false
 		
 	if current_focus.action_mode == BaseButton.ACTION_MODE_BUTTON_PRESS:
@@ -422,15 +422,15 @@ static func _process_button_controls():
 	if pressed:
 		if current_focus is CheckBox:
 			if current_focus.button_pressed:
-				_add_token(POPUPMENU_CONTROL_NAMES["CHECKED"])
+				_add_token(_POPUPMENU_CONTROL_NAMES["CHECKED"])
 			else:
-				_add_token(POPUPMENU_CONTROL_NAMES["UNCHECKED"])
+				_add_token(_POPUPMENU_CONTROL_NAMES["UNCHECKED"])
 					
 		elif current_focus is CheckButton:
 			if current_focus.button_pressed:
-				_add_token(POPUPMENU_CONTROL_NAMES["ON"])
+				_add_token(_POPUPMENU_CONTROL_NAMES["ON"])
 			else:
-				_add_token(POPUPMENU_CONTROL_NAMES["OFF"])
+				_add_token(_POPUPMENU_CONTROL_NAMES["OFF"])
 		else:
 			var alt_text = current_focus.get("alt_text")
 			if alt_text == null:
@@ -462,10 +462,10 @@ static func _process_video_controls():
 		else:
 			if focused.is_playing():
 				focused.paused = !focused.paused
-				read_text = VIDEO_NAVIGATION_STRINGS["PAUSED"]
+				read_text = _VIDEO_NAVIGATION_STRINGS["PAUSED"]
 			else:
 				focused.play()
-				read_text = VIDEO_NAVIGATION_STRINGS["PLAY"]
+				read_text = _VIDEO_NAVIGATION_STRINGS["PLAY"]
 		
 	elif Input.is_action_just_pressed("ax_stop_video"):
 		# Use the ax script, if available.
@@ -473,7 +473,7 @@ static func _process_video_controls():
 			focused.stop_video()
 		else:
 			focused.stop()
-			read_text = VIDEO_NAVIGATION_STRINGS["STOPPED"]
+			read_text = _VIDEO_NAVIGATION_STRINGS["STOPPED"]
 		
 	_tts_speak_direct(read_text)
 	
@@ -502,21 +502,21 @@ static func _process_menubar_controls():
 				if properties["menu_opened"] != null:
 					properties["menu_opened"] = true
 					
-				var text = MENUBAR_NAVIGATION_STRINGS["OPENED"] % [focused.get_menu_title(menu_pos)]
+				var text = _MENUBAR_NAVIGATION_STRINGS["OPENED"] % [focused.get_menu_title(menu_pos)]
 				_add_token(text)
 				
 				var popup = focused.get_menu_popup(menu_pos)
 				var selected_pos = properties["selected_index"]
 				
 				# Which menu item is selected
-				text = STRING_FORMATS["SELECTED"] % popup.get_item_text(selected_pos)
+				text = _STRING_FORMATS["SELECTED"] % popup.get_item_text(selected_pos)
 				_add_token(text)
 				
 				_tts_speak()
 				return false
 			else:
 				# If menu is opened, press the button
-				var text = MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [focused.get_menu_title(menu_pos)]
+				var text = _MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [focused.get_menu_title(menu_pos)]
 				_add_token(text)
 				
 				_tts_speak()
@@ -533,14 +533,14 @@ static func _process_menubar_controls():
 				if properties["menu_opened"] != null:
 					properties["menu_opened"] = true
 					
-				var text = MENUBAR_NAVIGATION_STRINGS["OPENED"] % [focused.get_menu_title(menu_pos)]
+				var text = _MENUBAR_NAVIGATION_STRINGS["OPENED"] % [focused.get_menu_title(menu_pos)]
 				_add_token(text)
 				
 				var popup = focused.get_menu_popup(menu_pos)
 				var selected_pos = properties["selected_index"]
 				
 				# Which menu item is selected
-				text = STRING_FORMATS["SELECTED"] % popup.get_item_text(selected_pos)
+				text = _STRING_FORMATS["SELECTED"] % popup.get_item_text(selected_pos)
 				_add_token(text)
 				
 				_tts_speak()
@@ -551,7 +551,7 @@ static func _process_menubar_controls():
 			|| Input.is_action_just_pressed("DOM_item_decrement")):
 			var val = _menubar_close_menu(properties)
 			
-			var text = MENUBAR_NAVIGATION_STRINGS["CLOSED"]
+			var text = _MENUBAR_NAVIGATION_STRINGS["CLOSED"]
 			_add_token(text)
 			
 			_tts_speak()
@@ -562,7 +562,7 @@ static func _process_menubar_controls():
 		if _menubar_menu_opened(focused):
 			if Input.is_action_just_pressed("ui_up"):
 				_menubar_read_selected_item(properties)
-				_play_sound("list_nav", LIST_PITCH_SHIFT)
+				_play_sound("list_nav", _LIST_PITCH_SHIFT)
 			if Input.is_action_just_pressed("ui_down"):
 				_menubar_read_selected_item(properties)
 				_play_sound("list_nav")
@@ -602,18 +602,18 @@ static func _menubar_read_selected_item(properties: Dictionary):
 		
 		# Checked/unchecked token
 		if popup.is_item_checked(selected_pos):
-			text = POPUPMENU_CONTROL_NAMES["CHECKED"]
+			text = _POPUPMENU_CONTROL_NAMES["CHECKED"]
 		else:
-			text = POPUPMENU_CONTROL_NAMES["UNCHECKED"]
+			text = _POPUPMENU_CONTROL_NAMES["UNCHECKED"]
 		_add_token(text)
 		
 		# Adds if item is checkbox or radio button
 		# verbose mode only
 		if verbose:
 			if popup.is_item_radio_checkable(selected_pos):
-				text = POPUPMENU_CONTROL_NAMES["RADIOBUTTON"]
+				text = _POPUPMENU_CONTROL_NAMES["RADIOBUTTON"]
 			else:
-				text = POPUPMENU_CONTROL_NAMES["CHECKBOX"]
+				text = _POPUPMENU_CONTROL_NAMES["CHECKBOX"]
 				
 			_add_token(text)
 			
@@ -857,13 +857,13 @@ static func _process_slider_controls():
 		
 		_play_sound("slider_move")
 		
-		_timer_slider.start(TIMER_SLIDER_SCROLL)
+		_timer_slider.start(_TIMER_SLIDER_SCROLL)
 		
 		return false
 	
 	# Only runs if timeout is complete	
 	elif _timer_slider.is_stopped():
-		var slider_amount = float(focused.max_value - focused.min_value)/float(1.0/focused.step) * MOVEMENT_TIME
+		var slider_amount = float(focused.max_value - focused.min_value)/float(1.0/focused.step) * _MOVEMENT_TIME
 		
 		var cooldown = focused.get("cooldown_time")
 		
@@ -923,7 +923,7 @@ static func _process_text_controls():
 		AXController.pressed_keys.has(KEY_CTRL)
 		&& AXController.pressed_keys.has(KEY_V)):
 		_add_token(DisplayServer.clipboard_get()
-			+ " " + TEXTEDIT_STRINGS["PASTED"])
+			+ " " + _TEXTEDIT_STRINGS["PASTED"])
 		_tts_speak()
 		return false
 	
@@ -944,9 +944,9 @@ static func _process_text_controls():
 				char_no = character.unicode_at(0)
 				
 			if character == " ":
-				character = TEXTEDIT_STRINGS["SPACE"]
+				character = _TEXTEDIT_STRINGS["SPACE"]
 			elif character == "\t":
-				character = TEXTEDIT_STRINGS["TAB"]
+				character = _TEXTEDIT_STRINGS["TAB"]
 				
 			# Higher pitched if capital
 			if TextFunctions.unicode_is_capital(char_no):
@@ -981,7 +981,7 @@ static func _process_text_controls():
 			_add_token(TextFunctions.get_character_name(character))
 				
 			if focused is CodeEdit:
-				_add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS["LINE"])
+				_add_token(str(focused.get_caret_line()+1) + " " + _TEXTEDIT_STRINGS["LINE"])
 				
 			_tts_speak(pitch)
 			_last_caret_line = lines_count
@@ -1007,7 +1007,7 @@ static func _process_text_controls():
 			_add_token(TextFunctions.get_character_name(character))
 			
 			if focused is CodeEdit:
-				_add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS["LINE"])
+				_add_token(str(focused.get_caret_line()+1) + " " + _TEXTEDIT_STRINGS["LINE"])
 			
 			_tts_speak(pitch)
 			_last_caret_line = lines_count
@@ -1022,28 +1022,28 @@ static func _process_text_controls():
 				if lines.size() > _last_caret_line:
 					character = last_lines[_last_caret_line][min(caret_position,last_lines[_last_caret_line].length()-1)]
 			else:
-				character = TEXTEDIT_STRINGS["NEWLINE"]
+				character = _TEXTEDIT_STRINGS["NEWLINE"]
 			
 			_add_token(TextFunctions.get_character_name(character))
 				
-			_add_token(TEXTEDIT_STRINGS["DELETED"])
+			_add_token(_TEXTEDIT_STRINGS["DELETED"])
 			
 		elif Input.is_key_pressed(KEY_SPACE):
-			_add_token(TEXTEDIT_STRINGS["SPACE"])
+			_add_token(_TEXTEDIT_STRINGS["SPACE"])
 		
 		elif Input.is_key_pressed(KEY_TAB):
-			_add_token(TEXTEDIT_STRINGS["TAB"])
+			_add_token(_TEXTEDIT_STRINGS["TAB"])
 			
 		elif (Input.is_key_pressed(KEY_ENTER) ||
 				Input.is_key_pressed(KEY_KP_ENTER)):
-			_add_token(TEXTEDIT_STRINGS["ENTER"])
+			_add_token(_TEXTEDIT_STRINGS["ENTER"])
 			_play_sound("text_newline")
 			
 			if focused is CodeEdit:
-				_add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS["LINE"])
+				_add_token(str(focused.get_caret_line()+1) + " " + _TEXTEDIT_STRINGS["LINE"])
 			
 		else:
-			if !TextFunctions.special_key_combos():
+			if !AXController.special_key_combos():
 				var character = lines[lines_count][max(caret_position-1,0)]
 				var char_no = character.unicode_at(0)
 					
@@ -1115,7 +1115,7 @@ static func _process_menu_button_controls():
 			if _popup_index < 0:
 				_popup_index = 0
 				
-			_play_sound("list_nav", LIST_PITCH_SHIFT)
+			_play_sound("list_nav", _LIST_PITCH_SHIFT)
 			changed = true
 			
 		elif Input.is_action_just_pressed("DOM_down"):
@@ -1141,14 +1141,14 @@ static func _process_menu_button_controls():
 		
 		if _popup_visible:
 			popup.visible = false
-			_add_token(STRING_FORMATS["SELECTED"] % [popup.get_item_text(_popup_index)])
+			_add_token(_STRING_FORMATS["SELECTED"] % [popup.get_item_text(_popup_index)])
 			_popup_index = 0
-			_add_token(MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [text] )
+			_add_token(_MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [text] )
 		else:
 			focused.emit_signal("about_to_popup")
 			focused.show_popup()
 			_add_token(popup.get_item_text(_popup_index))
-			_add_token(MENUBAR_NAVIGATION_STRINGS["OPENED"] % [text] )
+			_add_token(_MENUBAR_NAVIGATION_STRINGS["OPENED"] % [text] )
 			
 		_popup_visible = !_popup_visible
 		
@@ -1162,7 +1162,7 @@ static func _process_menu_button_controls():
 			
 			popup.visible = false
 			_popup_index = 0
-			_add_token(MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [text] )
+			_add_token(_MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [text] )
 			
 			_popup_visible = !_popup_visible
 			
@@ -1177,7 +1177,7 @@ static func _process_menu_button_controls():
 			focused.emit_signal("about_to_popup")
 			focused.show_popup()
 			_add_token(popup.get_item_text(_popup_index))
-			_add_token(MENUBAR_NAVIGATION_STRINGS["OPENED"] % [text] )
+			_add_token(_MENUBAR_NAVIGATION_STRINGS["OPENED"] % [text] )
 				
 			_popup_visible = !_popup_visible
 			
@@ -1191,7 +1191,7 @@ static func _process_menu_button_controls():
 			_popup_visible = false
 			popup.visible = false
 			_popup_index = 0
-			_add_token(MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [text] )
+			_add_token(_MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [text] )
 		
 		_tts_speak()
 		return false
@@ -1244,7 +1244,7 @@ static func _process_option_button_controls():
 				_popup_index = 0
 
 			focused.emit_signal("item_focused",_popup_index)
-			_play_sound("list_nav", LIST_PITCH_SHIFT)
+			_play_sound("list_nav", _LIST_PITCH_SHIFT)
 			changed = true
 			
 		elif Input.is_action_just_pressed("DOM_down"):
@@ -1271,14 +1271,14 @@ static func _process_option_button_controls():
 		
 		if _popup_visible:
 			popup.visible = false
-			_add_token(STRING_FORMATS["SELECTED"] % [popup.get_item_text(_popup_index)])
-			_add_token(MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [text] )
+			_add_token(_STRING_FORMATS["SELECTED"] % [popup.get_item_text(_popup_index)])
+			_add_token(_MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [text] )
 			focused.emit_signal("item_selected",_popup_index)
 		else:
 			focused.show_popup()
 			_popup_index = max(focused.selected,0)
 			_add_token(popup.get_item_text(_popup_index))
-			_add_token(MENUBAR_NAVIGATION_STRINGS["OPENED"] % [text] )
+			_add_token(_MENUBAR_NAVIGATION_STRINGS["OPENED"] % [text] )
 			
 		_popup_visible = !_popup_visible
 		
@@ -1291,7 +1291,7 @@ static func _process_option_button_controls():
 			_play_sound("button_down")
 			
 			popup.visible = false
-			_add_token(MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [text] )
+			_add_token(_MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [text] )
 			_popup_visible = !_popup_visible
 			
 			_tts_speak()
@@ -1304,7 +1304,7 @@ static func _process_option_button_controls():
 			focused.show_popup()
 			_popup_index = max(focused.selected,0)
 			_add_token(popup.get_item_text(_popup_index))
-			_add_token(MENUBAR_NAVIGATION_STRINGS["OPENED"] % [text] )	
+			_add_token(_MENUBAR_NAVIGATION_STRINGS["OPENED"] % [text] )	
 			_popup_visible = !_popup_visible
 			
 			_tts_speak()
@@ -1317,7 +1317,7 @@ static func _process_option_button_controls():
 			_popup_visible = false
 			popup.visible = false
 			_popup_index = 0
-			_add_token(MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [text] )
+			_add_token(_MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [text] )
 		
 		_tts_speak()
 		return false
@@ -1336,13 +1336,13 @@ static func _process_tree_controls():
 				treeitem.collapsed = !treeitem.collapsed
 				
 				if treeitem.collapsed:
-					_add_token(TREE_CONTROL_NAMES["COLLAPSED"])
+					_add_token(_TREE_CONTROL_NAMES["COLLAPSED"])
 					_play_sound("tree_collapse")
 				else:
-					_add_token(TREE_CONTROL_NAMES["UNCOLLAPSED"])
+					_add_token(_TREE_CONTROL_NAMES["UNCOLLAPSED"])
 					_play_sound("tree_uncollapse")
 			else:
-				_add_token(TREE_CONTROL_NAMES["NO_CHILDREN"])
+				_add_token(_TREE_CONTROL_NAMES["NO_CHILDREN"])
 				_play_sound("tree_no_children")
 		
 			_get_accessible_tree_name(focused, false)
@@ -1363,7 +1363,7 @@ static func _process_tree_controls():
 				_play_sound("list_nav")
 				_highlight_tree(focused)
 				
-			get_accessible_name(focused)
+			_get_accessible_name(focused)
 		
 			_tts_speak()
 			_state_updated = true
@@ -1378,10 +1378,10 @@ static func _process_tree_controls():
 				focused.set_selected(next,0)
 				focused.scroll_to_item(next)
 				focused.focus_mode = Control.FOCUS_NONE
-				_play_sound("list_nav",LIST_PITCH_SHIFT)
+				_play_sound("list_nav",_LIST_PITCH_SHIFT)
 				_highlight_tree(focused)
 					
-			get_accessible_name(focused)
+			_get_accessible_name(focused)
 		
 			_tts_speak()
 			_state_updated = true
@@ -1718,7 +1718,7 @@ static func _grab_obj_focus(obj: Control):
 				_stop_sound()
 			
 			# resets state
-			_update_draw_state(CONTROL_STATE.FOCUSED)
+			_update_draw_state(_CONTROL_STATE.FOCUSED)
 			
 			var old_focus = focused
 			
@@ -1765,7 +1765,7 @@ static func _grab_obj_focus(obj: Control):
 						
 			if old_focus != focused:
 				# Read the name
-				get_accessible_name(focused)
+				_get_accessible_name(focused)
 				_tts_speak()
 		else:
 			obj.call_deferred("grab_focus")
@@ -1789,7 +1789,7 @@ static func _check_obj_focus(obj: Control):
 ## Label reading methods
 
 # Gets the name of a control
-static func get_accessible_name(obj:Control):
+static func _get_accessible_name(obj:Control):
 	
 	var name_val = null
 	
@@ -1847,7 +1847,7 @@ static func _get_accessible_label_name(obj:Control):
 		var lines = focused.text.split("\n")
 		
 		_add_token(TextFunctions.get_character_name(lines[focused.get_caret_line()]))
-		_add_token(str(focused.get_caret_line()+1) + " " + TEXTEDIT_STRINGS["LINE"])
+		_add_token(str(focused.get_caret_line()+1) + " " + _TEXTEDIT_STRINGS["LINE"])
 	else:
 		if ((focused is LineEdit || focused is TextEdit) ||
 			!(obj.get("alt_text") != null && !obj.alt_text.is_empty())):
@@ -1861,7 +1861,7 @@ static func _get_accessible_label_name(obj:Control):
 	if verbose:
 		if obj.get_class() != name_val:
 			if focused is Label:
-				_add_token(SPECIAL_CONTROL_NAMES["LABEL"])
+				_add_token(_SPECIAL_CONTROL_NAMES["LABEL"])
 			else:
 				_add_token(obj.get_class()) 
 			
@@ -1878,7 +1878,7 @@ static func _get_accessible_richtext_label_name(obj:Control):
 			
 	if verbose:
 		if obj.get_class() != name_val:
-			_add_token(SPECIAL_CONTROL_NAMES["LABEL"])
+			_add_token(_SPECIAL_CONTROL_NAMES["LABEL"])
 			
 # Gets the name for buttons
 static func _get_accessible_button_name(obj:Control):
@@ -1886,16 +1886,16 @@ static func _get_accessible_button_name(obj:Control):
 	
 	if obj is CheckBox:
 		if obj.button_pressed:
-			_add_token(POPUPMENU_CONTROL_NAMES["CHECKED"])
+			_add_token(_POPUPMENU_CONTROL_NAMES["CHECKED"])
 		else:
 			if verbose:
-				_add_token(POPUPMENU_CONTROL_NAMES["UNCHECKED"])
+				_add_token(_POPUPMENU_CONTROL_NAMES["UNCHECKED"])
 				
 	elif obj is CheckButton:
 		if obj.button_pressed:
-			_add_token(POPUPMENU_CONTROL_NAMES["ON"])
+			_add_token(_POPUPMENU_CONTROL_NAMES["ON"])
 		else:
-			_add_token(POPUPMENU_CONTROL_NAMES["OFF"])
+			_add_token(_POPUPMENU_CONTROL_NAMES["OFF"])
 				
 	if obj.get("alt_text") != null && !obj.alt_text.is_empty():
 		name_val = obj.alt_text
@@ -1906,15 +1906,15 @@ static func _get_accessible_button_name(obj:Control):
 			
 	if verbose:
 		if obj.get_class() != name_val:
-			var token = SPECIAL_CONTROL_NAMES["BUTTON"]
+			var token = _SPECIAL_CONTROL_NAMES["BUTTON"]
 			if obj is CheckBox:
-				token = SPECIAL_CONTROL_NAMES["CHECKBOX"]
+				token = _SPECIAL_CONTROL_NAMES["CHECKBOX"]
 			elif obj is CheckButton:
-				token = SPECIAL_CONTROL_NAMES["SWITCH"]
+				token = _SPECIAL_CONTROL_NAMES["SWITCH"]
 			elif obj is MenuButton:
-				token = SPECIAL_CONTROL_NAMES["MENUBUTTON"]
+				token = _SPECIAL_CONTROL_NAMES["MENUBUTTON"]
 			elif obj is OptionButton:
-				token = SPECIAL_CONTROL_NAMES["DROPDOWN"]
+				token = _SPECIAL_CONTROL_NAMES["DROPDOWN"]
 			_add_token(token)
 		
 # Gets the name for images
@@ -1925,7 +1925,7 @@ static func _get_accessible_image_name(obj:Control):
 			
 	if verbose:
 		if obj.get_class() != name_val:
-			_add_token(SPECIAL_CONTROL_NAMES["IMAGE"])
+			_add_token(_SPECIAL_CONTROL_NAMES["IMAGE"])
 		
 # Gets the name for progress bars
 static func _get_accessible_progress_bar_name(obj:Control):
@@ -1935,22 +1935,22 @@ static func _get_accessible_progress_bar_name(obj:Control):
 	
 	if obj.get("read_fraction") != null:
 		if obj.read_fraction:
-			var text = STRING_FORMATS["FRACTION"] % [str(obj.value), str(obj.max_value)]
+			var text = _STRING_FORMATS["FRACTION"] % [str(obj.value), str(obj.max_value)]
 			_add_token(text)
 			
 		if obj.read_percent:
-			var text = STRING_FORMATS["PERCENT"] % [str(floor(100 * obj.value / obj.max_value))]
+			var text = _STRING_FORMATS["PERCENT"] % [str(floor(100 * obj.value / obj.max_value))]
 			_add_token(text)
 	else:
 		# default if not accessible script
-		var text = STRING_FORMATS["FRACTION"] % [str(obj.value), str(obj.max_value)]
+		var text = _STRING_FORMATS["FRACTION"] % [str(obj.value), str(obj.max_value)]
 		_add_token(text)
 	
 	_add_alt_text(obj)
 	
 	if verbose:
 		if obj.get_class() != name_val:
-			_add_token(SPECIAL_CONTROL_NAMES["PROGRESS_BAR"])
+			_add_token(_SPECIAL_CONTROL_NAMES["PROGRESS_BAR"])
 			
 # Gets the name for spinboxes
 static func _get_accessible_spinbox_name(obj:Control):
@@ -1963,7 +1963,7 @@ static func _get_accessible_spinbox_name(obj:Control):
 	
 	if verbose:
 		if obj.get_class() != name_val:
-			_add_token(SPECIAL_CONTROL_NAMES["SPINBOX"])
+			_add_token(_SPECIAL_CONTROL_NAMES["SPINBOX"])
 		
 # Gets the name for hslider
 static func _get_accessible_hslider_name(obj:Control):
@@ -1973,7 +1973,7 @@ static func _get_accessible_hslider_name(obj:Control):
 			
 	if verbose:
 		if obj.get_class() != name_val:
-			_add_token(SPECIAL_CONTROL_NAMES["HSLIDER"])
+			_add_token(_SPECIAL_CONTROL_NAMES["HSLIDER"])
 			
 # Gets the name for vslider
 static func _get_accessible_vslider_name(obj:Control):
@@ -1983,7 +1983,7 @@ static func _get_accessible_vslider_name(obj:Control):
 			
 	if verbose:
 		if obj.get_class() != name_val:
-			_add_token(SPECIAL_CONTROL_NAMES["VSLIDER"])
+			_add_token(_SPECIAL_CONTROL_NAMES["VSLIDER"])
 		
 static func _get_accessible_slider_name(obj:Control):
 	# reads value
@@ -1993,11 +1993,11 @@ static func _get_accessible_slider_name(obj:Control):
 			_add_token(str(obj.value))
 			
 		if obj.read_fraction:
-			var text = STRING_FORMATS["FRACTION"] % [str(obj.value), str(obj.max_value)]
+			var text = _STRING_FORMATS["FRACTION"] % [str(obj.value), str(obj.max_value)]
 			_add_token(text)
 			
 		if obj.read_percent:
-			var text = STRING_FORMATS["PERCENT"] % [str(floor(100 * obj.value / obj.max_value))]
+			var text = _STRING_FORMATS["PERCENT"] % [str(floor(100 * obj.value / obj.max_value))]
 			_add_token(text)
 	else:
 		# default if not accessible script
@@ -2033,30 +2033,30 @@ static func _get_accessible_menubar_name(obj:Control):
 		# Announce out of 3
 		if verbose:
 			if selected_menu != null:
-				text = STRING_FORMATS["FRACTION"] % [str(selected_index+1), str(menu_size)]
+				text = _STRING_FORMATS["FRACTION"] % [str(selected_index+1), str(menu_size)]
 				_add_token(text)
 		
 		_add_alt_text(obj)
 		
-		text = STRING_FORMATS["SELECTED"] % [popup.name]
+		text = _STRING_FORMATS["SELECTED"] % [popup.name]
 		_add_token(text)
 	else:
 		var popup = obj.get_menu_popup(selected_menu)
 
-		text = STRING_FORMATS["SELECTED"] % [popup.name]
+		text = _STRING_FORMATS["SELECTED"] % [popup.name]
 		_add_token(text)
 		
 		# Announce out of 3
 		if verbose:
 			if selected_menu != null:
-				text = STRING_FORMATS["FRACTION"] % [str(selected_menu+1), str(sizer)]
+				text = _STRING_FORMATS["FRACTION"] % [str(selected_menu+1), str(sizer)]
 				_add_token(text)
 		
 		_add_alt_text(obj)
 	
 	if verbose:
 		if obj.get_class() != text:
-			_add_token(SPECIAL_CONTROL_NAMES["MENUBAR"])
+			_add_token(_SPECIAL_CONTROL_NAMES["MENUBAR"])
 	
 static func _get_accessible_tabbar_name(obj:Control):
 
@@ -2065,28 +2065,28 @@ static func _get_accessible_tabbar_name(obj:Control):
 	
 	var name_val = obj.get_tab_title(selected_menu)
 
-	var text = STRING_FORMATS["SELECTED"] % [name_val]
+	var text = _STRING_FORMATS["SELECTED"] % [name_val]
 	_add_token(text)
 	
 	# Announce out of 3
 	if verbose:
-		text = STRING_FORMATS["FRACTION"] % [str(selected_menu+1), str(sizer)]
+		text = _STRING_FORMATS["FRACTION"] % [str(selected_menu+1), str(sizer)]
 		_add_token(text)
 	
 	_add_alt_text(obj)
 	
 	if verbose:
 		if obj.get_class() != name_val:
-			_add_token(SPECIAL_CONTROL_NAMES["TABS"])
+			_add_token(_SPECIAL_CONTROL_NAMES["TABS"])
 	
 # Gets the name for optionbuttons
 static func _get_accessible_optionbutton_name(obj:Control):
 	var name_val = ""
 
 	if obj.get_selected_id() > -1:
-		_add_token(STRING_FORMATS["SELECTED"] % [obj.get_item_text(obj.get_selected_id())])
+		_add_token(_STRING_FORMATS["SELECTED"] % [obj.get_item_text(obj.get_selected_id())])
 	else:
-		_add_token(STRING_FORMATS["SELECTED"] % [TEXTEDIT_STRINGS["NONE"]])
+		_add_token(_STRING_FORMATS["SELECTED"] % [_TEXTEDIT_STRINGS["NONE"]])
 		
 	if obj.get("alt_text") != null && !obj.alt_text.is_empty():
 		name_val = obj.alt_text
@@ -2095,7 +2095,7 @@ static func _get_accessible_optionbutton_name(obj:Control):
 	if verbose:
 		if obj.get_class() != name_val:
 			if obj is Label:
-				_add_token(SPECIAL_CONTROL_NAMES["LABEL"])
+				_add_token(_SPECIAL_CONTROL_NAMES["LABEL"])
 			else:
 				_add_token(obj.get_class()) 
 	
@@ -2104,21 +2104,21 @@ static func _get_accessible_tree_name(obj:Control, read_collapse:bool = true):
 	# Read off the currently selected node, if any
 	var selected_item = obj.get_selected()
 	if selected_item != null:
-		_add_token(STRING_FORMATS["SELECTED"] % [selected_item.get_text(0)])
+		_add_token(_STRING_FORMATS["SELECTED"] % [selected_item.get_text(0)])
 	else:
-		_add_token(STRING_FORMATS["SELECTED"] % [TEXTEDIT_STRINGS["NONE"]])
+		_add_token(_STRING_FORMATS["SELECTED"] % [_TEXTEDIT_STRINGS["NONE"]])
 
 	if selected_item != null:
 		if selected_item.collapsed:
 			if read_collapse:
-				_add_token(TREE_CONTROL_NAMES["COLLAPSED"])
+				_add_token(_TREE_CONTROL_NAMES["COLLAPSED"])
 		else:
 			var child_count = selected_item.get_child_count()
 				
 			if child_count > 0:
-				_add_token(TREE_CONTROL_NAMES["CHILDREN"] % [str(child_count)])
+				_add_token(_TREE_CONTROL_NAMES["CHILDREN"] % [str(child_count)])
 			else:
-				_add_token(TREE_CONTROL_NAMES["NO_CHILDREN"])
+				_add_token(_TREE_CONTROL_NAMES["NO_CHILDREN"])
 		
 	var name_val = ""
 	
@@ -2156,9 +2156,9 @@ static func _recursive_tree_search(obj:Control, level:int = 0):
 	current_objects = _array_stack[_array_stack.size()-1]
 		
 	# Inserts under special conditions
-	var node_type = get_node_type(obj)
+	var node_type = _get_node_type(obj)
 	
-	if ((node_type == NODE_TYPE.INTERACT_NODE
+	if ((node_type == _NODE_TYPE.INTERACT_NODE
 		&& obj.get("ignore") != true)
 		|| obj.get("custom_control")):
 			
@@ -2181,7 +2181,7 @@ static func _recursive_tree_search(obj:Control, level:int = 0):
 			return true
 
 	# If the node is not an end node
-	if (node_type != NODE_TYPE.INTERACT_NODE
+	if (node_type != _NODE_TYPE.INTERACT_NODE
 		&& !obj.get("custom_control")):
 		# If the object has children
 		if obj.get_child_count(true) > 0:
@@ -2241,7 +2241,7 @@ static func _tts_speak_direct(text: String, pitch:float = 1.0,rate:float= 1.0 ,v
 		TTS.stop()
 		TTS.speak(text, false, TTS.default_lang, pitch, rate, volume)
 		
-		_timer.start(TIMER_COOLDOWN)
+		_timer.start(_TIMER_COOLDOWN)
 		
 static func _is_cooled_down():
 	return _timer.is_stopped()
@@ -2258,14 +2258,14 @@ static func _if_parent_is_TabContainer(obj:Control):
 # Returns 1 = true, 0 = false, -1 no property found
 static func _is_marked_container(obj:Control):
 	if obj.get("focus_marked_container") != null:
-		if obj.focus_marked_container && get_node_type(obj) == NODE_TYPE.CONTAINER:
+		if obj.focus_marked_container && _get_node_type(obj) == _NODE_TYPE.CONTAINER:
 			return 1
 		return 0
 			
 	return -1
 
 # Function to determine if list item is category or end item
-static func get_node_type(obj:Control):
+static func _get_node_type(obj:Control):
 	
 	# Returns if the node is an end node
 	if (obj is Button 
@@ -2283,13 +2283,13 @@ static func get_node_type(obj:Control):
 			|| obj is Tree
 			|| obj is MenuBar
 			|| (obj is TextureRect && obj.get("alt_text") != null)):
-				return NODE_TYPE.INTERACT_NODE
+				return _NODE_TYPE.INTERACT_NODE
 	
 	if (obj is Panel ||
 		is_instance_of(obj, Control)):
-			return NODE_TYPE.CONTAINER
+			return _NODE_TYPE.CONTAINER
 	
-	return NODE_TYPE.IGNORE
+	return _NODE_TYPE.IGNORE
 
 # Gets the object list but with no tree structure
 
@@ -2298,7 +2298,7 @@ static func _get_object_list(list: Array = _objects):
 		if c is Array:
 			_get_object_list(c)
 		else:
-			if (get_node_type(c) == NODE_TYPE.INTERACT_NODE
+			if (_get_node_type(c) == _NODE_TYPE.INTERACT_NODE
 				|| c.get("custom_control")):
 				_end_node_list.append(c)
 				if !_end_node_branches.has(list):
@@ -2493,11 +2493,11 @@ static func _sound_init(obj: Control):
 	obj.add_child(_sfx)
 
 # plays a sound effect
-# only from preloaded assets in SFX_LIBRARY
+# only from preloaded assets in _SFX_LIBRARY
 static func _play_sound(name_val: String, pitch: float = 1.0):
 	if sfx_enabled:
-		if SFX_LIBRARY.has(name_val):
-			_sfx.stream = SFX_LIBRARY[name_val]
+		if _SFX_LIBRARY.has(name_val):
+			_sfx.stream = _SFX_LIBRARY[name_val]
 			_sfx.pitch_scale = pitch
 			_sfx.play()
 		
@@ -2530,13 +2530,13 @@ static func _create_menubar_object():
 	}
 	
 # Updates what state to draw the current control in
-static func _update_draw_state(state: CONTROL_STATE):
+static func _update_draw_state(state: _CONTROL_STATE):
 	_control_state = state
 	
 # Initializer Functions
 
 # Gets the DOM state populated
-static func init_DOM():
+static func _init_DOM():
 	
 	_set_focus_on(dom_root)
 	
@@ -2591,15 +2591,15 @@ static func _do_process(delta: float) -> void:
 	
 	if focused != null:
 		if (_focused_old != focused):
-			redraw = true
+			_redraw = true
 		elif (_focused_rect_old != focused.get_global_rect()):
-			redraw = true
+			_redraw = true
 		elif _state_updated:
-			redraw = true
+			_redraw = true
 		elif focused is Tree:
 			if focused.get_scroll() != _scroll_old:
 				_scroll_old = focused.get_scroll()
-				redraw = true
+				_redraw = true
 	
 	if is_instance_valid(focused):
 		if focused is ProgressBar:

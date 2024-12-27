@@ -1,12 +1,11 @@
-###############################################
-# TextFunctions
-#
-# These are text manipulation functions.
-###############################################
 class_name TextFunctions
 extends Object
+## This class has text manipulation functions.
+##
+## This class allows you to have specific text manipulation
+## functions that are used by the screenreader.
 
-const CHARACTER_NAMES = {
+const _CHARACTER_NAMES = {
 	" " : "Space",
 	"." : "Period",
 	"," : "Comma",
@@ -42,59 +41,29 @@ const CHARACTER_NAMES = {
 	"\t" : "Tab"
 }
 
-# Dictionary of action names
-static var keyboard_action_names:Dictionary = {}
-
-# checks if unicode is a capital letter
-static func unicode_is_capital(unicode: int):
+## Returns if a unicode value represents a capital letter.
+static func unicode_is_capital(unicode: int) -> bool:
 	return unicode >= 65 && unicode <= 90
-
-# These are special key combos that are ignored for some purposes
-static func special_key_combos():
-	# paste
-	if (AXController.pressed_keys.has(KEY_CTRL)
-		&& AXController.pressed_keys.has(KEY_V)):
-		return true
 	
-	return false
-	
-# Returns the string of certain characters
-static func get_character_name(character: String):
-	for c in CHARACTER_NAMES:
+## Returns the long name for various characters, such as periods, commas etc.
+static func get_character_name(character: String) -> String:
+	for c in _CHARACTER_NAMES:
 		if c != " ":
-			character = character.replace(c, " " + CHARACTER_NAMES[c] + " ")
+			character = character.replace(c, " " + _CHARACTER_NAMES[c] + " ")
 	
-	if CHARACTER_NAMES.has(character):
-		return CHARACTER_NAMES[character]
+	if _CHARACTER_NAMES.has(character):
+		return _CHARACTER_NAMES[character]
 	
 	return character
-
-# Gets all the action names
-static func update_keyboard_action_names():
-	keyboard_action_names = {}
-	
-	var actions = InputMap.get_actions()
-	
-	for c in actions:
-		var events = InputMap.action_get_events(c)
-		var keys = []
-		for d in events:
-			if d is InputEventKey:
-				if d.keycode > 0:
-					keys.append( OS.get_keycode_string(d.get_keycode_with_modifiers()))
-				elif d.physical_keycode > 0:
-					keys.append( OS.get_keycode_string(d.get_physical_keycode_with_modifiers()))
-					
-		if !keys.is_empty():
-			keyboard_action_names[c] = keys
 		
-# Gets the keyboard buttons of the actions from the action name.
-static func get_action_keyboard_name_string(action:String, quantity:int = -1):
+## Returns a string with [action_name] replaced with
+## the keyboard value it uses.
+static func get_action_keyboard_name_string(action:String, quantity:int = -1) -> String:
 	
-	if !keyboard_action_names.has(action):
+	if !AXController.keyboard_action_names.has(action):
 		return "[]"
 		
-	var action_data = keyboard_action_names[action]
+	var action_data = AXController.keyboard_action_names[action]
 	
 	var ackt = ""
 	
@@ -113,8 +82,19 @@ static func get_action_keyboard_name_string(action:String, quantity:int = -1):
 		
 	return "[%s]" % [ackt]
 
-static func replace_all_keyboard_strings(text:String, quantity:int = -1):
-	for c in keyboard_action_names:
+## Returns a string where all the possible inputs are replaced with the
+## key used to trigger it. [param quantity] refers to how many keys to print;
+## by default, it will print all of them.
+static func replace_all_keyboard_strings(text:String, quantity:int = -1) -> String:
+	for c in AXController.keyboard_action_names:
 		text = text.replace("[%s]" % c, get_action_keyboard_name_string(c, quantity))
 
 	return text
+
+## Returns the singular or plural form of a string, based
+## on the quantity.
+static func singular_or_plural(count: int, singular: String, plural: String) -> String:
+	if count == 1:
+		return singular
+	else:
+		return plural

@@ -24,7 +24,7 @@ const TYPES = {
 # string instead of the default string for the screenreader
 # when it reads its name.
 func ax_custom_text() -> String:
-	#Screenreader.get_accessible_name(objects[index])
+	#Screenreader._get_accessible_name(objects[index])
 	return get_access_text()
 
 # When this function returns true, it will override 
@@ -119,7 +119,7 @@ func read_access_text():
 	
 # To do - build custom reader information
 	
-const SPECIAL_CONTROL_NAMES = {
+const _SPECIAL_CONTROL_NAMES = {
 	"IMAGE" : "Image",
 	"PROGRESS_BAR" : "Progress Bar",
 	"HSLIDER" : "Horizontal Slider",
@@ -142,7 +142,7 @@ func get_access_text():
 	
 	if obj is TextureRect:
 		if obj.get("alt_text") != null && !obj.alt_text.strip_edges().is_empty():
-			return "%s | %s" % [Screenreader.SPECIAL_CONTROL_NAMES["IMAGE"], obj.alt_text]
+			return "%s | %s" % [Screenreader._SPECIAL_CONTROL_NAMES["IMAGE"], obj.alt_text]
 	else:
 		var item_type = get_item_type(obj)
 		var text = obj.get("alt_text")
@@ -201,7 +201,7 @@ func _on_focus_entered() -> void:
 		
 	for c in AXMenuManager._menu_stack:
 		c.modulate = Color(0.0, 0.0, 0.0, 0.0)
-	Screenreader.clear_redraw = true
+	Screenreader._clear_redraw = true
 	HCController.set_theme()
 	update_parent_tab(objects[index])
 	redraw_highlighter()
