@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://21bd0kykts0b"]
+[gd_scene load_steps=33 format=3 uid="uid://21bd0kykts0b"]
 
 [ext_resource type="Script" path="res://sample_assets/main.gd" id="1_liw1t"]
 [ext_resource type="Texture2D" uid="uid://ck5fd8hxcl8if" path="res://sample_assets/img/icon/test_icon.png" id="1_p3661"]
@@ -30,6 +30,7 @@
 [ext_resource type="Texture2D" uid="uid://dy3pcu44rlhb0" path="res://sample_assets/img/icon/icon11.png" id="27_gce24"]
 [ext_resource type="Texture2D" uid="uid://bx1gbfbeqpc80" path="res://sample_assets/img/icon/icon12.png" id="28_gahsn"]
 [ext_resource type="Texture2D" uid="uid://b31xbb25oqqq6" path="res://sample_assets/img/icon/icon13.png" id="29_e4ri8"]
+[ext_resource type="PackedScene" uid="uid://b63uymqsow605" path="res://sample_assets/ui/TestControl.tscn" id="31_moqh5"]
 
 [sub_resource type="Theme" id="Theme_1a70l"]
 
@@ -216,7 +217,7 @@ offset_bottom = 500.0
 
 [node name="TabContainer" type="TabContainer" parent="Panel/VBoxContainer/Main/Panel"]
 layout_mode = 2
-current_tab = 1
+current_tab = 3
 
 [node name="Buttons and Text" type="PanelContainer" parent="Panel/VBoxContainer/Main/Panel/TabContainer"]
 visible = false
@@ -348,6 +349,7 @@ gutters_zero_pad_line_numbers = true
 gutters_draw_fold_gutter = true
 
 [node name="Sliders" type="PanelContainer" parent="Panel/VBoxContainer/Main/Panel/TabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -490,7 +492,6 @@ audio_description = "res://sample_assets/video/audio_desc.txt"
 subtitles = "res://sample_assets/video/subtitles.txt"
 
 [node name="More Elements" type="PanelContainer" parent="Panel/VBoxContainer/Main/Panel/TabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 3
 
@@ -498,9 +499,12 @@ metadata/_tab_index = 3
 layout_mode = 2
 
 [node name="Tree" type="Tree" parent="Panel/VBoxContainer/Main/Panel/TabContainer/More Elements/VBoxContainer"]
-custom_minimum_size = Vector2(0, 410)
+custom_minimum_size = Vector2(0, 350)
 layout_mode = 2
 theme = SubResource("Theme_1a70l")
+
+[node name="TestControl" parent="Panel/VBoxContainer/Main/Panel/TabContainer/More Elements/VBoxContainer" instance=ExtResource("31_moqh5")]
+layout_mode = 2
 
 [node name="Info" type="Control" parent="Panel/VBoxContainer"]
 custom_minimum_size = Vector2(0, 60)

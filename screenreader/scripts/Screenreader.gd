@@ -2145,7 +2145,8 @@ static func _recursive_tree_search(obj:Control, level:int = 0):
 	
 	if ((node_type == NODE_TYPE.INTERACT_NODE
 		&& obj.get("ignore") != true)
-		|| obj.get("custom_control") == true):
+		|| obj.get("custom_control")):
+			
 		current_objects.append(obj)
 		
 		if obj is MenuBar:
@@ -2165,7 +2166,8 @@ static func _recursive_tree_search(obj:Control, level:int = 0):
 			return true
 
 	# If the node is not an end node
-	if node_type != NODE_TYPE.INTERACT_NODE:
+	if (node_type != NODE_TYPE.INTERACT_NODE
+		&& !obj.get("custom_control")):
 		# If the object has children
 		if obj.get_child_count(true) > 0:
 			# Go deeper in the recursion
@@ -2281,7 +2283,8 @@ static func _get_object_list(list: Array = _objects):
 		if c is Array:
 			_get_object_list(c)
 		else:
-			if get_node_type(c) == NODE_TYPE.INTERACT_NODE:
+			if (get_node_type(c) == NODE_TYPE.INTERACT_NODE
+				|| c.get("custom_control")):
 				_end_node_list.append(c)
 				if !_end_node_branches.has(list):
 					_end_node_branches.append(list)

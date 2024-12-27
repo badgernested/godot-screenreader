@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3 uid="uid://b63uymqsow605"]
+
+[ext_resource type="Script" path="res://sample_assets/ui/test_control.gd" id="1_1ta4x"]
+[ext_resource type="Texture2D" uid="uid://05c8tcccssqf" path="res://sample_assets/img/sprite/character2.png" id="2_mrvbj"]
+
+[node name="TestControl" type="Control"]
+custom_minimum_size = Vector2(400, 64)
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_1ta4x")
+custom_control = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Test label demonstration."
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("2_mrvbj")
+
+[node name="CheckButton" type="CheckButton" parent="HBoxContainer"]
+layout_mode = 2
+text = "Switch"

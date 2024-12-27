@@ -5,6 +5,8 @@ extends PanelContainer
 ## to godot-screenreader. Extend this script to add additional functionality
 ## such as custom screenreader text and input.
 
+## This Control's alt text.
+@export var alt_text: String = ""
 ## If true, this Control will be used to mark a group with its children.
 @export var focus_marked_container: bool = false
 ## Whether or not this Control is ignored during navigation generation.
