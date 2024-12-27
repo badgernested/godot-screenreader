@@ -66,7 +66,7 @@ Two scripts need to be loaded as globals:
 > [!IMPORTANT]  
 > Global names must be **exactly** what is written in the table, or else there will be errors.
 
-[<- Previous (Introduction)](intro.md)
+[<- Previous (Accessibility FAQ)](accessibility.md)
  | [Next (General Usage) ->](generaluse.md)
 
 [Back to Index](index.md)
