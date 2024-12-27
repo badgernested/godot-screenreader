@@ -11,7 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://dm6psbixq3y1d" path="res://addons/godot-screenreader/ui/img/tutorial/character3.png" id="6_vfla3"]
 [ext_resource type="Texture2D" uid="uid://cw3kyh5ria3q" path="res://addons/godot-screenreader/ui/img/tutorial/character2.png" id="7_0rkrn"]
 [ext_resource type="Script" path="res://addons/godot-screenreader/scripts/object_scripts/ax_vslider.gd" id="7_gxjd0"]
-[ext_resource type="VideoStream" path="res://sample_assets/video/test.ogv" id="8_fro6k"]
+[ext_resource type="VideoStream" path="res://examples/video/test.ogv" id="8_fro6k"]
 [ext_resource type="Script" path="res://addons/godot-screenreader/scripts/object_scripts/ax_videostream.gd" id="9_hg3l1"]
 [ext_resource type="Texture2D" uid="uid://dcrvs3x033y8m" path="res://addons/godot-screenreader/ui/img/tutorial/character4.png" id="10_d2yv8"]
 [ext_resource type="Texture2D" uid="uid://b6aiqdbvhout8" path="res://addons/godot-screenreader/ui/img/tutorial/character5.png" id="11_pqsl8"]
