@@ -23,8 +23,8 @@ const OPTIONS_FILE = "options.sav"
 ## Directory of screenreader files.
 const AX_PATH = "ax/"
 
-## An array of events. Keeps track of what events have occured.
-static var events: Array = []
+# An array of events. Keeps track of what events have occured.
+static var _events: Array = []
 
 # Whether or not the screenreader is enabled/disabled
 static var _screenreader_enabled: bool = false
@@ -163,7 +163,7 @@ func key_changed() -> bool:
 	return false
 
 ## Updates the keyboard action names stored in [param keyboard_action_names].
-static func update_keyboard_action_names():
+func update_keyboard_action_names():
 	keyboard_action_names = {}
 	
 	var actions = InputMap.get_actions()
@@ -182,7 +182,7 @@ static func update_keyboard_action_names():
 			keyboard_action_names[c] = keys
 
 ## Returns if a special key combo is being pressed.
-static func special_key_combos() -> bool:
+func special_key_combos() -> bool:
 	# paste
 	if (pressed_keys.has(KEY_CTRL)
 		&& pressed_keys.has(KEY_V)):
@@ -235,7 +235,7 @@ func _set_screenreader_subject(root, enabled:bool = true, focus_obj: Control = n
 	Screenreader._set_dom_root(root)
 	Screenreader._enable_dom(enabled, focus_obj)
 	
-## Updates the position of the screenreader highlighter
+## Updates the position of the screenreader highlighter.
 func update_screenreader_highlight() -> void:
 	await get_tree().create_timer(0.001).timeout
 	Screenreader._update_draw_highlight()
@@ -299,15 +299,15 @@ func tts_speak(text: String, pitch:float = 1.0, rate:float= 1.0 , volume:int = 5
 
 # Adds event
 func _add_event(event) -> void:
-	events.append(event)
+	_events.append(event)
 	
 # Removes event
 func _remove_event(event) -> void:
-	events.erase(event)
+	_events.erase(event)
 	
 # Checks if event exists
 func _event_exists(event) -> bool:
-	return events.has(event)
+	return _events.has(event)
 
 # Saves events to a file
 func _save_events_to_file() -> void:
@@ -321,7 +321,7 @@ func _save_events_to_file() -> void:
 			
 		var file = FileAccess.open(path,FileAccess.WRITE)
 		
-		for c in events:
+		for c in _events:
 			file.store_line(c)
 		
 		file.close()
@@ -332,11 +332,11 @@ func _load_events_from_file() -> void:
 		var path = "user://" + AX_PATH + EVENT_FILE
 		
 		if FileAccess.file_exists(path):
-			events = []
+			_events = []
 			var file = FileAccess.open(path, FileAccess.READ)
 			
 			while !file.eof_reached():
-				events.append(file.get_line())
+				_events.append(file.get_line())
 			
 			file.close()
 

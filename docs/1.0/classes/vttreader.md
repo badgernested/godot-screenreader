@@ -7,7 +7,7 @@ A class that converts VTT formatted files into dictionary objects.
 
 Class that converts VTT-formated .TXT files into [start_time, end_time, content] arrays. This way they can be easily displayed as subtitles or audio description.
 
-Methods
+## Methods
 
 ### read()
 
