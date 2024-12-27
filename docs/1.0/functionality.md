@@ -40,7 +40,7 @@ Verbose mode reads more information about the selected controls to the user. Thi
 
 ### Customization Scripts
 
-You can add additional functionality to controls by attaching or extending the scripts contained in ``res://screenreader/scripts/object_scripts/``. These scripts can be attached to various controls to add features like alt text, grouping certain controls together, ignoring the control or customization on how the control's contents are read by the screenreader. These allow for high levels of control and customization by simply attaching the appropriate script to your control.
+You can add additional functionality to controls by attaching or extending the scripts contained in ``res://addons/godot-screenreader/scripts/object_scripts/``. These scripts can be attached to various controls to add features like alt text, grouping certain controls together, ignoring the control or customization on how the control's contents are read by the screenreader. These allow for high levels of control and customization by simply attaching the appropriate script to your control.
 
 > [!NOTE]  
 > ``Texture2D`` requires the script ``ax_texturerect.gd`` to be attached, and requires alt text to be set to be visible to the screenreader.

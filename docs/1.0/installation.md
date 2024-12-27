@@ -60,8 +60,8 @@ Two scripts need to be loaded as globals:
 
 | Global        | Script           | Summary  |
 |:-------------:|:-------------:|:-----:|
-| AXController | res://screenreader/scripts/AXController.gd | The main accessibility controller. |
-| AXMenuManager | res://screenreader/scripts/AXMenuManager.gd | The menu manager for the screenreader. |
+| AXController | res://addons/godot-screenreader/scripts/AXController.gd | The main accessibility controller. |
+| AXMenuManager | res://addons/godot-screenreader/scripts/AXMenuManager.gd | The menu manager for the screenreader. |
 
 > [!IMPORTANT]  
 > Global names must be **exactly** what is written in the table, or else there will be errors.

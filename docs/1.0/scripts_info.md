@@ -2,7 +2,7 @@
 
 This is the list of scripts used by the screenreader.
 
-They are contained in ``res://screenreader/scripts/object_scripts/``.
+They are contained in ``res://addons/godot-screenreader/scripts/object_scripts/``.
 
 - [ax_button](scripts/ax_button.md)
 - [ax_checkbox](scripts/ax_checkbox.md)

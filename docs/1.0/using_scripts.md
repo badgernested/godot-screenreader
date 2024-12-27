@@ -2,7 +2,7 @@
 
 You can use godot-screenreader without using scripts, but attaching scripts to certain nodes can greatly enhance the usability of your user experience.
 
-To attach a script, simply drag the script associated with the type of Control you're attaching it to from the ``res://screenreader/scripts/object_scripts/`` directory.
+To attach a script, simply drag the script associated with the type of Control you're attaching it to from the ``res://addons/godot-screenreader/scripts/object_scripts/`` directory.
 
 > [!IMPORTANT]  
 > Make sure you use the script that extends the Control type that you are attaching your script to, or else you will have errors.

@@ -72,7 +72,7 @@ Finally, if you need to reset to the original developer-designated theme, you ca
 
 Scripts allow for extended functionality to nodes, such as adding alt text, ignoring nodes, or alternative functions for reading the contents of a Control. They are also required to be used to support videos with subtitles or audio description.
 
-To use a script, simply drag the appropriate script onto the Control. These scripts are located in ``res://screenreader/scripts/object_scripts/``.
+To use a script, simply drag the appropriate script onto the Control. These scripts are located in ``res://addons/godot-screenreader/scripts/object_scripts/``.
 
 > [!IMPORTANT]  
 > Make sure you use the script that extends the Control type that you are attaching your script to, or else you will have errors.

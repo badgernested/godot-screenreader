@@ -2,7 +2,7 @@
 
 This is the list of classes used in the screenreader.
 
-They are contained in ``res://screenreader/scripts/``.
+They are contained in ``res://addons/godot-screenreader/scripts/``.
 
 - [AXController](classes/axcontroller.md)
 - [AXMenuManager](classes/axmenumanager.md)
