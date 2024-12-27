@@ -27,6 +27,12 @@ Screenreader navigation is handled after Control input. The default Controls wil
 
 If this function returns false, the screenreader navigation will be ignored.
 
+## Custom Controls
+
+If you create a custom control in your own scene file or within the SceneTree, you can attach ``ax_control.gd`` to it and check Custom Control. This allows the control to be treated as a single item instead of trying to group all of the children controls as separate items.
+
+Additionally, since the Control acts as its own end node, you will have to override ``ax_function_override()``, ``ax_custom_text()`` and ``ax_screenreader_navigation()`` to add screenreader input interactivity with the Control, or else it won't do anything.
+
 [<- Previous (Using Scripts)](using_scripts.md)
  | [Next (Best Practices) ->](stub.md)
 
