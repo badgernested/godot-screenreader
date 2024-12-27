@@ -508,8 +508,32 @@ static func _process_menubar_controls():
 				
 				# close menu
 				return _menubar_close_menu(properties)
+		
+		elif Input.is_action_just_pressed("DOM_item_increment"):
+			# If menu is not opened, open it.
+			if !_menubar_menu_opened(focused):
+				# opens the currently selected menu
+				_menubar_menu_close_all(focused)
+				_menubar_menu_open(focused, menu_pos)
+				if properties["menu_opened"] != null:
+					properties["menu_opened"] = true
+					
+				var text = MENUBAR_NAVIGATION_STRINGS["OPENED"] % [focused.get_menu_title(menu_pos)]
+				_add_token(text)
 				
-		elif Input.is_action_just_pressed("DOM_cancel"):
+				var popup = focused.get_menu_popup(menu_pos)
+				var selected_pos = properties["selected_index"]
+				
+				# Which menu item is selected
+				text = STRING_FORMATS["SELECTED"] % popup.get_item_text(selected_pos)
+				_add_token(text)
+				
+				_tts_speak()
+				return false
+				
+		# closes the menu
+		elif (Input.is_action_just_pressed("DOM_cancel")
+			|| Input.is_action_just_pressed("DOM_item_decrement")):
 			var val = _menubar_close_menu(properties)
 			
 			var text = MENUBAR_NAVIGATION_STRINGS["CLOSED"]
@@ -582,58 +606,61 @@ static func _menubar_read_selected_item(properties: Dictionary):
 	_tts_speak()
 
 static func _menubar_nav_menus(properties: Dictionary):
+	var current_focused = focused
+	
 	if !properties.is_empty():
-		if Input.is_action_just_pressed("DOM_item_increment"):
-			var was_opened = _menubar_menu_opened(focused)
-			
-			var sizer = focused.get_menu_count()
-			_menubar_menu_close_all(focused)
+		if !_menubar_menu_opened(current_focused):
+			if Input.is_action_just_pressed("DOM_down"):
+				var was_opened = _menubar_menu_opened(current_focused)
+				
+				var sizer = current_focused.get_menu_count()
+				_menubar_menu_close_all(current_focused)
 
-			properties["selected_menu"] += 1
+				properties["selected_menu"] += 1
 
-			if properties["selected_menu"] >= sizer:
-				properties["selected_menu"] = sizer-1
-				if properties["menu_opened"] != null:
-					properties["menu_opened"] = false
-				_update_end_node_position(1)
-			else:
-				_end_node_grab_focus()
+				if properties["selected_menu"] >= sizer:
+					properties["selected_menu"] = sizer-1
+					if properties["menu_opened"] != null:
+						properties["menu_opened"] = false
+					_update_end_node_position(1)
+				else:
+					_end_node_grab_focus()
+					
+				if was_opened:
+					_menubar_menu_open(current_focused, properties["selected_menu"])
 				
-			if was_opened:
-				_menubar_menu_open(focused, properties["selected_menu"])
-			
-			if focused is MenuBar:
-				_get_accessible_menubar_name(focused)
-				_tts_speak()
+				if current_focused is MenuBar:
+					_get_accessible_menubar_name(current_focused)
+					_tts_speak()
+					
+				_state_updated = true
+					
+				return false
 				
-			_state_updated = true
+			elif Input.is_action_just_pressed("DOM_up"):
+				var was_opened = _menubar_menu_opened(current_focused)
 				
-			return false
-			
-		elif Input.is_action_just_pressed("DOM_item_decrement"):
-			var was_opened = _menubar_menu_opened(focused)
-			
-			_menubar_menu_close_all(focused)
-			properties["selected_menu"] -= 1
+				_menubar_menu_close_all(current_focused)
+				properties["selected_menu"] -= 1
 
-			if properties["selected_menu"] < 0:
-				properties["selected_menu"] = 0
-				if properties["menu_opened"] != null:
-					properties["menu_opened"] = false
-				_update_end_node_position(-1)
-			else:
-				_end_node_grab_focus()
-				
-			if was_opened:
-				_menubar_menu_open(focused, properties["selected_menu"])
-				
-			if focused is MenuBar:
-				_get_accessible_menubar_name(focused)
-				_tts_speak()
-				
-			_state_updated = true
-				
-			return false	
+				if properties["selected_menu"] < 0:
+					properties["selected_menu"] = 0
+					if properties["menu_opened"] != null:
+						properties["menu_opened"] = false
+					_update_end_node_position(-1)
+				else:
+					_end_node_grab_focus()
+					
+				if was_opened:
+					_menubar_menu_open(current_focused, properties["selected_menu"])
+					
+				if current_focused is MenuBar:
+					_get_accessible_menubar_name(current_focused)
+					_tts_speak()
+					
+				_state_updated = true
+					
+				return false	
 			
 	return true
 
