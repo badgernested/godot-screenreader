@@ -1115,9 +1115,9 @@ static func _process_menu_button_controls():
 	
 	# Closes menu if open
 	if Input.is_action_just_pressed("DOM_item_decrement"):
-		_play_sound("button_down")
-		
 		if _popup_visible:
+			_play_sound("button_down")
+			
 			popup.visible = false
 			_popup_index = 0
 			_add_token(MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [text] )
@@ -1129,9 +1129,9 @@ static func _process_menu_button_controls():
 	
 	# Opens menu if not open
 	if Input.is_action_just_pressed("DOM_item_increment"):
-		_play_sound("button_down")
-		
 		if !_popup_visible:
+			_play_sound("button_down")
+			
 			focused.emit_signal("about_to_popup")
 			focused.show_popup()
 			_add_token(popup.get_item_text(_popup_index))
@@ -1195,7 +1195,7 @@ static func _process_option_button_controls():
 	if _popup_visible:
 		var changed = false
 		
-		if Input.is_action_just_pressed("DOM_item_decrement"):
+		if Input.is_action_just_pressed("DOM_up"):
 			_popup_index-= 1
 			
 			if _popup_index < 0:
@@ -1205,7 +1205,7 @@ static func _process_option_button_controls():
 			_play_sound("list_nav", LIST_PITCH_SHIFT)
 			changed = true
 			
-		elif Input.is_action_just_pressed("DOM_item_increment"):
+		elif Input.is_action_just_pressed("DOM_down"):
 			_popup_index += 1
 			
 			if _popup_index > focused.item_count-1:
@@ -1223,11 +1223,6 @@ static func _process_option_button_controls():
 			_tts_speak()
 			
 			return false
-			
-		# If not changed, if you leave the button while open, announce its closing
-		if (Input.is_action_just_pressed("DOM_up") ||
-			Input.is_action_just_pressed("DOM_down")):
-				_add_token(MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [text] )
 	
 	if Input.is_action_just_pressed("DOM_select"):
 		_play_sound("button_down")
@@ -1247,6 +1242,31 @@ static func _process_option_button_controls():
 		
 		_tts_speak()
 		return false
+		
+	# Closes the menu if its open
+	if Input.is_action_just_pressed("DOM_item_decrement"):
+		if _popup_visible:
+			_play_sound("button_down")
+			
+			popup.visible = false
+			_add_token(MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [text] )
+			_popup_visible = !_popup_visible
+			
+			_tts_speak()
+			return false
+			
+	if Input.is_action_just_pressed("DOM_item_increment"):
+		if !_popup_visible:
+			_play_sound("button_down")
+			
+			focused.show_popup()
+			_popup_index = max(focused.selected,0)
+			_add_token(popup.get_item_text(_popup_index))
+			_add_token(MENUBAR_NAVIGATION_STRINGS["OPENED"] % [text] )	
+			_popup_visible = !_popup_visible
+			
+			_tts_speak()
+			return false
 
 	if Input.is_action_just_pressed("DOM_cancel"):
 		_play_sound("button_down")
