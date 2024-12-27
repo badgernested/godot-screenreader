@@ -85,7 +85,7 @@ Scripts will allow you to have extended functionality, such as:
 - Focus Marked Container - Only used on Control and a few container nodes. This marks this Control as creating a separate navigation group for child elements. 
 
 [<- Previous (Features)](functionality.md)
- | [Next (Using Scripts) ->](stub.md)
+ | [Next (Using Scripts) ->](using_scripts.md)
 
 [Back to Index](index.md)
 
