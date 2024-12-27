@@ -1,0 +1,984 @@
+[gd_scene load_steps=19 format=3 uid="uid://c6fh35rs1xet6"]
+
+[ext_resource type="Theme" uid="uid://cs1vqepidtt1a" path="res://addons/godot-screenreader/ui/style/Access.tres" id="1_838m0"]
+[ext_resource type="Script" path="res://addons/godot-screenreader/menu/ax/scripts/ax_tutorial_label.gd" id="2_f4yqm"]
+[ext_resource type="Script" path="res://addons/godot-screenreader/menu/ax/tutorial_control.gd" id="2_rig4q"]
+[ext_resource type="Script" path="res://addons/godot-screenreader/scripts/object_scripts/ax_control.gd" id="3_d0ygo"]
+[ext_resource type="Texture2D" uid="uid://ckuixdceo58is" path="res://addons/godot-screenreader/ui/img/tutorial/character1.png" id="4_4dw17"]
+[ext_resource type="Script" path="res://addons/godot-screenreader/scripts/object_scripts/ax_texturerect.gd" id="5_ae1xm"]
+[ext_resource type="Script" path="res://addons/godot-screenreader/scripts/object_scripts/ax_hslider.gd" id="5_u3uw8"]
+[ext_resource type="Script" path="res://addons/godot-screenreader/scripts/object_scripts/ax_progressbar.gd" id="6_3g4jh"]
+[ext_resource type="Texture2D" uid="uid://dm6psbixq3y1d" path="res://addons/godot-screenreader/ui/img/tutorial/character3.png" id="6_vfla3"]
+[ext_resource type="Texture2D" uid="uid://cw3kyh5ria3q" path="res://addons/godot-screenreader/ui/img/tutorial/character2.png" id="7_0rkrn"]
+[ext_resource type="Script" path="res://addons/godot-screenreader/scripts/object_scripts/ax_vslider.gd" id="7_gxjd0"]
+[ext_resource type="VideoStream" path="res://sample_assets/video/test.ogv" id="8_fro6k"]
+[ext_resource type="Script" path="res://addons/godot-screenreader/scripts/object_scripts/ax_videostream.gd" id="9_hg3l1"]
+[ext_resource type="Texture2D" uid="uid://dcrvs3x033y8m" path="res://addons/godot-screenreader/ui/img/tutorial/character4.png" id="10_d2yv8"]
+[ext_resource type="Texture2D" uid="uid://b6aiqdbvhout8" path="res://addons/godot-screenreader/ui/img/tutorial/character5.png" id="11_pqsl8"]
+[ext_resource type="Texture2D" uid="uid://lviaar41cvs7" path="res://addons/godot-screenreader/ui/img/tutorial/character6.png" id="12_qqtdp"]
+[ext_resource type="Texture2D" uid="uid://b60762lav13mf" path="res://addons/godot-screenreader/ui/img/tutorial/background_title.png" id="14_hoags"]
+[ext_resource type="Texture2D" uid="uid://cacxnpkmf566d" path="res://addons/godot-screenreader/ui/img/tutorial/character7.png" id="15_wantx"]
+
+[node name="TutorialControl" type="Control"]
+custom_minimum_size = Vector2(974, 504)
+layout_mode = 3
+anchors_preset = 0
+theme = ExtResource("1_838m0")
+script = ExtResource("2_rig4q")
+
+[node name="Tab" type="TabContainer" parent="."]
+custom_minimum_size = Vector2(970, 500)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -285.0
+offset_top = -160.0
+offset_right = 285.0
+offset_bottom = 160.0
+grow_horizontal = 2
+grow_vertical = 2
+current_tab = 9
+
+[node name="Introduction" type="PanelContainer" parent="Tab"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="CenterContainer" type="Label" parent="Tab/Introduction"]
+custom_minimum_size = Vector2(650, 250)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 1
+text = "Welcome to the screenreader!
+
+To continue the tutorial, press [DOM_item_increment].
+
+If you turned on the screenreader by mistake, you can turn it off with [DOM_screenreader_enable].
+
+You can re-read selected elements by pressing [DOM_read_item]. You can stop the TTS's speaking by pressing [DOM_stop_talk].
+
+To exit, press [ui_cancel]."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("2_f4yqm")
+
+[node name="Movement" type="PanelContainer" parent="Tab"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="HBox" type="HBoxContainer" parent="Tab/Movement"]
+layout_mode = 2
+
+[node name="Instruction" type="Control" parent="Tab/Movement/HBox"]
+custom_minimum_size = Vector2(400, 250)
+layout_mode = 2
+
+[node name="CenterContainer" type="Label" parent="Tab/Movement/HBox/Instruction"]
+custom_minimum_size = Vector2(400, 250)
+layout_mode = 2
+offset_left = 4.0
+offset_right = 404.0
+offset_bottom = 436.0
+size_flags_horizontal = 4
+size_flags_vertical = 1
+text = "You can move up and down through  individual controls with [DOM_up] and [DOM_down].
+
+You can navigate across grouped elements with [DOM_next] or [DOM_prev].
+
+You can move up and down through  individual controls with [DOM_up] and [DOM_down].
+
+You can navigate across grouped elements with [DOM_next] or [DOM_prev].
+
+You can practice on this tab. Once you are done practicing, you can proceed by pressing [DOM_item_increment] while this label is selected."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("2_f4yqm")
+
+[node name="SampleArea" type="Control" parent="Tab/Movement/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBox" type="VBoxContainer" parent="Tab/Movement/HBox/SampleArea"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -225.0
+offset_right = 225.0
+offset_bottom = 150.0
+grow_horizontal = 2
+theme_override_constants/separation = 40
+
+[node name="Panel" type="PanelContainer" parent="Tab/Movement/HBox/SampleArea/VBox"]
+custom_minimum_size = Vector2(450, 125)
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="Tab/Movement/HBox/SampleArea/VBox/Panel"]
+layout_mode = 2
+
+[node name="Section1" type="Control" parent="Tab/Movement/HBox/SampleArea/VBox/Panel/HBox"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+script = ExtResource("3_d0ygo")
+focus_marked_container = true
+
+[node name="VBox" type="VBoxContainer" parent="Tab/Movement/HBox/SampleArea/VBox/Panel/HBox/Section1"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="Tab/Movement/HBox/SampleArea/VBox/Panel/HBox/Section1/VBox"]
+layout_mode = 2
+text = "Test Area 1"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Tab/Movement/HBox/SampleArea/VBox/Panel/HBox/Section1/VBox"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Tab/Movement/HBox/SampleArea/VBox/Panel/HBox/Section1/VBox"]
+layout_mode = 2
+text = "Let's practice."
+horizontal_alignment = 1
+
+[node name="Section2" type="Control" parent="Tab/Movement/HBox/SampleArea/VBox/Panel/HBox"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+script = ExtResource("3_d0ygo")
+focus_marked_container = true
+
+[node name="VBox" type="VBoxContainer" parent="Tab/Movement/HBox/SampleArea/VBox/Panel/HBox/Section2"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="Tab/Movement/HBox/SampleArea/VBox/Panel/HBox/Section2/VBox"]
+layout_mode = 2
+text = "Test Area 2"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Tab/Movement/HBox/SampleArea/VBox/Panel/HBox/Section2/VBox"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Tab/Movement/HBox/SampleArea/VBox/Panel/HBox/Section2/VBox"]
+layout_mode = 2
+text = "Excellent!"
+horizontal_alignment = 1
+
+[node name="Panel2" type="PanelContainer" parent="Tab/Movement/HBox/SampleArea/VBox"]
+custom_minimum_size = Vector2(450, 125)
+layout_mode = 2
+
+[node name="Section1" type="Control" parent="Tab/Movement/HBox/SampleArea/VBox/Panel2"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+script = ExtResource("3_d0ygo")
+focus_marked_container = true
+
+[node name="Label" type="Label" parent="Tab/Movement/HBox/SampleArea/VBox/Panel2/Section1"]
+custom_minimum_size = Vector2(500, 100)
+layout_mode = 2
+offset_right = 250.0
+offset_bottom = 32.0
+text = "This label has this whole section all to itself, so there can be quite a bit of text."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Panel3" type="PanelContainer" parent="Tab/Movement/HBox/SampleArea/VBox"]
+custom_minimum_size = Vector2(450, 100)
+layout_mode = 2
+
+[node name="Section1" type="Control" parent="Tab/Movement/HBox/SampleArea/VBox/Panel3"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+script = ExtResource("3_d0ygo")
+focus_marked_container = true
+
+[node name="VBox" type="HBoxContainer" parent="Tab/Movement/HBox/SampleArea/VBox/Panel3/Section1"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 0
+offset_right = 348.0
+offset_bottom = 80.0
+
+[node name="Label" type="Label" parent="Tab/Movement/HBox/SampleArea/VBox/Panel3/Section1/VBox"]
+custom_minimum_size = Vector2(150, 80)
+layout_mode = 2
+text = "This one box has 3 labels."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Label2" type="Label" parent="Tab/Movement/HBox/SampleArea/VBox/Panel3/Section1/VBox"]
+custom_minimum_size = Vector2(150, 80)
+layout_mode = 2
+text = "You are navigating them one by
+one."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Label3" type="Label" parent="Tab/Movement/HBox/SampleArea/VBox/Panel3/Section1/VBox"]
+custom_minimum_size = Vector2(150, 80)
+layout_mode = 2
+text = "You're getting good at this."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Buttons" type="PanelContainer" parent="Tab"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="HBox" type="HBoxContainer" parent="Tab/Buttons"]
+layout_mode = 2
+
+[node name="Instruction" type="Control" parent="Tab/Buttons/HBox"]
+custom_minimum_size = Vector2(400, 250)
+layout_mode = 2
+script = ExtResource("3_d0ygo")
+focus_marked_container = true
+
+[node name="CenterContainer" type="Label" parent="Tab/Buttons/HBox/Instruction"]
+custom_minimum_size = Vector2(400, 250)
+layout_mode = 2
+offset_left = 4.0
+offset_right = 404.0
+offset_bottom = 436.0
+size_flags_horizontal = 4
+size_flags_vertical = 1
+text = "To press a button, press [DOM_select].
+
+There are also menu buttons and dropdowns. When you press these kinds of buttons, a menu will appear.
+
+To navigate the menu, press [DOM_item_decrement] or [DOM_item_increment] to navigate the dropdown menu. You can select an option with [DOM_select]. You can close an option with [DOM_cancel].
+
+You can practice on this tab. Once you are done practicing, you can proceed by pressing [DOM_item_increment] while this label is selected."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("2_f4yqm")
+
+[node name="SampleArea" type="Control" parent="Tab/Buttons/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("3_d0ygo")
+focus_marked_container = true
+
+[node name="VBox" type="VBoxContainer" parent="Tab/Buttons/HBox/SampleArea"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -225.0
+offset_right = 225.0
+offset_bottom = 150.0
+grow_horizontal = 2
+theme_override_constants/separation = 40
+
+[node name="CenterContainer" type="CenterContainer" parent="Tab/Buttons/HBox/SampleArea/VBox"]
+custom_minimum_size = Vector2(450, 100)
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Tab/Buttons/HBox/SampleArea/VBox/CenterContainer"]
+custom_minimum_size = Vector2(200, 65)
+layout_mode = 2
+text = "Test Button"
+
+[node name="CenterContainer2" type="CenterContainer" parent="Tab/Buttons/HBox/SampleArea/VBox"]
+custom_minimum_size = Vector2(450, 100)
+layout_mode = 2
+
+[node name="Button" type="MenuButton" parent="Tab/Buttons/HBox/SampleArea/VBox/CenterContainer2"]
+custom_minimum_size = Vector2(200, 65)
+layout_mode = 2
+text = "Menu Button"
+item_count = 4
+popup/item_0/text = "Item 1"
+popup/item_1/text = "Item 2"
+popup/item_1/id = 1
+popup/item_2/text = "More Items"
+popup/item_2/id = 2
+popup/item_2/separator = true
+popup/item_3/text = "Item 3"
+popup/item_3/id = 3
+
+[node name="CenterContainer3" type="CenterContainer" parent="Tab/Buttons/HBox/SampleArea/VBox"]
+custom_minimum_size = Vector2(450, 100)
+layout_mode = 2
+
+[node name="Button" type="OptionButton" parent="Tab/Buttons/HBox/SampleArea/VBox/CenterContainer3"]
+custom_minimum_size = Vector2(200, 65)
+layout_mode = 2
+item_count = 3
+popup/item_0/text = "Item 1"
+popup/item_1/text = "Item 2"
+popup/item_1/id = 1
+popup/item_2/text = "Item 3"
+popup/item_2/id = 3
+
+[node name="Text Boxes" type="PanelContainer" parent="Tab"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 3
+
+[node name="HBox" type="HBoxContainer" parent="Tab/Text Boxes"]
+layout_mode = 2
+
+[node name="Instruction" type="Control" parent="Tab/Text Boxes/HBox"]
+custom_minimum_size = Vector2(400, 250)
+layout_mode = 2
+script = ExtResource("3_d0ygo")
+focus_marked_container = true
+
+[node name="CenterContainer" type="Label" parent="Tab/Text Boxes/HBox/Instruction"]
+custom_minimum_size = Vector2(400, 250)
+layout_mode = 2
+offset_left = 4.0
+offset_right = 404.0
+offset_bottom = 436.0
+size_flags_horizontal = 4
+size_flags_vertical = 1
+text = "You can type in Text Boxes, Code Edits or Line Edits with text.
+
+You can navigate between Text Boxes with [DOM_item_decrement] [DOM_item_increment] when at the beginning or the end of the text respectively.
+
+To read the current text, press [DOM_read_item].
+
+You cannot tab out of Text Boxes or Code Edits. 
+
+You can practice on this tab. Once you are done practicing, you can proceed by pressing [DOM_item_increment] while this label is selected."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("2_f4yqm")
+
+[node name="SampleArea" type="Control" parent="Tab/Text Boxes/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("3_d0ygo")
+focus_marked_container = true
+
+[node name="VBox" type="VBoxContainer" parent="Tab/Text Boxes/HBox/SampleArea"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -225.0
+offset_right = 225.0
+offset_bottom = 150.0
+grow_horizontal = 2
+theme_override_constants/separation = 40
+
+[node name="CenterContainer" type="CenterContainer" parent="Tab/Text Boxes/HBox/SampleArea/VBox"]
+custom_minimum_size = Vector2(450, 100)
+layout_mode = 2
+
+[node name="Button" type="LineEdit" parent="Tab/Text Boxes/HBox/SampleArea/VBox/CenterContainer"]
+custom_minimum_size = Vector2(400, 32)
+layout_mode = 2
+
+[node name="CenterContainer2" type="CenterContainer" parent="Tab/Text Boxes/HBox/SampleArea/VBox"]
+custom_minimum_size = Vector2(450, 100)
+layout_mode = 2
+
+[node name="Button" type="TextEdit" parent="Tab/Text Boxes/HBox/SampleArea/VBox/CenterContainer2"]
+custom_minimum_size = Vector2(400, 100)
+layout_mode = 2
+
+[node name="CenterContainer3" type="CenterContainer" parent="Tab/Text Boxes/HBox/SampleArea/VBox"]
+custom_minimum_size = Vector2(450, 100)
+layout_mode = 2
+
+[node name="Button" type="CodeEdit" parent="Tab/Text Boxes/HBox/SampleArea/VBox/CenterContainer3"]
+custom_minimum_size = Vector2(400, 100)
+layout_mode = 2
+gutters_draw_line_numbers = true
+
+[node name="Sliders" type="PanelContainer" parent="Tab"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 4
+
+[node name="HBox" type="HBoxContainer" parent="Tab/Sliders"]
+layout_mode = 2
+
+[node name="Instruction" type="Control" parent="Tab/Sliders/HBox"]
+custom_minimum_size = Vector2(400, 250)
+layout_mode = 2
+script = ExtResource("3_d0ygo")
+focus_marked_container = true
+
+[node name="CenterContainer" type="Label" parent="Tab/Sliders/HBox/Instruction"]
+custom_minimum_size = Vector2(400, 250)
+layout_mode = 2
+offset_left = 4.0
+offset_right = 404.0
+offset_bottom = 436.0
+size_flags_horizontal = 4
+size_flags_vertical = 1
+text = "Sliders can have their values changed by pressing the [DOM_item_decrement] or [DOM_item_increment] keys.
+
+Spin Boxes work in the same way.
+
+Progress Bars can't be manipulated, but their status can be read.
+
+Sliders can be either horizontal or vertical.
+
+You can practice on this tab. Once you are done practicing, you can proceed by pressing [DOM_item_increment] while this label is selected."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("2_f4yqm")
+
+[node name="SampleArea" type="Control" parent="Tab/Sliders/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("3_d0ygo")
+focus_marked_container = true
+
+[node name="HBox" type="HBoxContainer" parent="Tab/Sliders/HBox/SampleArea"]
+custom_minimum_size = Vector2(530, 400)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBox" type="VBoxContainer" parent="Tab/Sliders/HBox/SampleArea/HBox"]
+custom_minimum_size = Vector2(300, 420)
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Label" type="Label" parent="Tab/Sliders/HBox/SampleArea/HBox/VBox"]
+layout_mode = 2
+text = "Horizontal Slider"
+horizontal_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="Tab/Sliders/HBox/SampleArea/HBox/VBox"]
+layout_mode = 2
+tick_count = 10
+ticks_on_borders = true
+script = ExtResource("5_u3uw8")
+read_value = true
+
+[node name="Space" type="Control" parent="Tab/Sliders/HBox/SampleArea/HBox/VBox"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Tab/Sliders/HBox/SampleArea/HBox/VBox"]
+layout_mode = 2
+text = "	Spin Box"
+horizontal_alignment = 1
+
+[node name="SpinBox" type="SpinBox" parent="Tab/Sliders/HBox/SampleArea/HBox/VBox"]
+layout_mode = 2
+
+[node name="Space2" type="Control" parent="Tab/Sliders/HBox/SampleArea/HBox/VBox"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="Label3" type="Label" parent="Tab/Sliders/HBox/SampleArea/HBox/VBox"]
+layout_mode = 2
+text = "Progress Bar"
+horizontal_alignment = 1
+
+[node name="Progress" type="ProgressBar" parent="Tab/Sliders/HBox/SampleArea/HBox/VBox"]
+layout_mode = 2
+value = 68.0
+script = ExtResource("6_3g4jh")
+read_percent = true
+
+[node name="Space" type="Control" parent="Tab/Sliders/HBox/SampleArea/HBox"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Tab/Sliders/HBox/SampleArea/HBox"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Tab/Sliders/HBox/SampleArea/HBox/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Vertical Slider"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Tab/Sliders/HBox/SampleArea/HBox/VBoxContainer"]
+layout_mode = 2
+
+[node name="VSlider" type="VSlider" parent="Tab/Sliders/HBox/SampleArea/HBox/VBoxContainer"]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 2
+size_flags_horizontal = 4
+tick_count = 10
+ticks_on_borders = true
+script = ExtResource("7_gxjd0")
+read_value = true
+
+[node name="Media" type="PanelContainer" parent="Tab"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 5
+
+[node name="HBox" type="HBoxContainer" parent="Tab/Media"]
+layout_mode = 2
+
+[node name="Instruction" type="Control" parent="Tab/Media/HBox"]
+custom_minimum_size = Vector2(400, 250)
+layout_mode = 2
+script = ExtResource("3_d0ygo")
+focus_marked_container = true
+
+[node name="CenterContainer" type="Label" parent="Tab/Media/HBox/Instruction"]
+custom_minimum_size = Vector2(400, 250)
+layout_mode = 2
+offset_left = 4.0
+offset_right = 404.0
+offset_bottom = 436.0
+size_flags_horizontal = 4
+size_flags_vertical = 1
+text = "If images have alt text, it will be read as the image is focused.
+
+When you select a video streaming control, if it has been configured properly, you can hear TTS audio description as it plays, while selected.
+
+You can also control the video. Press [ax_start_video] to start the video if it is not playing, and [ax_stop_video] to stop the video. If [ax_start_video] is pressed while playing, the video will be paused.
+
+You can practice on this tab. Once you are done practicing, you can proceed by pressing [DOM_item_increment] while this label is selected."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("2_f4yqm")
+
+[node name="SampleArea" type="Control" parent="Tab/Media/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("3_d0ygo")
+focus_marked_container = true
+
+[node name="VBox" type="VBoxContainer" parent="Tab/Media/HBox/SampleArea"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -225.0
+offset_right = 225.0
+offset_bottom = 150.0
+grow_horizontal = 2
+theme_override_constants/separation = 40
+
+[node name="Sprites" type="Control" parent="Tab/Media/HBox/SampleArea/VBox"]
+custom_minimum_size = Vector2(550, 80)
+layout_mode = 2
+script = ExtResource("3_d0ygo")
+focus_marked_container = true
+
+[node name="CenterContainer" type="CenterContainer" parent="Tab/Media/HBox/SampleArea/VBox/Sprites"]
+custom_minimum_size = Vector2(550, 80)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Tab/Media/HBox/SampleArea/VBox/Sprites/CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 40
+
+[node name="TextureRect" type="TextureRect" parent="Tab/Media/HBox/SampleArea/VBox/Sprites/CenterContainer/HBoxContainer"]
+texture_filter = 1
+layout_mode = 2
+texture = ExtResource("4_4dw17")
+stretch_mode = 2
+script = ExtResource("5_ae1xm")
+alt_text = "Lizard creature sprite."
+
+[node name="TextureRect2" type="TextureRect" parent="Tab/Media/HBox/SampleArea/VBox/Sprites/CenterContainer/HBoxContainer"]
+texture_filter = 1
+layout_mode = 2
+texture = ExtResource("6_vfla3")
+stretch_mode = 2
+script = ExtResource("5_ae1xm")
+alt_text = "Mammal Creature Sprite."
+
+[node name="TextureRect3" type="TextureRect" parent="Tab/Media/HBox/SampleArea/VBox/Sprites/CenterContainer/HBoxContainer"]
+texture_filter = 1
+layout_mode = 2
+texture = ExtResource("7_0rkrn")
+stretch_mode = 2
+script = ExtResource("5_ae1xm")
+alt_text = "Purple cat creature with golden eyes."
+
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="Tab/Media/HBox/SampleArea/VBox"]
+custom_minimum_size = Vector2(500, 315)
+layout_mode = 2
+stream = ExtResource("8_fro6k")
+autoplay = true
+expand = true
+loop = true
+script = ExtResource("9_hg3l1")
+audio_description = "res://sample_assets/video/audio_desc.txt"
+subtitles = "res://sample_assets/video/subtitles.txt"
+
+[node name="Tabs" type="PanelContainer" parent="Tab"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 6
+
+[node name="HBox" type="HBoxContainer" parent="Tab/Tabs"]
+layout_mode = 2
+
+[node name="Instruction" type="Control" parent="Tab/Tabs/HBox"]
+custom_minimum_size = Vector2(400, 250)
+layout_mode = 2
+script = ExtResource("3_d0ygo")
+focus_marked_container = true
+
+[node name="CenterContainer" type="Label" parent="Tab/Tabs/HBox/Instruction"]
+custom_minimum_size = Vector2(400, 250)
+layout_mode = 2
+offset_left = 4.0
+offset_right = 404.0
+offset_bottom = 436.0
+size_flags_horizontal = 4
+size_flags_vertical = 1
+text = "When a Tab Bar is selected, you can use [DOM_item_decrement] or [DOM_item_increment] to change the tabs.
+
+Similarly, you can navigate the Menu Bar with [DOM_item_decrement] or [DOM_item_increment]. To open a menu, press [DOM_select]. You can use [DOM_item_decrement] or [DOM_item_increment] to navigate opened menus.
+
+You can practice on this tab. Once you are done practicing, you can proceed by pressing [DOM_item_increment] while this label is selected."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("2_f4yqm")
+
+[node name="SampleArea" type="Control" parent="Tab/Tabs/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("3_d0ygo")
+focus_marked_container = true
+
+[node name="VBox" type="VBoxContainer" parent="Tab/Tabs/HBox/SampleArea"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -225.0
+offset_right = 225.0
+offset_bottom = 150.0
+grow_horizontal = 2
+theme_override_constants/separation = 40
+
+[node name="Center" type="CenterContainer" parent="Tab/Tabs/HBox/SampleArea/VBox"]
+custom_minimum_size = Vector2(450, 250)
+layout_mode = 2
+
+[node name="Button" type="TabContainer" parent="Tab/Tabs/HBox/SampleArea/VBox/Center"]
+custom_minimum_size = Vector2(400, 250)
+layout_mode = 2
+current_tab = 2
+
+[node name="Berry Bird" type="PanelContainer" parent="Tab/Tabs/HBox/SampleArea/VBox/Center/Button"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="HBox" type="HBoxContainer" parent="Tab/Tabs/HBox/SampleArea/VBox/Center/Button/Berry Bird"]
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="Tab/Tabs/HBox/SampleArea/VBox/Center/Button/Berry Bird/HBox"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Tab/Tabs/HBox/SampleArea/VBox/Center/Button/Berry Bird/HBox/CenterContainer"]
+texture_filter = 1
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+texture = ExtResource("10_d2yv8")
+script = ExtResource("5_ae1xm")
+alt_text = "A brown bird with a berry in its mouth."
+
+[node name="Label" type="Label" parent="Tab/Tabs/HBox/SampleArea/VBox/Center/Button/Berry Bird/HBox"]
+custom_minimum_size = Vector2(200, 185)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "This bird likes to eat lots of berries!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Mystic Deer" type="PanelContainer" parent="Tab/Tabs/HBox/SampleArea/VBox/Center/Button"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="HBox" type="HBoxContainer" parent="Tab/Tabs/HBox/SampleArea/VBox/Center/Button/Mystic Deer"]
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="Tab/Tabs/HBox/SampleArea/VBox/Center/Button/Mystic Deer/HBox"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Tab/Tabs/HBox/SampleArea/VBox/Center/Button/Mystic Deer/HBox/CenterContainer"]
+texture_filter = 1
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+texture = ExtResource("11_pqsl8")
+script = ExtResource("5_ae1xm")
+alt_text = "A green deer with a thick coat."
+
+[node name="Label" type="Label" parent="Tab/Tabs/HBox/SampleArea/VBox/Center/Button/Mystic Deer/HBox"]
+custom_minimum_size = Vector2(200, 185)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "This deer is the king of the forest."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Dinosaur" type="PanelContainer" parent="Tab/Tabs/HBox/SampleArea/VBox/Center/Button"]
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="HBox" type="HBoxContainer" parent="Tab/Tabs/HBox/SampleArea/VBox/Center/Button/Dinosaur"]
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="Tab/Tabs/HBox/SampleArea/VBox/Center/Button/Dinosaur/HBox"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Tab/Tabs/HBox/SampleArea/VBox/Center/Button/Dinosaur/HBox/CenterContainer"]
+texture_filter = 1
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+texture = ExtResource("12_qqtdp")
+script = ExtResource("5_ae1xm")
+alt_text = "A red dinosaur with a skull on its head."
+
+[node name="Label" type="Label" parent="Tab/Tabs/HBox/SampleArea/VBox/Center/Button/Dinosaur/HBox"]
+custom_minimum_size = Vector2(200, 185)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "A vicious dinosaur with a terrifying claw!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Center2" type="CenterContainer" parent="Tab/Tabs/HBox/SampleArea/VBox"]
+custom_minimum_size = Vector2(450, 75)
+layout_mode = 2
+
+[node name="MenuBar" type="MenuBar" parent="Tab/Tabs/HBox/SampleArea/VBox/Center2"]
+layout_mode = 2
+
+[node name="General" type="PopupMenu" parent="Tab/Tabs/HBox/SampleArea/VBox/Center2/MenuBar"]
+item_count = 3
+item_0/text = "Item 1"
+item_1/text = "Item 2"
+item_1/id = 1
+item_2/text = "Item 3"
+item_2/id = 2
+
+[node name="Bird List" type="PopupMenu" parent="Tab/Tabs/HBox/SampleArea/VBox/Center2/MenuBar"]
+auto_translate_mode = 1
+item_count = 3
+item_0/text = "Test 1"
+item_1/text = "Test 2"
+item_1/id = 1
+item_2/text = "Test 3"
+item_2/id = 2
+
+[node name="Colors" type="PopupMenu" parent="Tab/Tabs/HBox/SampleArea/VBox/Center2/MenuBar"]
+auto_translate_mode = 1
+item_count = 3
+item_0/text = "Object 1"
+item_1/text = "Object 2"
+item_1/id = 1
+item_2/text = "Object 3"
+item_2/id = 2
+
+[node name="Trees" type="PanelContainer" parent="Tab"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 7
+
+[node name="HBox" type="HBoxContainer" parent="Tab/Trees"]
+layout_mode = 2
+
+[node name="Instruction" type="Control" parent="Tab/Trees/HBox"]
+custom_minimum_size = Vector2(400, 250)
+layout_mode = 2
+script = ExtResource("3_d0ygo")
+focus_marked_container = true
+
+[node name="CenterContainer" type="Label" parent="Tab/Trees/HBox/Instruction"]
+custom_minimum_size = Vector2(400, 250)
+layout_mode = 2
+offset_left = 4.0
+offset_right = 404.0
+offset_bottom = 436.0
+size_flags_horizontal = 4
+size_flags_vertical = 1
+text = "You can navigate the items of trees with [DOM_item_decrement] or [DOM_item_increment].
+
+Some items have children. If you want to collapse these items, you can press [DOM_select]. To uncollapse them, press [DOM_select] again.
+
+You can practice on this tab. Once you are done practicing, you can proceed by pressing [DOM_item_increment] while this label is selected."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("2_f4yqm")
+
+[node name="SampleArea" type="Control" parent="Tab/Trees/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("3_d0ygo")
+focus_marked_container = true
+
+[node name="Tree" type="Tree" parent="Tab/Trees/HBox/SampleArea"]
+custom_minimum_size = Vector2(520, 410)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -520.0
+offset_top = -205.0
+offset_bottom = 205.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="Tools" type="PanelContainer" parent="Tab"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Tab/Tools"]
+layout_mode = 2
+
+[node name="CenterContainer" type="Label" parent="Tab/Tools/VBoxContainer"]
+custom_minimum_size = Vector2(500, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 1
+text = "There are multiple tools that you can access by pressing [DOM_screenreader_menu]."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("2_f4yqm")
+
+[node name="GridContainer" type="GridContainer" parent="Tab/Tools/VBoxContainer"]
+layout_mode = 2
+columns = 3
+
+[node name="Label" type="Label" parent="Tab/Tools/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(300, 320)
+layout_mode = 2
+size_flags_vertical = 1
+text = "The \"Control Selector\" lets you select any control available to the screenreader, organized by a given type, such as buttons, labels or textboxes."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Label2" type="Label" parent="Tab/Tools/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(300, 320)
+layout_mode = 2
+size_flags_vertical = 1
+text = "\"Options\" lets you configure the screenreader and other accessibility settings packaged with the screenreader."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Label3" type="Label" parent="Tab/Tools/VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(300, 320)
+layout_mode = 2
+size_flags_vertical = 1
+text = "The tutorial is also available to be viewed again if you need it."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Conclusion" type="PanelContainer" parent="Tab"]
+layout_mode = 2
+metadata/_tab_index = 9
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Tab/Conclusion"]
+layout_mode = 2
+
+[node name="CenterContainer" type="Label" parent="Tab/Conclusion/HBoxContainer"]
+custom_minimum_size = Vector2(500, 250)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 1
+text = "Congratulations!
+
+You have completed the screenreader tutorial.
+
+You can navigate to the next button to close the tutorial.
+
+If you need to ever review the tutorial again, it is available in the Screenreader menu by pressing [DOM_screenreader_menu]."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("2_f4yqm")
+
+[node name="Control" type="Control" parent="Tab/Conclusion/HBoxContainer"]
+custom_minimum_size = Vector2(430, 420)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="TextureRect" type="TextureRect" parent="Tab/Conclusion/HBoxContainer/Control"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 19.0
+offset_top = 34.0
+offset_right = 269.0
+offset_bottom = 234.0
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("14_hoags")
+
+[node name="FinishButton" type="Button" parent="Tab/Conclusion/HBoxContainer/Control"]
+custom_minimum_size = Vector2(200, 48)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -48.0
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Exit"
+
+[node name="Character" type="TextureRect" parent="Tab/Conclusion/HBoxContainer/Control"]
+texture_filter = 1
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 0
+offset_left = 48.0
+offset_top = 117.0
+offset_right = 176.0
+offset_bottom = 245.0
+texture = ExtResource("15_wantx")
+script = ExtResource("5_ae1xm")
+alt_text = "An oppossum carrying a lantern."
+
+[node name="Label" type="Label" parent="Tab/Conclusion/HBoxContainer/Control"]
+layout_mode = 0
+offset_left = 38.0
+offset_top = 49.0
+offset_right = 381.0
+offset_bottom = 96.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "Congratulations!"
+
+[connection signal="ready" from="Tab/Trees/HBox/SampleArea/Tree" to="." method="_on_tree_ready"]
+[connection signal="pressed" from="Tab/Conclusion/HBoxContainer/Control/FinishButton" to="." method="_on_button_pressed"]

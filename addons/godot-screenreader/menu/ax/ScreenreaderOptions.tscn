@@ -1,0 +1,130 @@
+[gd_scene load_steps=8 format=3 uid="uid://bfj10sxec1v84"]
+
+[ext_resource type="PackedScene" uid="uid://bl5husybo5s2r" path="res://addons/godot-screenreader/menu/BaseMenu.tscn" id="1_kx5vv"]
+[ext_resource type="PackedScene" uid="uid://dgnj6ej5wuvke" path="res://addons/godot-screenreader/menu/ax/ScreenreaderOptionsControl.tscn" id="2_4k5n3"]
+[ext_resource type="Script" path="res://addons/godot-screenreader/menu/ax/scripts/screenreader_options.gd" id="2_drb4s"]
+[ext_resource type="Texture2D" uid="uid://bl88nqyr458nl" path="res://addons/godot-screenreader/ui/img/default/x_box.png" id="3_wvfio"]
+[ext_resource type="Script" path="res://addons/godot-screenreader/scripts/object_scripts/ax_button.gd" id="4_pyb10"]
+
+[sub_resource type="InputEventAction" id="InputEventAction_0or0r"]
+action = &"ui_cancel"
+pressed = true
+
+[sub_resource type="Shortcut" id="Shortcut_nbomf"]
+events = [SubResource("InputEventAction_0or0r")]
+
+[node name="BaseMenu" instance=ExtResource("1_kx5vv")]
+script = ExtResource("2_drb4s")
+focus_node = NodePath("Panel/VBox/Content/Center/Panel/Contents/OptionsControl/Screenreader/VBoxContainer/Label")
+
+[node name="Panel" parent="." index="1"]
+custom_minimum_size = Vector2(500, 610)
+offset_right = 500.0
+offset_bottom = 400.0
+
+[node name="VBox" parent="Panel" index="0"]
+custom_minimum_size = Vector2(500, 600)
+offset_left = -250.0
+offset_right = 250.0
+offset_bottom = 600.0
+
+[node name="Title" parent="Panel/VBox" index="0"]
+custom_minimum_size = Vector2(500, 50)
+
+[node name="ColorRect" parent="Panel/VBox/Title/HBoxContainer" index="0"]
+custom_minimum_size = Vector2(500, 50)
+
+[node name="Center" parent="Panel/VBox/Title/HBoxContainer/ColorRect" index="0"]
+custom_minimum_size = Vector2(500, 50)
+
+[node name="TitleGradient" parent="Panel/VBox/Title/HBoxContainer/ColorRect/Center" index="0"]
+custom_minimum_size = Vector2(500, 42)
+
+[node name="Grid" parent="Panel/VBox/Title/HBoxContainer/ColorRect" index="1"]
+custom_minimum_size = Vector2(490, 50)
+offset_right = 584.0
+
+[node name="Label" parent="Panel/VBox/Title/HBoxContainer/ColorRect/Grid" index="0"]
+text = "Screenreader Options"
+
+[node name="EndButtons" parent="Panel/VBox/Title/HBoxContainer/ColorRect/Grid" index="1"]
+custom_minimum_size = Vector2(100, 0)
+
+[node name="HBox" parent="Panel/VBox/Title/HBoxContainer/ColorRect/Grid/EndButtons" index="0"]
+custom_minimum_size = Vector2(110, 50)
+offset_left = -186.0
+offset_right = -96.0
+
+[node name="Close" parent="Panel/VBox/Title/HBoxContainer/ColorRect/Grid/EndButtons/HBox" index="0"]
+visible = false
+ignore = true
+
+[node name="Close2" type="Button" parent="Panel/VBox/Title/HBoxContainer/ColorRect/Grid/EndButtons/HBox" index="1"]
+layout_mode = 2
+shortcut = SubResource("Shortcut_nbomf")
+icon = ExtResource("3_wvfio")
+flat = true
+icon_alignment = 1
+script = ExtResource("4_pyb10")
+alt_text = "Close"
+enable_mouse = true
+
+[node name="Spacer" type="Control" parent="Panel/VBox" index="1"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="Content" parent="Panel/VBox" index="2"]
+custom_minimum_size = Vector2(500, 450)
+
+[node name="Center" parent="Panel/VBox/Content" index="0"]
+custom_minimum_size = Vector2(500, 450)
+offset_right = 500.0
+offset_bottom = 450.0
+
+[node name="Panel" parent="Panel/VBox/Content/Center" index="0"]
+custom_minimum_size = Vector2(490, 450)
+
+[node name="OptionsControl" parent="Panel/VBox/Content/Center/Panel/Contents" index="0" instance=ExtResource("2_4k5n3")]
+layout_mode = 1
+
+[node name="Spacer2" type="Control" parent="Panel/VBox" index="3"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="BottomControls" parent="Panel/VBox" index="4"]
+custom_minimum_size = Vector2(500, 70)
+
+[node name="Center" parent="Panel/VBox/BottomControls" index="0"]
+custom_minimum_size = Vector2(500, 70)
+
+[node name="Panel" parent="Panel/VBox/BottomControls/Center" index="0"]
+custom_minimum_size = Vector2(490, 50)
+
+[node name="Grid" parent="Panel/VBox/BottomControls/Center/Panel" index="0"]
+custom_minimum_size = Vector2(480, 50)
+
+[node name="Content" parent="Panel/VBox/BottomControls/Center/Panel/Grid" index="0"]
+custom_minimum_size = Vector2(160, 50)
+
+[node name="HBox" parent="Panel/VBox/BottomControls/Center/Panel/Grid/EndButtons" index="0"]
+custom_minimum_size = Vector2(310, 40)
+layout_direction = 3
+
+[node name="OK" type="Button" parent="Panel/VBox/BottomControls/Center/Panel/Grid/EndButtons/HBox" index="0"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "OK"
+
+[node name="Cancel" type="Button" parent="Panel/VBox/BottomControls/Center/Panel/Grid/EndButtons/HBox" index="1"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Cancel
+"
+
+[connection signal="pressed" from="Panel/VBox/Title/HBoxContainer/ColorRect/Grid/EndButtons/HBox/Close2" to="." method="_on_close_2_pressed"]
+[connection signal="pressed" from="Panel/VBox/BottomControls/Center/Panel/Grid/EndButtons/HBox/OK" to="." method="_on_ok_pressed"]
+[connection signal="pressed" from="Panel/VBox/BottomControls/Center/Panel/Grid/EndButtons/HBox/Cancel" to="." method="_on_cancel_pressed"]
+
+[editable path="Panel/VBox/Content/Center/Panel/Contents/OptionsControl"]

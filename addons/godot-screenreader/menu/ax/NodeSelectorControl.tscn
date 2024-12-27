@@ -1,0 +1,69 @@
+[gd_scene load_steps=3 format=3 uid="uid://bg8xhuafxvvd3"]
+
+[ext_resource type="PackedScene" uid="uid://xq47enyrq6tv" path="res://addons/godot-screenreader/menu/ax/NodeSelectorButton.tscn" id="1_cd50u"]
+[ext_resource type="Script" path="res://addons/godot-screenreader/menu/ax/scripts/node_selector_control.gd" id="1_hit1l"]
+
+[node name="NodeSelectorControl" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_hit1l")
+
+[node name="TabContainer" type="TabContainer" parent="."]
+custom_minimum_size = Vector2(490, 200)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+current_tab = 0
+
+[node name="Labels" type="PanelContainer" parent="TabContainer"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="Button" parent="TabContainer/Labels" instance=ExtResource("1_cd50u")]
+layout_mode = 2
+
+[node name="Buttons" type="PanelContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="Button" parent="TabContainer/Buttons" instance=ExtResource("1_cd50u")]
+layout_mode = 2
+
+[node name="Textboxes" type="PanelContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="Button" parent="TabContainer/Textboxes" instance=ExtResource("1_cd50u")]
+layout_mode = 2
+
+[node name="Sliders" type="PanelContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 3
+
+[node name="Button" parent="TabContainer/Sliders" instance=ExtResource("1_cd50u")]
+layout_mode = 2
+
+[node name="Media" type="PanelContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 4
+
+[node name="Button" parent="TabContainer/Media" instance=ExtResource("1_cd50u")]
+layout_mode = 2
+
+[node name="Other" type="PanelContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 5
+
+[node name="Button" parent="TabContainer/Other" instance=ExtResource("1_cd50u")]
+layout_mode = 2
+
+[connection signal="tree_exited" from="." to="." method="_on_tree_exited"]

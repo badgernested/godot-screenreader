@@ -1,4 +1,4 @@
-extends "res://screenreader/scripts/object_scripts/ax_control.gd"
+extends "res://addons/godot-screenreader/scripts/object_scripts/ax_control.gd"
 
 const BUTTON_ON = "Button turned on."
 const BUTTON_OFF = "Button turned off."

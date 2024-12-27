@@ -1,0 +1,89 @@
+[gd_scene load_steps=4 format=3 uid="uid://ceo3lrijmh43t"]
+
+[ext_resource type="PackedScene" uid="uid://bl5husybo5s2r" path="res://addons/godot-screenreader/menu/BaseMenu.tscn" id="1_v81io"]
+[ext_resource type="PackedScene" uid="uid://c6fh35rs1xet6" path="res://addons/godot-screenreader/menu/ax/TutorialControl.tscn" id="2_0aa6k"]
+[ext_resource type="Script" path="res://addons/godot-screenreader/menu/ax/tutorial.gd" id="2_2mmsm"]
+
+[node name="Tutorial" instance=ExtResource("1_v81io")]
+script = ExtResource("2_2mmsm")
+focus_node = NodePath("Panel/VBox/Content/Center/Panel/Contents/TutorialControl/Tab/Introduction/CenterContainer")
+
+[node name="Panel" parent="." index="1"]
+custom_minimum_size = Vector2(1000, 600)
+offset_right = 600.0
+offset_bottom = 350.0
+
+[node name="VBox" parent="Panel" index="0"]
+offset_left = -500.0
+offset_right = 500.0
+offset_bottom = 600.0
+
+[node name="HBoxContainer" parent="Panel/VBox/Title" index="0"]
+offset_right = 600.0
+offset_bottom = 50.0
+
+[node name="ColorRect" parent="Panel/VBox/Title/HBoxContainer" index="0"]
+custom_minimum_size = Vector2(1000, 50)
+
+[node name="Center" parent="Panel/VBox/Title/HBoxContainer/ColorRect" index="0"]
+custom_minimum_size = Vector2(1000, 50)
+
+[node name="TitleGradient" parent="Panel/VBox/Title/HBoxContainer/ColorRect/Center" index="0"]
+custom_minimum_size = Vector2(1000, 42)
+
+[node name="Grid" parent="Panel/VBox/Title/HBoxContainer/ColorRect" index="1"]
+custom_minimum_size = Vector2(990, 50)
+
+[node name="Label" parent="Panel/VBox/Title/HBoxContainer/ColorRect/Grid" index="0"]
+custom_minimum_size = Vector2(750, 0)
+text = "Tutorial"
+
+[node name="Content" parent="Panel/VBox" index="1"]
+custom_minimum_size = Vector2(1000, 530)
+
+[node name="Center" parent="Panel/VBox/Content" index="0"]
+custom_minimum_size = Vector2(1000, 530)
+
+[node name="Panel" parent="Panel/VBox/Content/Center" index="0"]
+custom_minimum_size = Vector2(990, 520)
+
+[node name="TutorialControl" parent="Panel/VBox/Content/Center/Panel/Contents" index="0" instance=ExtResource("2_0aa6k")]
+layout_mode = 0
+offset_right = 974.0
+offset_bottom = 504.0
+
+[node name="CenterContainer" parent="Panel/VBox/Content/Center/Panel/Contents/TutorialControl/Tab/Introduction" index="0"]
+text = "Welcome to the screenreader!
+
+To continue the tutorial, press [DOM_item_increment].
+
+If you turned on the screenreader by mistake, you can turn it off with [DOM_screenreader_enable].
+
+You can also navigate the tutorial through the Tab Bar. Press [DOM_up] or [DOM_down] to navigate the interface to the Tab Bar, and press [DOM_item_decrement] or [DOM_item_increment] to navigate the tabs.
+
+You can re-read selected elements by pressing [DOM_read_item]. You can stop the TTS's speaking by pressing [DOM_stop_talk].
+
+To exit, press [ui_cancel]."
+
+[node name="BottomControls" parent="Panel/VBox" index="2"]
+visible = false
+custom_minimum_size = Vector2(600, 0)
+
+[node name="Center" parent="Panel/VBox/BottomControls" index="0"]
+custom_minimum_size = Vector2(600, 0)
+offset_right = 600.0
+offset_bottom = 70.0
+
+[node name="Panel" parent="Panel/VBox/BottomControls/Center" index="0"]
+custom_minimum_size = Vector2(590, 0)
+
+[node name="Grid" parent="Panel/VBox/BottomControls/Center/Panel" index="0"]
+custom_minimum_size = Vector2(580, 0)
+
+[node name="Content" parent="Panel/VBox/BottomControls/Center/Panel/Grid" index="0"]
+custom_minimum_size = Vector2(250, 0)
+
+[node name="HBox" parent="Panel/VBox/BottomControls/Center/Panel/Grid/EndButtons" index="0"]
+custom_minimum_size = Vector2(320, 0)
+
+[editable path="Panel/VBox/Content/Center/Panel/Contents/TutorialControl"]

@@ -1,0 +1,86 @@
+[gd_scene load_steps=4 format=3 uid="uid://boyfagwjruv2a"]
+
+[ext_resource type="PackedScene" uid="uid://bl5husybo5s2r" path="res://addons/godot-screenreader/menu/BaseMenu.tscn" id="1_xtihy"]
+[ext_resource type="Script" path="res://addons/godot-screenreader/menu/ax/ax_menu.gd" id="2_ujph5"]
+[ext_resource type="PackedScene" uid="uid://bqvdhb8tkd41d" path="res://addons/godot-screenreader/menu/ax/AXMenuControl.tscn" id="2_uv2wf"]
+
+[node name="AccessMenu" instance=ExtResource("1_xtihy")]
+script = ExtResource("2_ujph5")
+focus_node = NodePath("Panel/VBox/Content/Center/Panel/Contents/AxMenuControl/PanelContainer/VBoxContainer/Label")
+
+[node name="Panel" parent="." index="1"]
+custom_minimum_size = Vector2(500, 490)
+offset_right = 500.0
+offset_bottom = 400.0
+
+[node name="VBox" parent="Panel" index="0"]
+offset_left = -250.0
+offset_right = 250.0
+
+[node name="Title" parent="Panel/VBox" index="0"]
+custom_minimum_size = Vector2(500, 50)
+
+[node name="ColorRect" parent="Panel/VBox/Title/HBoxContainer" index="0"]
+custom_minimum_size = Vector2(500, 50)
+
+[node name="Center" parent="Panel/VBox/Title/HBoxContainer/ColorRect" index="0"]
+custom_minimum_size = Vector2(500, 50)
+
+[node name="TitleGradient" parent="Panel/VBox/Title/HBoxContainer/ColorRect/Center" index="0"]
+custom_minimum_size = Vector2(502, 42)
+
+[node name="Grid" parent="Panel/VBox/Title/HBoxContainer/ColorRect" index="1"]
+custom_minimum_size = Vector2(490, 50)
+offset_right = 490.0
+
+[node name="Label" parent="Panel/VBox/Title/HBoxContainer/ColorRect/Grid" index="0"]
+custom_minimum_size = Vector2(320, 0)
+text = "Screenreader Tools"
+
+[node name="EndButtons" parent="Panel/VBox/Title/HBoxContainer/ColorRect/Grid" index="1"]
+custom_minimum_size = Vector2(60, 0)
+
+[node name="HBox" parent="Panel/VBox/Title/HBoxContainer/ColorRect/Grid/EndButtons" index="0"]
+custom_minimum_size = Vector2(90, 50)
+offset_left = -90.0
+
+[node name="Content" parent="Panel/VBox" index="1"]
+custom_minimum_size = Vector2(500, 350)
+
+[node name="Center" parent="Panel/VBox/Content" index="0"]
+custom_minimum_size = Vector2(500, 350)
+
+[node name="Panel" parent="Panel/VBox/Content/Center" index="0"]
+custom_minimum_size = Vector2(490, 340)
+
+[node name="AxMenuControl" parent="Panel/VBox/Content/Center/Panel/Contents" index="0" instance=ExtResource("2_uv2wf")]
+layout_mode = 1
+
+[node name="BottomControls" parent="Panel/VBox" index="2"]
+custom_minimum_size = Vector2(500, 70)
+
+[node name="Center" parent="Panel/VBox/BottomControls" index="0"]
+custom_minimum_size = Vector2(500, 70)
+
+[node name="Panel" parent="Panel/VBox/BottomControls/Center" index="0"]
+custom_minimum_size = Vector2(490, 50)
+
+[node name="Grid" parent="Panel/VBox/BottomControls/Center/Panel" index="0"]
+custom_minimum_size = Vector2(480, 50)
+
+[node name="HBox" parent="Panel/VBox/BottomControls/Center/Panel/Grid/EndButtons" index="0"]
+custom_minimum_size = Vector2(220, 50)
+offset_right = 220.0
+offset_bottom = 50.0
+
+[node name="Button" type="Button" parent="Panel/VBox/BottomControls/Center/Panel/Grid/EndButtons/HBox" index="0"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 20
+text = "OK"
+
+[connection signal="pressed" from="Panel/VBox/BottomControls/Center/Panel/Grid/EndButtons/HBox/Button" to="." method="_on_button_pressed"]
+
+[editable path="Panel/VBox/Content/Center/Panel/Contents/AxMenuControl"]
