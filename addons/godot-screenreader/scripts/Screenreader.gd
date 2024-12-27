@@ -488,7 +488,7 @@ static func _process_video_controls():
 static func _process_menubar_controls():
 	var properties = _get_object_data(focused)
 	var menu_pos = 0
-	
+
 	if !properties.is_empty():
 		menu_pos = properties["selected_menu"]
 	
@@ -513,6 +513,8 @@ static func _process_menubar_controls():
 				_add_token(text)
 				
 				_tts_speak()
+				_play_sound("button_down")
+				
 				return false
 			else:
 				# If menu is opened, press the button
@@ -520,11 +522,12 @@ static func _process_menubar_controls():
 				_add_token(text)
 				
 				_tts_speak()
-				
+				_play_sound("button_up")
 				# close menu
 				return _menubar_close_menu(properties)
 		
 		elif Input.is_action_just_pressed("DOM_item_increment"):
+
 			# If menu is not opened, open it.
 			if !_menubar_menu_opened(focused):
 				# opens the currently selected menu
@@ -544,19 +547,39 @@ static func _process_menubar_controls():
 				_add_token(text)
 				
 				_tts_speak()
+				
+				_play_sound("button_down")
 				return false
+			
+			# Dumb limitation of the menubar object
+			else:
+				
+				var val = _menubar_close_menu(properties)
+				
+				var text = _MENUBAR_NAVIGATION_STRINGS["CLOSED"]
+				_add_token(text)
+				
+				_tts_speak()
+				
+				_play_sound("button_up")
+				
+				return val
 				
 		# closes the menu
 		elif (Input.is_action_just_pressed("DOM_cancel")
 			|| Input.is_action_just_pressed("DOM_item_decrement")):
-			var val = _menubar_close_menu(properties)
-			
-			var text = _MENUBAR_NAVIGATION_STRINGS["CLOSED"]
-			_add_token(text)
-			
-			_tts_speak()
-			
-			return val
+				
+			if _menubar_menu_opened(focused):
+				var val = _menubar_close_menu(properties)
+				
+				var text = _MENUBAR_NAVIGATION_STRINGS["CLOSED"]
+				_add_token(text)
+				
+				_tts_speak()
+				
+				_play_sound("button_up")
+				
+				return val
 		
 		# If the menu is open, don't navigate, but do read names
 		if _menubar_menu_opened(focused):

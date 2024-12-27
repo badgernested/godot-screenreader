@@ -56,6 +56,8 @@ static var keyboard_action_names:Dictionary = {}
 func _ready():
 	_menu_manager.set_script(preload("res://addons/godot-screenreader/scripts/AXMenuManager.gd"))
 	
+	add_child(_menu_manager)
+	
 	_menu_manager._init_menu_manager(get_tree().get_root())
 	Screenreader._do_ready(self)
 	update_keyboard_action_names()
@@ -186,6 +188,10 @@ func update_keyboard_action_names():
 					
 		if !keys.is_empty():
 			keyboard_action_names[c] = keys
+
+# Adds the default keyboard actions
+func _add_default_keyboard_actions():
+	pass
 
 ## Returns if a special key combo is being pressed.
 func special_key_combos() -> bool:
