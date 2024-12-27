@@ -67,6 +67,9 @@ It might seem odd to web developers or other kinds of application developers why
 
 There is, however, real value in integrating some screenreader support in the future. Open source screenreaders like NVDA support custom user settings that could be used when strings are read. It may even be possible to simulate a DOM model to pass to the screenreader in some cases in a future development.
 
+> [!IMPORTANT]  
+> A concern for some screenreader support is licensing, because this is a free and open source project. Please do not contribute any code changes that might violate any commercial licenses. Code changes that interact with third-party software will be analyzed for possible license conflicts.
+
 Additionally, it would be amazing to get the screenreader running in the Editor, to make Godot 4.3+ more accessible to blind and visually impaired users.
 
 [<- Previous (Introduction)](intro.md)

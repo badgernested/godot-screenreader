@@ -70,7 +70,7 @@ This will output a string separated by pipe symbols (``|``) that announces the "
 > [!TIP]
 > Order your tokens most important first, least important last. This way, the screenreader user has access to the most important information sooner.
 
-### Overriding Screenreader Navigation
+### Ignoring Screenreader Navigation
 
 Control input and screenreader navigation are handled separately. With default Control functions, it will skip screenreader navigation if an input on the Control is detected. However, with Custom Controls, you must control this behavior yourself by overriding the ``ax_screenreader_navigation()`` function. If this function returns false, screenreader navigation will be skipped this frame.
 
