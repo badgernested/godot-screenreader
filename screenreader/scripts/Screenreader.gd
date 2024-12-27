@@ -372,27 +372,42 @@ static func _process_button_controls():
 	
 	var pressed = false
 	
+	var special_press = false
+	var special_release = false
+	
+	if (current_focus is CheckBox
+		|| current_focus is CheckButton):
+			if (Input.is_action_just_pressed("DOM_item_decrement") ||
+				Input.is_action_just_pressed("DOM_item_increment")):
+					special_press = true
+					
+			if (Input.is_action_just_released("DOM_item_decrement") ||
+				Input.is_action_just_released("DOM_item_increment")):
+					special_release = true
+	
 	# Allows you to press buttons normally
-	if Input.is_action_just_pressed("ui_accept"):
+	if (Input.is_action_just_pressed("ui_accept")
+		|| special_press):
 		current_focus.emit_signal("button_down")
 		_play_sound("button_down")
 		_update_draw_state(CONTROL_STATE.PRESSED)
 		activated = false
-	elif Input.is_action_just_released("ui_accept"):
+	elif (Input.is_action_just_released("ui_accept")
+		|| special_release):
 		current_focus.emit_signal("button_up")
 		_play_sound("button_up")
 		_update_draw_state(CONTROL_STATE.FOCUSED)
 		activated = false
 		
 	if current_focus.action_mode == BaseButton.ACTION_MODE_BUTTON_PRESS:
-		if Input.is_action_just_pressed("ui_accept"):
+		if Input.is_action_just_pressed("ui_accept") || special_press:
 			current_focus.emit_signal("pressed")
 			activated = false
 			if current_focus.toggle_mode:
 				current_focus.button_pressed = !current_focus.button_pressed
 			pressed = true
 	else:
-		if Input.is_action_just_released("ui_accept"):
+		if Input.is_action_just_released("ui_accept") || special_release:
 			current_focus.emit_signal("pressed")
 			activated = false
 			if current_focus.toggle_mode:
