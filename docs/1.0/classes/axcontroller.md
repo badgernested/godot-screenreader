@@ -11,14 +11,17 @@ This is the main Node to interact with to control the screenreader and other acc
 
 ### EVENT_FILE
 ``EVENT_FILE = "events.sav"``
+
 Location of the screenreader events file. Used for displaying tutorials once.
 
 ### OPTIONS_FILE
 ``OPTIONS_FILE = "options.sav"``
+
 Location of the screenreader options file.
 
 ### AX_PATH
 ``AX_PATH = "ax/"``
+
 Directory of screenreader files.
 
 ## Properties
