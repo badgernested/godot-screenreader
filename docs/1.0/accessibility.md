@@ -40,7 +40,7 @@ A screenreader is a special piece of technology that allows users to navigate in
 
 Popular Windows screenreaders include [JAWS by Freedom Scientific](https://www.freedomscientific.com/products/software/jaws/) and the free and open-source [NVDA](https://www.nvaccess.org/download/). On Linux, programs such as Orca are used.
 
-While compatibility with the screenreader is desirable in most applications, because of the nature of video game user interfaces, it makes more sense to have a customizable screenreader embedded into the game itself, since video game user interfaces are far more diverse than those seen in most web or desktop applications. This allows for the game to integrate itself closely with the screenreader itself.
+While compatibility with the screenreader is desirable in most applications, because of the nature of how Godot's user interface elements are designed, it makes more sense to have a customizable screenreader embedded into the game itself, since video game user interfaces are far more diverse than those seen in most web or desktop applications. This allows for the game to integrate itself closely with the screenreader itself.
 
 ### When Might a Screenreader Not Be Appropriate for My Game?
 
@@ -58,14 +58,14 @@ It might seem odd to web developers or other kinds of application developers why
     - HUD elements, such as labels or power bars, on a real time game
     - Hidden button elements representing hidden items to select
     - Custom created UI elements, or UI elements built of composite elements
-- Many game developers, especially indie game developers, would be opposed to being forced to build their user interfaces in a HTML compatible or DOM-element format. Games should be a place where new kinds of user interfaces can be safely explored without being forced into the confines of a markup language.
+- Many game developers, especially indie game developers, would be opposed to being forced to build their user interfaces in a HTML compatible or DOM-element format, due to the restrictions that it places on designing user interfaces. This can be hard to imagine in an application or web based development environment, but video games rely heavily on the creation of unique user interface elements. Oftentimes developers design user interfaces with no object model whatsoever, simply because its easier to understand. There needs to be more fine-tuned control to developers that DOM-based models cannot provide alone. Additionally, games should be a place where new kinds of user interfaces can be safely explored without being forced into the confines of a hierarchical markup language.
 -  This asset was developed to satisfy a few needs outside of accessibility:
-    - This asset needs to be easy to install, so the base asset should try to use as much native Godot 4.x functionality as possible. 
+    - This asset needs to be easy to install and set up, so the base asset should try to use as much native Godot 4.x functionality as possible. 
     - This asset needs to be built in such a way where all its functionality can be self contained so its easier to distribute as a potential future editor plugin.
     - This asset needs to work within the confines of the expectations of Godot 4.x users and the way they typically use and interact with UI elements when building games.
 - The immediate value of being able to have a tool that provides some basic accessibility to Godot game user interfaces outweighs the time it would take to solve these problems in screenreaders natively.
 
-There may be serious value in producing a C++ module that is able to process the produced trees as DOM trees like an HTML page, but this is something that I would currently need assistance to construct. There may also be some advantage for using configuration settings in screenreaders for speech. Direct screenreader support is open in the future but it will require a lot of assistance in development and a clear design of implementation. Previous implementation of Godot screenreaders either use the Godot native TTS function, which only calls the base speech services on various OSes, or use a set of libraries to interface with the screenreader and read strings, so this currently is an unsolved problem.
+There is, however, real value in integrating some screenreader support in the future. Open source screenreaders like NVDA support custom user settings that could be used when strings are read. It may even be possible to simulate a DOM model to pass to the screenreader in some cases in a future development.
 
 Additionally, it would be amazing to get the screenreader running in the Editor, to make Godot 4.3+ more accessible to blind and visually impaired users.
 
