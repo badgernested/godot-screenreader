@@ -4,39 +4,45 @@ extends Control
 ## This is the main Node to interact with to control the screenreader and other
 ## accessibility functions in godot-screenreader.
 
+## The keys pressed this frame.
 static var pressed_keys = []
+## The keys pressed last frame.
 static var last_pressed_keys = []
 
-# Strings for the screenreader functionality
+## Strings read out loud for screenreader functionality.
 const STRINGS = {
 	"enabled" : "Screenreader enabled.",
 	"disabled" : "Screenreader disabled."
 }
 
+## Location of the screenreader events file. Used for displaying tutorials
+## once.
 const EVENT_FILE = "events.sav"
+## Location of the screenreader options file.
 const OPTIONS_FILE = "options.sav"
+## Directory of screenreader files.
 const AX_PATH = "ax/"
 
-# An array of events, to prevent repeat events.
+## An array of events. Keeps track of what events have occured.
 static var events: Array = []
 
 # Whether or not the screenreader is enabled/disabled
 static var _screenreader_enabled: bool = false
 
-# The DOM root. if null, you can't open the screenreader.
+## The DOM root. If null, you can't open the screenreader.
 static var dom_root: Control = null
 
-# If true, loads events stored in a save file a frame
-# after the instance loads.
-# This way the screenreader tutorial only appears once
-# when playing a game.
+## If true, loads events stored in a save file a frame
+## after the instance loads.
+## This way the screenreader tutorial only appears once
+## when playing a game.
 static var load_file: bool = true
 
-# If screenreader is enabled at start of game
+## If screenreader is enabled at start of game.
 static var start_screenreader: bool = false
 
 # Set to true if fully initialized
-static var fully_initialized: bool = false
+static var _fully_initialized: bool = false
 
 func _ready():
 	AXMenuManager.init(get_tree().get_root())
@@ -51,7 +57,7 @@ func _ready():
 	if is_instance_valid(dom_root) && start_screenreader:
 		_enable_screenreader(dom_root, start_screenreader)
 		
-	fully_initialized = true
+	_fully_initialized = true
 
 # This forces reading the contents to override anything else.
 func _input(event: InputEvent) -> void:
@@ -115,31 +121,33 @@ func _process(delta: float) -> void:
 			Screenreader.redraw = false
 	
 # Draws additional stuff on top of the normal draw function
-func _draw():
+func _draw() -> void:
 	# Draws the focused item if there is no focus stylebox
 	if Screenreader.focused != null:
 		_draw_highlight()
 
 # Draws the highlighted selection
-func _draw_highlight():
+func _draw_highlight() -> void:
 	draw_style_box(HCController.get_focus_style(), Screenreader._highlight_box)
 
 ## Notification
 
-func _notification(what: int):
+func _notification(what: int) -> void:
 	Screenreader._do_notification(what)
 		
 	if what == Control.NOTIFICATION_EXIT_TREE:
 		_save_events_to_file()
 		_save_options_to_file()
 
-# Returns if a key is pressed
-func key_pressed():
+## Returns true if a key has been pressed this frame.
+func key_pressed() -> bool:
 	if key_changed():
 		return last_pressed_keys.size() < pressed_keys.size()
+		
+	return false
 
-# Returns if a key is changed	
-func key_changed():
+## Returns true if the state of key presses has changed this frame.
+func key_changed() -> bool:
 	if last_pressed_keys.size() != pressed_keys.size():
 		return true
 		
@@ -151,14 +159,14 @@ func key_changed():
 
 ## Screenreader Control
 
-# Sets the DOM root.
-func set_dom_root(obj: Control, focus_node:Control = null):
+## Sets the DOM root.
+func set_dom_root(obj: Control, focus_node:Control = null) -> void:
 	dom_root = obj
 	AXController.set_high_contrast_theme(obj)
 	_enable_screenreader(dom_root, _screenreader_enabled, focus_node)
 
 # Enables the screenreader
-func _enable_screenreader(root: Control, enabled:bool = true, focus_obj: Control = null):
+func _enable_screenreader(root: Control, enabled:bool = true, focus_obj: Control = null) -> void:
 	
 	var tutorial_pushed = false
 	Screenreader.set_dom_root(root)
@@ -176,7 +184,7 @@ func _enable_screenreader(root: Control, enabled:bool = true, focus_obj: Control
 		if root == null:
 			read_tokens()
 	else:
-		if fully_initialized:
+		if _fully_initialized:
 			add_token(STRINGS["disabled"])
 			read_tokens()
 		else:
@@ -188,23 +196,24 @@ func _enable_screenreader(root: Control, enabled:bool = true, focus_obj: Control
 		
 	update_screenreader_highlight()
 	
-func _set_screenreader_subject(root, enabled:bool = true, focus_obj: Control = null):
+
+func _set_screenreader_subject(root, enabled:bool = true, focus_obj: Control = null) -> void:
 	await get_tree().create_timer(0.001).timeout
 	Screenreader.set_dom_root(root)
 	Screenreader.enable_dom(enabled, focus_obj)
 	
-# Updates the position of the screenreader highlighter
-func update_screenreader_highlight():
+## Updates the position of the screenreader highlighter
+func update_screenreader_highlight() -> void:
 	await get_tree().create_timer(0.001).timeout
 	Screenreader._update_draw_highlight()
 	queue_redraw()
 	
-# Focuses on a specific end node. Must be an end node.
-func screenreader_focus(node: Control):
+## Focuses on a specific end node. Must be an end node.
+func screenreader_focus(node: Control) -> void:
 	Screenreader._update_end_node(node)
 
 # Gets the focus node of the given node
-func _get_focus_node(obj:Node):
+func _get_focus_node(obj:Node) -> Node:
 	var focus_node = null
 	
 	var focus = obj.get("focus_node")
@@ -217,58 +226,58 @@ func _get_focus_node(obj:Node):
 
 ## Accessibility themes
 
-# Sets the theme to the currently selected accessibility theme
-func set_high_contrast_theme(obj:Node=null):
+## Sets the theme to the currently selected accessibility theme
+func set_high_contrast_theme(obj:Node=null) -> void:
 	HCController.set_theme(obj)
 
-# Pass an element to make all its children 
-# the dark high contrast theme
-func set_high_contrast_dark_theme(obj:Node=null):
+## Pass an element to make all its children 
+## the dark high contrast theme
+func set_high_contrast_dark_theme(obj:Node=null) -> void:
 	HCController.set_theme(obj, "hc_dark")
 	
-# Pass an element to make all its children 
-# the light high contrast theme
-func set_high_contrast_light_theme(obj:Node=null):
+## Pass an element to make all its children 
+## the light high contrast theme
+func set_high_contrast_light_theme(obj:Node=null) -> void:
 	HCController.set_theme(obj, "hc_light")
 	
-# Passes an element to remove all special themes
-func reset_high_contrast_theme(root: Control):
+## Passes an element to remove all special themes
+func reset_high_contrast_theme(root: Control) -> void:
 	HCController.reset_theme()
 	
 ## Text to Speech manager
 
-# Adds a token to the screen reader to be read.
-func add_token(token: String):
+## Adds a token to the screen reader to be read.
+func add_token(token: String) -> void:
 	Screenreader._add_token(token)
 	
-# Reads the current tokens.
-func read_tokens():
+## Reads the current tokens.
+func read_tokens() -> void:
 	Screenreader._tts_speak()
 	
-# clears tokens
-func clear_tokens():
+## Clears the tokens stored.
+func clear_tokens() -> void:
 	Screenreader._clear_tokens()
 	
-# Reads a tts string directly
-func tts_speak(text: String, pitch:float = 1.0, rate:float= 1.0 , volume:int = 50):
+## Reads a TTS string directly.
+func tts_speak(text: String, pitch:float = 1.0, rate:float= 1.0 , volume:int = 50) -> void:
 	Screenreader._tts_speak_direct(text, pitch, rate, volume)
 
 ## Event manager
 
 # Adds event
-func _add_event(event):
+func _add_event(event) -> void:
 	events.append(event)
 	
 # Removes event
-func _remove_event(event):
+func _remove_event(event) -> void:
 	events.erase(event)
 	
 # Checks if event exists
-func _event_exists(event):
+func _event_exists(event) -> bool:
 	return events.has(event)
 
 # Saves events to a file
-func _save_events_to_file():
+func _save_events_to_file() -> void:
 	if load_file:
 		var dir = DirAccess.open("user://")
 		
@@ -285,7 +294,7 @@ func _save_events_to_file():
 		file.close()
 
 # Loads data from the file
-func _load_events_from_file():
+func _load_events_from_file() -> void:
 	if load_file:
 		var path = "user://" + AX_PATH + EVENT_FILE
 		
@@ -299,7 +308,7 @@ func _load_events_from_file():
 			file.close()
 
 # Creates an options dictionary with the current state
-func _create_options_dictionary():
+func _create_options_dictionary() -> Dictionary:
 	return {
 		"sfx_enabled" : Screenreader.sfx_enabled,
 		"wrap_nav" : Screenreader.navigation_wrap,
@@ -311,7 +320,7 @@ func _create_options_dictionary():
 	}
 
 # Saves events to a file
-func _save_options_to_file():
+func _save_options_to_file() -> void:
 	if load_file:
 		var dir = DirAccess.open("user://")
 		
@@ -327,7 +336,7 @@ func _save_options_to_file():
 		file.close()
 
 # Loads data from the file
-func _load_options_from_file():
+func _load_options_from_file() -> void:
 	if load_file:
 		var path = "user://" + AX_PATH + OPTIONS_FILE
 		
