@@ -8,7 +8,9 @@ Script for adding additional accessibility function to VideoStreamPlayer Control
 ## Constants
 
 ### SUBTITLE_FONT
+
 ``SUBTITLE_FONT = <Object>``
+
 The font used for subtitles.
 
 
