@@ -5,21 +5,17 @@ This is a summary of the file structure of the repository.
 1. screenreader
     - This directory contains the screenreader code. This is the only directory that is necessary to run the screenreader.
 
-### fonts
+    1. fonts
+        - This directory contains font assets.
 
-This directory contains font assets.
+    2. menu
+        - This directory contains menu data used in the screenreader, for menus, tutorials etc.
 
-### menu
+        1. ax
+            - Menus and tutorials used directly in the screenreader.
 
-This directory contains menu data used in the screenreader, for menus, tutorials etc.
-
-#### ax
-
-Menus and tutorials used directly in the screenreader.
-
-##### scripts
-
-Scripts that are used in the ax menus and tutorials.
+            1. scripts
+                - Scripts that are used in the ax menus and tutorials.
 
 ### scripts
 
