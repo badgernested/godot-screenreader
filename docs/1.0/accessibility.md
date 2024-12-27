@@ -1,5 +1,12 @@
 # Accessibility FAQ
 
+- [Accessibility FAQ](#accessibility-faq)
+  * [Why Accessibility?](#why-accessibility-)
+    + [Doesn't Accessibility Hurt My Game Design?](#doesn-t-accessibility-hurt-my-game-design-)
+  * [What is a Screenreader?](#what-is-a-screenreader-)
+    + [When Might a Screenreader Not Be Appropriate for My Game?](#when-might-a-screenreader-not-be-appropriate-for-my-game-)
+  * [Why is Native Screenreader Support Not Included?](#why-is-native-screenreader-support-not-included-)
+
 ## Why Accessibility?
 
 Accessibility is a design philosophy that emphasizes many different kinds of users for your product. This includes disabled users, such as people with sensory, motor or mental disabilities; but this also includes users in environments where some hardware functionality may not be available, such as in loud settings, settings with high glare, poor quality hardware or disfunctional hardware. The idea is that there should be many ways to be able to achieve the same goal, with all the tools and information you need readily available to do it, so that interference with completing a task is put to a minimum.
