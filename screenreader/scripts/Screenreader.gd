@@ -137,7 +137,7 @@ static var audio_description_enabled: bool = true
 static var verbose: bool = true
 
 ## When enabled, displays debug information in the console.
-static var debug: bool = false
+static var debug: bool = true
 
 # Objects
 
@@ -2241,6 +2241,8 @@ static func _tts_speak_direct(text: String, pitch:float = 1.0,rate:float= 1.0 ,v
 		TTS.stop()
 		TTS.speak(text, false, TTS.default_lang, pitch, rate, volume)
 		
+		_prdebug("TTS: %s" % [text])
+		
 		_timer.start(_TIMER_COOLDOWN)
 		
 static func _is_cooled_down():
@@ -2556,7 +2558,7 @@ static func _clear_DOM():
 	
 static func _prdebug(string: String):
 	if debug:
-		print_debug(string)
+		print(string)
 		
 # Inherited functions
 

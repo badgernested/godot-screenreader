@@ -26,8 +26,6 @@ static var voice_id: String = ""
 static func speak(sentence: String, interrupt: bool = false,
 		language: String = default_lang, pitch: float = 1.0,
 		rate: float = 1.0, volume: int = 50) -> void:
-	print(sentence)
-
 	if voice_id == "":
 		voice_id = DisplayServer.tts_get_voices_for_language(language)[0]
 	if interrupt:
