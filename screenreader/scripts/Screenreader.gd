@@ -2143,7 +2143,9 @@ static func _recursive_tree_search(obj:Control, level:int = 0):
 	# Inserts under special conditions
 	var node_type = get_node_type(obj)
 	
-	if (node_type == NODE_TYPE.INTERACT_NODE) && obj.get("ignore") != true:
+	if ((node_type == NODE_TYPE.INTERACT_NODE
+		&& obj.get("ignore") != true)
+		|| obj.get("custom_control") == true):
 		current_objects.append(obj)
 		
 		if obj is MenuBar:

@@ -55,6 +55,10 @@ By default, a highlight surrounding the selected Control is drawn on screen to h
 
 If a Control node, or a select few Panel nodes, has Focus Marked Container checked, the children of this node are grouped together for navigating with "Next" and "Previous keys. This way, you can use Control nodes to organize your UI so that the screenreader can easily and quickly navigate between important areas of your user interface.
 
+### Custom Controls
+
+In Godot, it is common to create custom Controls using scenes with a Control node as the root node. If this root node is given a script that extends ``ax_control.gd``, it can check Custom Control and have the entire Control be treated as one object, instead of adding each of the child Controls.
+
 ### Read Fraction
 
 If checked, Read Fraction reads the value of this Control as a fraction of the current value relative to the max value.

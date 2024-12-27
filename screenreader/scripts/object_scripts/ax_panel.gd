@@ -12,6 +12,9 @@ extends Panel
 ## If true, this node is set to [param focus_mode] = [param FOCUS_MODE_CLICK]
 ## instead of [param FOCUS_MODE_NONE] when the screenreader has loaded this Control.
 @export var enable_mouse: bool = false
+## If true, this control will be treated as a custom control, and no child
+## elements will be added to the screenreader navigation.
+@export var custom_control: bool = false
 
 ## If this value returns a non-empty value, it will read that
 ## string instead of the default string for the screenreader

@@ -15,9 +15,8 @@ This is a comprehensive guide on how to install, use and develop with godot-scre
         2. [Extending Scripts](extending_scripts.md) 
     3. Best Practices
 4. Developer Documentation
-    1. Filesystem Structure
+    1. [Filesystem Structure](filesystem_structure.md)
     2. Classes
     3. Scripts
-    4. Other Assets
     
 [Back to README](../../README.md)
