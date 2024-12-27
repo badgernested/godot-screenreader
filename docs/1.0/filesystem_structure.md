@@ -2,9 +2,8 @@
 
 This is a summary of the file structure of the repository.
 
-## screenreader
-
-This directory contains the screenreader code. This is the only directory that is necessary to run the screenreader.
+1. screenreader
+    - This directory contains the screenreader code. This is the only directory that is necessary to run the screenreader.
 
 ### fonts
 
