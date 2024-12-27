@@ -1,4 +1,4 @@
-Best Practices
+# Best Practices
 
 [<- Previous (Extending Scripts)](extending_scripts.md)
  | [Next (Filesystem Structure) ->](filesystem_structure.md)
