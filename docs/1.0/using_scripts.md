@@ -9,7 +9,9 @@ To attach a script, simply drag the script associated with the type of Control y
 
 Once you attach the script, new options will be available to you in the editor, to further tweak how a Control interacts with the screenreader.
 
-## Alt Text
+## Extended Properties
+
+### Alt Text
 
 If Alt Text is populated, when a screenreader user navigates to this Control, additional or replacement text will be read. The way Alt Text is read to the player is different for each Control type:
 
@@ -35,33 +37,33 @@ If Alt Text is populated, when a screenreader user navigates to this Control, ad
 | VideoStreamPlayer | Reads alt text before reading "VideoStreamPlayer". If no alt text, it will read the node's name as listed in the editor. |
 | Tree | Reads alt text after selected tree node information. |
 
-## Ignoring Nodes
+### Ignoring Nodes
 
 If Ignore is checked, this node will be ignored when building the navigation tree for godot-screenreader.
 
 This is useful in situations where you may want the screenreader to skip over certain Controls. For example, consider an options menu, where each option is represented visually with a Label and CheckButton node. It makes more sense to ignore the Label nodes and use alt text on the CheckButton nodes so that the screenreader user has to navigate through fewer elements to reach the button.
 
-## Enable Mouse
+### Enable Mouse
 
 By default, when the screenreader is enabled and starts navigating the loaded Controls, all Controls will have their ``focus_mode`` set to ``FOCUS_MODE_NONE``. This can interfere with some mouse functionality that may still be desirable. To set it to ``FOCUS_MODE_CLICK`` instead, make sure Enable Mouse is checked.
 
-## Draw Highlight
+### Draw Highlight
 
 By default, a highlight surrounding the selected Control is drawn on screen to help show users what Control is selected visually. If you don't want this highlight to appear, Draw Highlight should be unchecked.
 
-## Node Grouping
+### Node Grouping
 
 If a Control node, or a select few Panel nodes, has Focus Marked Container checked, the children of this node are grouped together for navigating with "Next" and "Previous keys. This way, you can use Control nodes to organize your UI so that the screenreader can easily and quickly navigate between important areas of your user interface.
 
-## Read Fraction
+### Read Fraction
 
 If checked, Read Fraction reads the value of this Control as a fraction of the current value relative to the max value.
 
-## Read Percent
+### Read Percent
 
 If checked, Read Percent reads the value of this Control as a percent of the current value relative to the max value.
 
-## Read Value
+### Read Value
 
 If checked, Read Value reads the value of this Control as pure values.
 
@@ -69,11 +71,11 @@ If checked, Read Value reads the value of this Control as pure values.
 
 How frequently the Control updates when the decrement/increment keys are held. If set to 0.0, it will update every frame.
 
-## Audio Description
+### Audio Description
 
 This leads to the path of the VTT formatted ``.txt`` file that contains the audio description for the TTS to read when the Control is selected, if audio description is enabled.
 
-## Subtitles
+### Subtitles
 
 This leads to the path of the VTT formatted ``.txt`` file that contains the subtitles track to be displayed over the video, if subtitles are enabled.
 

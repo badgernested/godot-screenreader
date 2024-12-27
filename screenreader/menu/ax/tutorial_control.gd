@@ -42,4 +42,4 @@ func _on_button_pressed() -> void:
 
 
 func _on_invisible_label_pressed() -> void:
-	OS.shell_open("https://punishedfelix.com/")
+	pass
