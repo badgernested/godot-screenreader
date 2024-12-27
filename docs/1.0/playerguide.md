@@ -31,8 +31,6 @@ Here is a summary listing the default inputs of the screenreader:
 | Right | Navigates to the next item within a selected control. |
 | Enter | Selects an item within a selected control. |
 | Escape | Cancels a selection within a selected control. |
-| Shift + S | Stops video for ``VideoStreamPlayer`` instances attached with the accessibility script |
-| Shift + A | Plays video for ``VideoStreamPlayer`` instances attached with the accessibility script |
 
 > [!NOTE]  
 > Developers can change the inputs for any of these inputs, so refer to the developer documentation as well.

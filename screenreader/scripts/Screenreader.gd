@@ -448,7 +448,7 @@ static func _process_video_controls():
 	
 	var read_text = ""
 	
-	if Input.is_action_just_pressed("ax_start_video"):
+	if Input.is_action_just_pressed("DOM_select"):
 		# Use the ax script, if available.
 		# also, it will toggle playback
 		if focused.has_method("play_video"):
@@ -467,7 +467,7 @@ static func _process_video_controls():
 				focused.play()
 				read_text = _VIDEO_NAVIGATION_STRINGS["PLAY"]
 		
-	elif Input.is_action_just_pressed("ax_stop_video"):
+	elif Input.is_action_just_pressed("DOM_cancel"):
 		# Use the ax script, if available.
 		if focused.has_method("stop_video"):
 			focused.stop_video()

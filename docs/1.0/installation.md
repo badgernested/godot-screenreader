@@ -53,8 +53,6 @@ In Project Settings -> Input Map, add the following inputs:
 | ``DOM_item_increment`` | Right | Navigates to the next item within a selected control. |
 | ``DOM_select`` | Enter | Selects an item within a selected control. |
 | ``DOM_cancel`` | Escape | Cancels a selection within a selected control. |
-| ``ax_stop_video`` | Shift + S | Stops video for ``VideoStreamPlayer`` instances attached with the accessibility script |
-| ``ax_start_video`` | Shift + A | Plays video for ``VideoStreamPlayer`` instances attached with the accessibility script |
 
 ### Globals
 
