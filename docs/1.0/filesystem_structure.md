@@ -72,7 +72,7 @@ This is a summary of the file structure of the repository.
 ```
 
 [<- Previous (Best Practices)](best_practices.md)
- | [Next (Classes) ->](stub.md)
+ | [Next (Classes) ->](classes.md)
 
 [Back to Index](index.md)
 
