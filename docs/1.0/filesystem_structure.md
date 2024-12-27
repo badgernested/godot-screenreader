@@ -2,60 +2,74 @@
 
 This is a summary of the file structure of the repository.
 
-1. screenreader
-    - This directory contains the screenreader code. This is the only directory that is necessary to run the screenreader.
-
-    1. fonts
-        - This directory contains font assets.
-
-    2. menu
-        - This directory contains menu data used in the screenreader, for menus, tutorials etc.
-
-        1. ax
-            - Menus and tutorials used directly in the screenreader.
-
-            1. scripts
-                - Scripts that are used in the ax menus and tutorials.
-
-### scripts
-
-Scripts used throughout the screenreader.
-
-#### object_scripts
-
-Scripts that are attached to Controls to extend their screenreader functionality.
-
-### sfx
-
-Sound effects used in the screenreader.
-
-### ui
-
-UI resources used with the screenreader.
-
-#### gradient
-
-Gradient files used with the screenreader.
-
-#### img
-
-Image assets used with the screenreader.
-
-#### style
-
-Style assets used with the screenreader, such as high contrast modes.
-
-## sample_assets
-
-This directory contains a demo project that demonstrates the functionality of the screenreader.
-
-## exports
-
-This directory has demo files for users to download.
-
-## docs
-
-This directory contains this documentation.
+```
+.
+├── docs
+│ 
+│   This directory contains documentation for the project.
+│ 
+│   └── 1.0
+│ 
+├── exports
+│ 
+│   This directory contains demo files.
+│ 
+│   ├── linux
+│   └── windows
+│ 
+├── sample_assets
+│ 
+│   This directory contains assets used in producing the demo.
+│ 
+│   ├── img
+│   │   ├── button
+│   │   ├── icon
+│   │   └── sprite
+│   ├── theme
+│   ├── ui
+│   └── video
+│ 
+└── screenreader
+    │
+    │   This directory contains the screenreader code and assets.
+    │   You only need this directory to run the screenreader.
+    │
+    ├── fonts
+    │
+    │   This directory contains font assets.
+    │
+    ├── menu
+    │
+    │   This directory menus used within the screenreader.
+    │
+    │   └── ax
+    │       └── scripts
+    │
+    ├── scripts
+    │
+    │   This directory contains scripts used for the screenreader.
+    │
+    │   └── object_scripts
+    │ 
+    │       This directory contains scripts to attach to Controls
+    │       to extend screenreader functionality.
+    │ 
+    ├── sfx
+    │
+    │   This directory contains sound assets.
+    │
+    └── ui
+        │ 
+        │ This directory contains theme assets.
+        │ 
+        ├── gradient
+        ├── img
+        │   ├── dark
+        │   ├── default
+        │   ├── light
+        │   └── tutorial
+        └── style
+```
 
 [<- Previous (STUB)](stub.md)
  | [Next (STUB) ->](stub.md)
