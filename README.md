@@ -1,6 +1,6 @@
 # Godot Screenreader
 
-![godot-screenreader logo, a blue raccoon with the text "screenreader" below it.](asset_icon.png "godot-screenreader")
+<img alt="godot-screenreader logo, a blue raccoon with the text 'screenreader' below it." src="asset_icon.png" width="512px")
 
 Inspired by the work of [LightsOutGames](https://github.com/lightsoutgames/godot-accessibility), who created the first Godot accessibility plugin for Godot 3.x, and [rodolpheh](https://github.com/rodolpheh/godot-accessibility), who converted LightsOutGames' plugin to be used for Godot 4.x.
 
