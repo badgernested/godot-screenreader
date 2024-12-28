@@ -8,6 +8,10 @@ Inspired by the work of [LightsOutGames](https://github.com/lightsoutgames/godot
 
 For now, it is something that can be used to attach to your game to make menus and other features more accessible. However, I hope to include this screenreader in a plugin in the future as well to make the Editor more accessible.
 
+## Video Demo
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/9njhjEA0x9Q?si=YX8T4MQt5zkQRI5h" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## Extra Information
 
 If you want to know more about the screenreader, you can view the following:
