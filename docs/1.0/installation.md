@@ -42,7 +42,7 @@ Copy all of the files in ``/screenreader`` into the root directory of your Godot
 
 ### Set Up the Inputs
 
-godot-screenreader uses unique input names to distinguish itself from normal UI control. You must add the following inputs to your game so that the godot-screenreader can use them properly.
+godot-screenreader uses unique input names to distinguish itself from normal UI control. You may override these controls with the following Inputs:
 
 In Project Settings -> Input Map, add the following inputs:
 
@@ -63,14 +63,7 @@ In Project Settings -> Input Map, add the following inputs:
 
 ### Globals
 
-Two scripts need to be loaded as globals:
-
-| Global        | Script           | Summary  |
-|:-------------:|:-------------:|:-----:|
-| AXController | res://addons/godot-screenreader/scripts/AXController.gd | The main accessibility controller. |
-
-> [!IMPORTANT]  
-> Global names must be **exactly** what is written in the table, or else there will be errors.
+While not necessary, it is useful to assign ``AXController`` as a Global Autoload. The rest of this documentation is written assuming that you have added ``AXController`` to the Autoload list.
 
 [<- Previous (Accessibility FAQ)](accessibility.md)
  | [Next (General Usage) ->](generaluse.md)

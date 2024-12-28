@@ -5,9 +5,9 @@ extends Control
 ## accessibility functions in godot-screenreader.
 
 ## The keys pressed this frame.
-static var pressed_keys: Array = []
+var pressed_keys: Array = []
 ## The keys pressed last frame.
-static var last_pressed_keys: Array = []
+var last_pressed_keys: Array = []
 
 # Strings read out loud for screenreader functionality.
 const _STRINGS = {
@@ -24,30 +24,30 @@ const OPTIONS_FILE = "options.sav"
 const AX_PATH = "ax/"
 
 # An array of events. Keeps track of what events have occured.
-static var _events: Array = []
+var _events: Array = []
 
 # Whether or not the screenreader is enabled/disabled
-static var _screenreader_enabled: bool = false
+var _screenreader_enabled: bool = false
 
 ## The DOM root. If null, you can't open the screenreader.
-static var dom_root: Control = null
+var dom_root: Control = null
 
 ## If true, loads events stored in a save file a frame
 ## after the instance loads.
 ## This way the screenreader tutorial only appears once
 ## when playing a game.
-static var load_file: bool = true
+var load_file: bool = true
 
 ## If screenreader is enabled at start of game.
-static var start_screenreader: bool = false
+var start_screenreader: bool = false
 
 # Set to true if fully initialized
-static var _fully_initialized: bool = false
+var _fully_initialized: bool = false
 
 ## This contains a dictionary where all the keys are action names and
 ## the values are an array of all keyboard inputs
 ## associated with that action.
-static var keyboard_action_names:Dictionary = {}
+var keyboard_action_names:Dictionary = {}
 
 # The menu manager
 
@@ -60,8 +60,9 @@ func _ready():
 	
 	_menu_manager._init_menu_manager(get_tree().get_root())
 	Screenreader._do_ready(self)
+	_add_default_keyboard_actions()
 	update_keyboard_action_names()
-	
+
 	_load_options_from_file()
 	
 	await get_tree().create_timer(0.001).timeout
@@ -191,7 +192,35 @@ func update_keyboard_action_names():
 
 # Adds the default keyboard actions
 func _add_default_keyboard_actions():
-	pass
+	_add_keyboard_action("DOM_select", [KEY_ENTER])
+	_add_keyboard_action("DOM_cancel", [KEY_ESCAPE])
+	_add_keyboard_action("DOM_up", [KEY_UP])
+	_add_keyboard_action("DOM_down", [KEY_DOWN])
+	_add_keyboard_action("DOM_item_decrement", [KEY_LEFT])
+	_add_keyboard_action("DOM_item_increment", [KEY_RIGHT])
+	_add_keyboard_action("DOM_read_item", [KEY_F3])
+	_add_keyboard_action("DOM_stop_talk", [KEY_F4])
+	_add_keyboard_action("DOM_screenreader_enable", [KEY_F2])
+	_add_keyboard_action("DOM_screenreader_menu", [KEY_F5])
+	_add_keyboard_action("DOM_next", [KEY_TAB])
+	_add_keyboard_action("DOM_prev", [KEY_TAB], true)
+	
+# Adds a single keyboard action
+func _add_keyboard_action(action: String, keys: Array, has_shift:bool = false):
+	for c in keys:
+		if !InputMap.has_action(action):
+			InputMap.add_action(action)
+			InputMap.action_add_event(action, _create_keyboard_event(c, has_shift))
+	
+# Creates a keyboard event
+func _create_keyboard_event(keycode: int, has_shift:bool = false) -> InputEventKey:
+	var event = InputEventKey.new()
+	event.physical_keycode = keycode
+	
+	if has_shift:
+		event.shift_pressed = true
+		
+	return event
 
 ## Returns if a special key combo is being pressed.
 func special_key_combos() -> bool:
