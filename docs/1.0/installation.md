@@ -24,7 +24,7 @@ You will notice that there are several import errors. This is not a problem with
 > [!CAUTION]
 > It is very important that you do not interact with anything before closing the project in this step, or else certain theme assets will not load properly and you will need to re-create the template.
 
-Now, godot-screenreader is ready for your new project. It is recommended to remove the ``exports``, ``examples`` and ``docs`` directory, since these are not necessary for the running of the screenreader. However, ``sample_assets`` does include samples to help you learn examples of how to best develop interfaces for the screenreader.
+Now, godot-screenreader is ready for your new project. It is recommended to remove the ``exports``, ``examples`` and ``docs`` directories, since these are not necessary for the running of the screenreader. However, ``examples`` does include samples to help you learn examples of how to best develop interfaces for the screenreader.
 
 ## Add to Your Project
 
