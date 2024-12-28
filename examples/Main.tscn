@@ -485,8 +485,8 @@ autoplay = true
 expand = true
 loop = true
 script = ExtResource("7_0uhod")
-audio_description = "res://sample_assets/video/audio_desc.txt"
-subtitles = "res://sample_assets/video/subtitles.txt"
+audio_description = "res://examples/video/audio_desc.txt"
+subtitles = "res://examples/video/subtitles.txt"
 
 [node name="More Elements" type="PanelContainer" parent="Panel/VBoxContainer/Main/Panel/TabContainer"]
 visible = false

@@ -39,7 +39,7 @@ offset_right = 285.0
 offset_bottom = 160.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 9
+current_tab = 2
 
 [node name="Introduction" type="PanelContainer" parent="Tab"]
 visible = false
@@ -230,7 +230,6 @@ horizontal_alignment = 1
 autowrap_mode = 2
 
 [node name="Buttons" type="PanelContainer" parent="Tab"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
@@ -255,7 +254,7 @@ text = "To press a button, press [DOM_select].
 
 There are also menu buttons and dropdowns. When you press these kinds of buttons, a menu will appear.
 
-To navigate the menu, press [DOM_item_decrement] or [DOM_item_increment] to navigate the dropdown menu. You can select an option with [DOM_select]. You can close an option with [DOM_cancel].
+To open the menu, press [DOM_select] or [DOM_item_increment].To navigate the menu, press [DOM_up] or [DOM_down] to navigate the dropdown menu. You can select an option with [DOM_select]. You can close an option with [DOM_cancel] or [DOM_item_decrement].
 
 You can practice on this tab. Once you are done practicing, you can proceed by pressing [DOM_item_increment] while this label is selected."
 horizontal_alignment = 1
@@ -901,6 +900,7 @@ vertical_alignment = 1
 autowrap_mode = 2
 
 [node name="Conclusion" type="PanelContainer" parent="Tab"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 9
 
