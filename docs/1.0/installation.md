@@ -44,8 +44,6 @@ Copy all of the files in ``/screenreader`` into the root directory of your Godot
 
 godot-screenreader uses unique input names to distinguish itself from normal UI control. You may override these controls with the following Inputs:
 
-In Project Settings -> Input Map, add the following inputs:
-
 | Input        | Default           | Summary  |
 |:-------------:|:-------------:|:-----:|
 | ``DOM_screenreader_enable`` | F2 | Enables the screenreader. |
