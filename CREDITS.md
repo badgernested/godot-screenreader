@@ -10,6 +10,8 @@ All graphics were produced either by me or found on [Icon Finder](https://iconfi
 
 F25 Bank Printer font from [DaFont.com](https://www.dafont.com/f25-bank-printer.font).
 
+Accessibility testing provided by [Daniel Hawkins](https://iabilityi.com/).
+
 Original Repositories:
 - [LightsOutGames](https://github.com/lightsoutgames/godot-accessibility)
 - [rodolpheh](https://github.com/rodolpheh/godot-accessibility)
