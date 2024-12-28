@@ -667,8 +667,8 @@ static func _menubar_nav_menus(properties: Dictionary):
 				if was_opened:
 					_menubar_menu_open(current_focused, properties["selected_menu"])
 				
-				if current_focused is MenuBar:
-					_get_accessible_menubar_name(current_focused)
+				if focused is MenuBar:
+					_get_accessible_menubar_name(focused)
 					_tts_speak()
 					
 				_state_updated = true
@@ -692,8 +692,8 @@ static func _menubar_nav_menus(properties: Dictionary):
 				if was_opened:
 					_menubar_menu_open(current_focused, properties["selected_menu"])
 					
-				if current_focused is MenuBar:
-					_get_accessible_menubar_name(current_focused)
+				if focused is MenuBar:
+					_get_accessible_menubar_name(focused)
 					_tts_speak()
 					
 				_state_updated = true
