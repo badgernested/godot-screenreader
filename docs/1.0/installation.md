@@ -57,6 +57,7 @@ godot-screenreader uses unique input names to distinguish itself from normal UI 
 | ``DOM_item_decrement`` | Left | Navigates to the previous item within a selected control. |
 | ``DOM_item_increment`` | Right | Navigates to the next item within a selected control. |
 | ``DOM_select`` | Enter | Selects an item within a selected control. |
+| ``DOM_update`` | Space | Updates the value of some controls, like checkboxes. |
 | ``DOM_cancel`` | Escape | Cancels a selection within a selected control. |
 
 ### Globals

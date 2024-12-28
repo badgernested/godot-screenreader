@@ -34,6 +34,7 @@ Here is a summary listing the default inputs of the screenreader:
 | Left | Navigates to the previous item within a selected control. |
 | Right | Navigates to the next item within a selected control. |
 | Enter | Selects an item within a selected control. |
+| Space | Updates the value of some controls, like checkboxes. |
 | Escape | Cancels a selection within a selected control. |
 
 > [!NOTE]  

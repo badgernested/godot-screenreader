@@ -193,6 +193,7 @@ func update_keyboard_action_names():
 # Adds the default keyboard actions
 func _add_default_keyboard_actions():
 	_add_keyboard_action("DOM_select", [KEY_ENTER])
+	_add_keyboard_action("DOM_update", [KEY_SPACE])
 	_add_keyboard_action("DOM_cancel", [KEY_ESCAPE])
 	_add_keyboard_action("DOM_up", [KEY_UP])
 	_add_keyboard_action("DOM_down", [KEY_DOWN])

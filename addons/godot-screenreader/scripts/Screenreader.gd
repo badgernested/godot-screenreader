@@ -377,12 +377,10 @@ static func _process_button_controls():
 	
 	if (current_focus is CheckBox
 		|| current_focus is CheckButton):
-			if (Input.is_action_just_pressed("DOM_item_decrement") ||
-				Input.is_action_just_pressed("DOM_item_increment")):
+			if (Input.is_action_just_pressed("DOM_update")):
 					special_press = true
 					
-			if (Input.is_action_just_released("DOM_item_decrement") ||
-				Input.is_action_just_released("DOM_item_increment")):
+			if (Input.is_action_just_released("DOM_update")):
 					special_release = true
 	
 	# Allows you to press buttons normally
@@ -556,7 +554,7 @@ static func _process_menubar_controls():
 				
 				var val = _menubar_close_menu(properties)
 				
-				var text = _MENUBAR_NAVIGATION_STRINGS["CLOSED"]
+				var text = _MENUBAR_NAVIGATION_STRINGS["CLOSED"] % [focused.get_menu_title(menu_pos)]
 				_add_token(text)
 				
 				_tts_speak()
