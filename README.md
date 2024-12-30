@@ -11,6 +11,7 @@ For now, it is something that can be used to attach to your game to make menus a
 ## Extra Information
 
 If you want to know more about the screenreader, you can view the following:
+- [Itch.io Demo](https://punishedfelix.itch.io/godot-screenreader)
 - [Player's Guide](/docs/1.0/playerguide.md)
 - [Documentation](/docs/1.0/index.md)
 - [Installation](/docs/1.0/installation.md)
