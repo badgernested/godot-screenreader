@@ -46,7 +46,7 @@ func set_title_gradient():
 func init() -> void:
 	# Centers the window
 	if centered:
-		var window = get_window()
+		var window = get_viewport().get_visible_rect()
 
 		$Panel.position = (window.size * 0.5) - ($Panel.size * 0.5)
 	
