@@ -24,7 +24,7 @@ AXController.set_dom_root(null)
 ```
 
 > [!NOTE]  
-> This is all that is necessary to get godot-screenreader running at a base level of functionality, but there are ways to organize your user interface and add/extend additional scripts to improve screenreader functionality. Check out this [document STUB](STUB.md) for more information.
+> This is all that is necessary to get godot-screenreader running at a base level of functionality, but there are ways to organize your user interface and add/extend additional scripts to improve screenreader functionality. Check out this [document](best_practices.md) for more information.
 
 ## Changing Default Focus
 
