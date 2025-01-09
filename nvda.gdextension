@@ -1,0 +1,11 @@
+[configuration]
+
+entry_symbol = "nvda_library_init"
+compatibility_minimum = "4.2"
+
+[libraries]
+
+windows.debug.x86_32 = "res://addons/nvda_integration/bin/libgdnvda.windows.template_debug.x86_32.dll"
+windows.release.x86_32 = "res://addons/nvda_integration/bin/libgdnvda.windows.template_release.x86_32.dll"
+windows.debug.x86_64 = "res://addons/nvda_integration/bin/libgdnvda.windows.template_debug.x86_64.dll"
+windows.release.x86_64 = "res://addons/nvda_integration/bin/libgdnvda.windows.template_release.x86_64.dll"
