@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="GodotAccessibleMenu"
-config/version="1.0.0.3"
+config/version="1.0.0.4"
 run/main_scene="res://examples/Main.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://examples/img/icon/test_icon.png"
