@@ -26,7 +26,7 @@ static func speak(sentence: String, interrupt: bool = false,
 	match OS.get_name():
 		"Windows":
 			if NvdaWrapper.is_using_nvda():
-				NvdaWrapper.speak(sentence, language)
+				NvdaWrapper.say(sentence, language)
 			else:
 				speak_default(sentence, interrupt, language, pitch, rate, volume)
 		_:
